@@ -60,11 +60,19 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex items-center justify-between p-4 sm:p-5 border-b border-sidebar-border">
         <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl gradient-emerald flex items-center justify-center text-white shrink-0">
-            <Building2 className="h-5 w-5" />
+          <div
+            className="h-9 w-9 rounded-xl flex items-center justify-center text-[#0F171E] font-black text-lg shrink-0"
+            style={{
+              background: "linear-gradient(135deg, #00A8E1 0%, #2BD5F5 100%)",
+              boxShadow: "0 4px 16px rgba(0, 168, 225, 0.4)",
+            }}
+          >
+            H
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-sidebar-foreground text-sm leading-tight">{t.brand}</p>
+            <p className="font-bold text-sidebar-foreground text-sm leading-tight">
+              Hisab<span className="text-[#2BD5F5]">ERP</span>
+            </p>
             <p className="text-[10px] text-muted-foreground leading-tight">{t.tagline}</p>
           </div>
         </div>
@@ -132,7 +140,9 @@ export function Sidebar() {
 
         {user && (
           <div className="flex items-center gap-3 p-2 rounded-lg">
-            <div className="h-9 w-9 rounded-full gradient-emerald flex items-center justify-center text-white text-xs font-bold shrink-0">
+            <div className="h-9 w-9 rounded-full flex items-center justify-center text-[#0F171E] text-xs font-bold shrink-0" style={{
+              background: "linear-gradient(135deg, #00A8E1 0%, #2BD5F5 100%)",
+            }}>
               {user.avatar}
             </div>
             <div className="flex-1 min-w-0">

@@ -21,15 +21,15 @@ const notoSansEthiopic = Noto_Sans_Ethiopic({
 });
 
 export const metadata: Metadata = {
-  title: "Addis ERP — Ethiopian Business Suite",
+  title: "Hisab ERP — Ethiopian Business Intelligence",
   description: "Secure, scalable ERP for Ethiopian business owners. Finance, Inventory, HR, Sales & Compliance with ETB support, Amharic + English bilingual interface.",
-  keywords: ["ERP", "Ethiopia", "Amharic", "ETB", "Business", "Finance", "Inventory", "HR", "Sales", "Compliance"],
-  authors: [{ name: "Addis ERP" }],
+  keywords: ["ERP", "Ethiopia", "Amharic", "ETB", "Business", "Finance", "Inventory", "HR", "Sales", "Compliance", "Hisab"],
+  authors: [{ name: "Hisab ERP" }],
   icons: {
     icon: "/logo.svg",
   },
   openGraph: {
-    title: "Addis ERP — Ethiopian Business Suite",
+    title: "Hisab ERP — Ethiopian Business Intelligence",
     description: "Secure, scalable ERP for Ethiopian business owners",
     type: "website",
   },
@@ -41,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${notoSansEthiopic.variable} antialiased bg-background text-foreground`}
       >

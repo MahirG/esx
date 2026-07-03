@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hisab ERP — Ethiopian Business Intelligence</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg-primary: #0F171E;
+    --bg-secondary: #1A2433;
+    --bg-tertiary: #232F3E;
+    --bg-card: #1A2433;
+    --bg-card-hover: #232F3E;
+    --accent: #00A8E1;
+    --accent-bright: #2BD5F5;
+    --accent-glow: rgba(0, 168, 225, 0.4);
+    --accent-gradient: linear-gradient(135deg, #00A8E1 0%, #2BD5F5 100%);
+    --text-primary: #FFFFFF;
+    --text-secondary: #ABB7C4;
+    --text-tertiary: #8197A4;
+    --success: #4CAF50;
+    --warning: #FFB74D;
+    --danger: #FF5252;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(0, 168, 225, 0.4);
+  }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ===== HERO SECTION ===== */
+  .hero {
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at 20% 30%, rgba(0, 168, 225, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, rgba(43, 213, 245, 0.1) 0%, transparent 50%),
+      linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0, 168, 225, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 168, 225, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+  }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    position: relative;
+    z-index: 10;
+    background: rgba(15, 23, 30, 0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .logo-mark {
+    width: 44px;
+    height: 44px;
+    background: var(--accent-gradient);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--bg-primary);
+    box-shadow: 0 4px 20px var(--accent-glow);
+    position: relative;
+  }
+  .logo-mark::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 14px;
+    background: var(--accent-gradient);
+    opacity: 0.3;
+    z-index: -1;
+    filter: blur(8px);
+  }
+  .logo-text { color: var(--text-primary); }
+  .logo-text .accent { color: var(--accent-bright); }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent-bright); }
+  .nav-cta {
+    background: var(--accent-gradient);
+    color: var(--bg-primary);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 16px var(--accent-glow);
+  }
+  .nav-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--accent-glow);
+  }
+
+  /* ===== HERO CONTENT ===== */
+  .hero-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 48px;
+    position: relative;
+    z-index: 5;
+  }
+  .hero-inner {
+    max-width: 1200px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(0, 168, 225, 0.1);
+    border: 1px solid rgba(0, 168, 225, 0.3);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-bright);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent-bright);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-bright);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .hero h1 {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    letter-spacing: -2px;
+  }
+  .hero h1 .gradient-text {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 18px;
+    color: var(--text-secondary);
+    margin-bottom: 36px;
+    line-height: 1.7;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .btn-primary {
+    background: var(--accent-gradient);
+    color: var(--bg-primary);
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px var(--accent-glow);
+  }
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent);
+  }
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+  }
+  .stat .num {
+    font-size: 32px;
+    font-weight: 800;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat .label {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ===== HERO VISUAL — Dashboard Preview ===== */
+  .hero-visual {
+    position: relative;
+  }
+  .dashboard-preview {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+  }
+  .dashboard-preview::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-gradient);
+  }
+  .preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .preview-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .preview-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .preview-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-tertiary);
+    opacity: 0.4;
+  }
+  .preview-dots span:first-child { background: var(--accent); opacity: 1; }
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .kpi-card {
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .kpi-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .kpi-label {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .kpi-change {
+    font-size: 11px;
+    color: var(--success);
+    margin-top: 4px;
+  }
+  .kpi-change.down { color: var(--danger); }
+  .chart-area {
+    height: 120px;
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .chart-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ===== MODULES SECTION ===== */
+  .modules {
+    padding: 120px 48px;
+    background: var(--bg-primary);
+  }
+  .section-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 64px;
+  }
+  .section-tag {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(0, 168, 225, 0.1);
+    border: 1px solid rgba(0, 168, 225, 0.3);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-bright);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .section-header h2 {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+  }
+  .section-header p {
+    font-size: 18px;
+    color: var(--text-secondary);
+  }
+  .modules-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .module-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent-gradient);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .module-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 168, 225, 0.15);
+  }
+  .module-card:hover::before {
+    transform: scaleX(1);
+  }
+  .module-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(0, 168, 225, 0.1);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+    border: 1px solid rgba(0, 168, 225, 0.2);
+  }
+  .module-card h3 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .module-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .module-features {
+    list-style: none;
+  }
+  .module-features li {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    padding: 6px 0;
+    padding-left: 24px;
+    position: relative;
+  }
+  .module-features li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--accent-bright);
+    font-weight: 700;
+  }
+
+  /* ===== FEATURES BANNER ===== */
+  .features-banner {
+    padding: 80px 48px;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .features-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    text-align: center;
+  }
+  .feature-item .icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+  }
+  .feature-item h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .feature-item p {
+    font-size: 14px;
+    color: var(--text-tertiary);
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 120px 48px;
+    background: var(--bg-primary);
+  }
+  .pricing-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .pricing-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 40px 32px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+  .pricing-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, rgba(0, 168, 225, 0.05) 0%, var(--bg-card) 100%);
+    box-shadow: 0 0 40px rgba(0, 168, 225, 0.1);
+  }
+  .pricing-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent-gradient);
+    color: var(--bg-primary);
+    padding: 4px 16px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .pricing-card:hover {
+    transform: translateY(-4px);
+  }
+  .plan-name {
+    font-size: 14px;
+    color: var(--accent-bright);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .plan-price {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .plan-price .currency { font-size: 24px; vertical-align: top; }
+  .plan-price .period { font-size: 16px; color: var(--text-tertiary); font-weight: 400; }
+  .plan-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+  }
+  .plan-features {
+    list-style: none;
+    margin-bottom: 32px;
+  }
+  .plan-features li {
+    padding: 10px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .plan-features li::before {
+    content: '✓';
+    color: var(--accent-bright);
+    font-weight: 700;
+  }
+  .plan-cta {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .plan-cta.primary {
+    background: var(--accent-gradient);
+    color: var(--bg-primary);
+  }
+  .plan-cta.secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+  .plan-cta:hover { transform: translateY(-2px); }
+
+  /* ===== CTA SECTION ===== */
+  .cta-section {
+    padding: 120px 48px;
+    background:
+      radial-gradient(ellipse at center, rgba(0, 168, 225, 0.15) 0%, transparent 70%),
+      var(--bg-primary);
+    text-align: center;
+  }
+  .cta-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .cta-section h2 {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+  }
+  .cta-section h2 .gradient-text {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cta-section p {
+    font-size: 18px;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    padding: 60px 48px 32px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand p {
+    color: var(--text-tertiary);
+    font-size: 14px;
+    margin-top: 16px;
+    max-width: 300px;
+  }
+  .footer-col h5 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+  .footer-col ul {
+    list-style: none;
+  }
+  .footer-col li {
+    margin-bottom: 10px;
+  }
+  .footer-col a {
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--accent-bright); }
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+    .hero h1 { font-size: 42px; }
+    .features-inner { grid-template-columns: repeat(2, 1fr); }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+    .navbar, .hero-content, .modules, .features-banner, .pricing, .cta-section, .footer { padding-left: 24px; padding-right: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <nav class="navbar">
+    <div class="logo">
+      <div class="logo-mark">H</div>
+      <span class="logo-text">Hisab<span class="accent">ERP</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#modules">Modules</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#about">About</a>
+    </div>
+    <button class="nav-cta">Launch App</button>
+  </nav>
+
+  <div class="hero-content">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-badge">Now ERCA Compliant</div>
+        <h1>Run your<br><span class="gradient-text">Ethiopian business</span><br>with confidence.</h1>
+        <p>Hisab ERP unifies finance, inventory, HR, sales, and compliance into one cinematic platform — built for ETB, Amharic + English, and Ethiopian tax regulations.</p>
+        <div class="hero-cta">
+          <button class="btn-primary">Start Free Trial →</button>
+          <button class="btn-secondary">Watch Demo</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="num">15+</div>
+            <div class="label">Modules</div>
+          </div>
+          <div class="stat">
+            <div class="num">99.9%</div>
+            <div class="label">Uptime</div>
+          </div>
+          <div class="stat">
+            <div class="num">256-bit</div>
+            <div class="label">Encryption</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="dashboard-preview">
+          <div class="preview-header">
+            <span class="preview-title">Business Overview</span>
+            <div class="preview-dots"><span></span><span></span><span></span></div>
+          </div>
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-label">Total Revenue</div>
+              <div class="kpi-value">ETB 18.5M</div>
+              <div class="kpi-change">↑ 12.4% vs last month</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Net Profit</div>
+              <div class="kpi-value">ETB 4.3M</div>
+              <div class="kpi-change">↑ 8.7%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">VAT Collected</div>
+              <div class="kpi-value">ETB 2.8M</div>
+              <div class="kpi-change">↑ 15.2%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Employees</div>
+              <div class="kpi-value">142</div>
+              <div class="kpi-change">↑ 5.0%</div>
+            </div>
+          </div>
+          <div class="chart-area">
+            <svg class="chart-svg" viewBox="0 0 300 100" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#00A8E1" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="#00A8E1" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,70 L30,60 L60,65 L90,45 L120,50 L150,35 L180,40 L210,25 L240,30 L270,15 L300,20 L300,100 L0,100 Z" fill="url(#chartGrad)"/>
+              <path d="M0,70 L30,60 L60,65 L90,45 L120,50 L150,35 L180,40 L210,25 L240,30 L270,15 L300,20" fill="none" stroke="#00A8E1" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MODULES ===== -->
+<section class="modules" id="modules">
+  <div class="section-header">
+    <span class="section-tag">Enterprise Suite</span>
+    <h2>Everything your business needs</h2>
+    <p>Seven powerful modules designed for Ethiopian enterprises — from Addis Ababa to Dire Dawa.</p>
+  </div>
+  <div class="modules-grid">
+    <div class="module-card">
+      <div class="module-icon">💰</div>
+      <h3>Finance & Accounting</h3>
+      <p>Automated accounting with ETB currency, VAT compliance, and bank integrations.</p>
+      <ul class="module-features">
+        <li>Chart of accounts</li>
+        <li>Dashen Bank, CBE, Awash Bank</li>
+        <li>Telebirr & Amole integration</li>
+        <li>VAT (15%) & withholding tax</li>
+      </ul>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">📦</div>
+      <h3>Inventory & Warehouses</h3>
+      <p>Real-time stock tracking across all Ethiopian regions with barcode support.</p>
+      <ul class="module-features">
+        <li>4 warehouse locations</li>
+        <li>Barcode/QR scanning</li>
+        <li>Supplier dashboards</li>
+        <li>Auto reorder alerts</li>
+      </ul>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">👥</div>
+      <h3>HR & Payroll</h3>
+      <p>Employee management with Ethiopian labor law compliance and automatic payroll.</p>
+      <ul class="module-features">
+        <li>ERCA income tax brackets</li>
+        <li>Pension (7% + 11%)</li>
+        <li>Attendance tracking</li>
+        <li>Leave management</li>
+      </ul>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">🛒</div>
+      <h3>Sales & CRM</h3>
+      <p>Customer management, quotations, and sales pipeline with mobile-friendly dashboards.</p>
+      <ul class="module-features">
+        <li>6-stage pipeline</li>
+        <li>VAT-inclusive quotations</li>
+        <li>Customer lifetime value</li>
+        <li>Sales analytics</li>
+      </ul>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">🛡️</div>
+      <h3>Compliance & Audit</h3>
+      <p>Built-in Ethiopian tax rules, ERCA e-filing, and complete audit trail.</p>
+      <ul class="module-features">
+        <li>8 tax types supported</li>
+        <li>ERCA integration ready</li>
+        <li>Audit logging</li>
+        <li>Compliance scoring</li>
+      </ul>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">📊</div>
+      <h3>Analytics & BI</h3>
+      <p>Business intelligence dashboards with KPIs, charts, and predictive insights.</p>
+      <ul class="module-features">
+        <li>Real-time KPIs</li>
+        <li>Revenue trends</li>
+        <li>Regional sales breakdown</li>
+        <li>Fiscal health scoring</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES BANNER ===== -->
+<section class="features-banner" id="features">
+  <div class="features-inner">
+    <div class="feature-item">
+      <div class="icon">🌐</div>
+      <h4>Bilingual</h4>
+      <p>Amharic + English interface with full localization</p>
+    </div>
+    <div class="feature-item">
+      <div class="icon">📱</div>
+      <h4>Mobile-First</h4>
+      <p>Optimized for Android, iOS, and responsive web</p>
+    </div>
+    <div class="feature-item">
+      <div class="icon">🔒</div>
+      <h4>Secure</h4>
+      <p>2FA, biometric login, 256-bit encryption</p>
+    </div>
+    <div class="feature-item">
+      <div class="icon">📡</div>
+      <h4>Offline Mode</h4>
+      <p>Works in low-connectivity regions across Ethiopia</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section class="pricing" id="pricing">
+  <div class="section-header">
+    <span class="section-tag">Pricing Plans</span>
+    <h2>Simple, transparent pricing</h2>
+    <p>Choose the plan that fits your business. All prices in Ethiopian Birr.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price"><span class="currency">ETB</span>2,500<span class="period">/mo</span></div>
+      <div class="plan-desc">For small businesses getting started</div>
+      <ul class="plan-features">
+        <li>Up to 5 users</li>
+        <li>Finance + Inventory modules</li>
+        <li>1 warehouse</li>
+        <li>Email support</li>
+        <li>Basic reporting</li>
+      </ul>
+      <button class="plan-cta secondary">Get Started</button>
+    </div>
+    <div class="pricing-card featured">
+      <div class="plan-name">Professional</div>
+      <div class="plan-price"><span class="currency">ETB</span>7,500<span class="period">/mo</span></div>
+      <div class="plan-desc">For growing Ethiopian enterprises</div>
+      <ul class="plan-features">
+        <li>Up to 25 users</li>
+        <li>All 7 modules</li>
+        <li>5 warehouses</li>
+        <li>Priority support</li>
+        <li>Advanced analytics</li>
+        <li>ERCA e-filing</li>
+      </ul>
+      <button class="plan-cta primary">Start Free Trial</button>
+    </div>
+    <div class="pricing-card">
+      <div class="plan-name">Enterprise</div>
+      <div class="plan-price"><span class="currency">ETB</span>18,000<span class="period">/mo</span></div>
+      <div class="plan-desc">For large-scale operations</div>
+      <ul class="plan-features">
+        <li>Unlimited users</li>
+        <li>All modules + API access</li>
+        <li>Unlimited warehouses</li>
+        <li>24/7 phone support</li>
+        <li>Custom integrations</li>
+        <li>Dedicated account manager</li>
+      </ul>
+      <button class="plan-cta secondary">Contact Sales</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>Ready to transform your<br><span class="gradient-text">Ethiopian business?</span></h2>
+    <p>Join hundreds of Ethiopian enterprises already running on Hisab ERP. Start your 30-day free trial today — no credit card required.</p>
+    <button class="btn-primary" style="font-size:18px; padding:18px 40px;">Launch Hisab ERP →</button>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">
+        <div class="logo-mark">H</div>
+        <span class="logo-text">Hisab<span class="accent">ERP</span></span>
+      </div>
+      <p>The premier ERP suite for Ethiopian business owners. Built in Addis Ababa, for Ethiopia.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Product</h5>
+      <ul>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Integrations</a></li>
+        <li><a href="#">Security</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Support</h5>
+      <ul>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">API Reference</a></li>
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Status</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 Hisab ERP. All rights reserved. TIN: 0009847263</div>
+    <div>Made with pride in Addis Ababa, Ethiopia 🇪🇹</div>
+  </div>
+</footer>
+
+</body>
+</html>

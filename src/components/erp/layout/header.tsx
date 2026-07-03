@@ -162,7 +162,9 @@ export function Header() {
 
         {/* User avatar */}
         {user && (
-          <div className="h-9 w-9 rounded-full gradient-emerald flex items-center justify-center text-white text-xs font-bold shrink-0">
+          <div className="h-9 w-9 rounded-full flex items-center justify-center text-[#0F171E] text-xs font-bold shrink-0" style={{
+            background: "linear-gradient(135deg, #00A8E1 0%, #2BD5F5 100%)",
+          }}>
             {user.avatar}
           </div>
         )}

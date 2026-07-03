@@ -6,8 +6,8 @@ export type Language = "en" | "am";
 export const translations = {
   en: {
     // Brand
-    brand: "Addis ERP",
-    tagline: "Ethiopian Business Suite",
+    brand: "Hisab ERP",
+    tagline: "Ethiopian Business Intelligence",
 
     // Auth
     login: {
@@ -312,8 +312,8 @@ export const translations = {
 
   am: {
     // Brand
-    brand: "አዲስ ኢአርፒ",
-    tagline: "የኢትዮጵያ የንግድ ስርዓት",
+    brand: "ሂሳብ ኢአርፒ",
+    tagline: "የኢትዮጵያ የንግድ ኢንተሌጀንስ",
 
     // Auth
     login: {

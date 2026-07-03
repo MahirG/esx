@@ -44,7 +44,7 @@ export const useERPStore = create<AuthState & AuthActions>()(
       language: "en",
       activeModule: "dashboard",
       sidebarOpen: false,
-      theme: "light",
+      theme: "dark",
       onlineStatus: true,
 
       login: (user) => set({ isAuthenticated: true, user }),
