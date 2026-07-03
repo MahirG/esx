@@ -6,6 +6,7 @@ type StatusType =
   | "completed"
   | "pending"
   | "overdue"
+  | "filed"
   | "active"
   | "inactive"
   | "online"
@@ -13,6 +14,7 @@ type StatusType =
   | "away"
   | "vip"
   | "regular"
+  | "inactive"
   | "inStock"
   | "lowStock"
   | "outOfStock"
@@ -23,12 +25,16 @@ type StatusType =
   | "critical"
   | "ok"
   | "connected"
-  | "leave";
+  | "leave"
+  | "approved"
+  | "rejected"
+  | "draft";
 
-const statusConfig: Record<StatusType, { label: string; className: string }> = {
+const statusConfig: Record<string, { label: string; className: string }> = {
   completed: { label: "Completed", className: "bg-primary/15 text-primary" },
   pending: { label: "Pending", className: "bg-accent/30 text-accent-foreground" },
   overdue: { label: "Overdue", className: "bg-destructive/15 text-destructive" },
+  filed: { label: "Filed", className: "bg-primary/15 text-primary" },
   active: { label: "Active", className: "bg-primary/15 text-primary" },
   inactive: { label: "Inactive", className: "bg-muted text-muted-foreground" },
   online: { label: "Online", className: "bg-primary/15 text-primary" },
@@ -47,6 +53,9 @@ const statusConfig: Record<StatusType, { label: string; className: string }> = {
   ok: { label: "OK", className: "bg-primary/15 text-primary" },
   connected: { label: "Connected", className: "bg-primary/15 text-primary" },
   leave: { label: "On Leave", className: "bg-accent/30 text-accent-foreground" },
+  approved: { label: "Approved", className: "bg-primary/15 text-primary" },
+  rejected: { label: "Rejected", className: "bg-destructive/15 text-destructive" },
+  draft: { label: "Draft", className: "bg-muted text-muted-foreground" },
 };
 
 export function StatusBadge({
@@ -54,11 +63,11 @@ export function StatusBadge({
   label,
   className,
 }: {
-  status: StatusType;
+  status: string;
   label?: string;
   className?: string;
 }) {
-  const config = statusConfig[status];
+  const config = statusConfig[status] || { label: status, className: "bg-muted text-muted-foreground" };
   return (
     <span
       className={cn(

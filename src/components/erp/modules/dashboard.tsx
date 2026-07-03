@@ -6,7 +6,6 @@ import {
   Receipt,
   Users,
   Plus,
-  ScanLine,
   ShoppingBag,
   FileText,
   ArrowUpRight,
@@ -14,6 +13,7 @@ import {
   AlertTriangle,
   Calendar,
   ShieldCheck,
+  Loader2,
 } from "lucide-react";
 import {
   Area,
@@ -22,7 +22,6 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  Legend,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -38,16 +37,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useTranslation } from "@/lib/use-translation";
 import { useERPStore } from "@/stores/erp-store";
-import {
-  dashboardKPIs,
-  revenueTrend,
-  expenseBreakdown,
-  topProducts,
-  recentTransactions,
-  salesByRegion,
-  inventoryAlerts,
-  upcomingTaxDeadlines,
-} from "@/lib/mock-data";
+import { useDashboard } from "@/lib/api-hooks";
 import { formatETB, formatNumber, formatPercent } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 
@@ -59,9 +49,29 @@ const tooltipStyle = {
   color: "oklch(0.20 0.02 160)",
 };
 
+const expenseBreakdown = [
+  { name: "Payroll & Salaries", value: 6800000, color: "oklch(0.52 0.14 162)" },
+  { name: "Inventory & Supplies", value: 4200000, color: "oklch(0.72 0.13 75)" },
+  { name: "Operations & Logistics", value: 2100000, color: "oklch(0.60 0.10 35)" },
+  { name: "Marketing & Sales", value: 980000, color: "oklch(0.40 0.10 162)" },
+  { name: "Technology & IT", value: 740000, color: "oklch(0.78 0.15 85)" },
+  { name: "Compliance & Legal", value: 420000, color: "oklch(0.55 0.08 200)" },
+];
+
 export function DashboardModule() {
-  const { t, isAmharic } = useTranslation();
+  const { t } = useTranslation();
   const setActiveModule = useERPStore((s) => s.setActiveModule);
+  const { data, isLoading } = useDashboard();
+
+  if (isLoading || !data) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const { kpis, charts, inventory, tax, recentTransactions } = data;
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -89,29 +99,29 @@ export function DashboardModule() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <KPICard
           title={t.dashboard.totalRevenue}
-          value={formatETB(dashboardKPIs.totalRevenue, { compact: true })}
-          change={dashboardKPIs.revenueGrowth}
+          value={formatETB(kpis.totalRevenue, { compact: true })}
+          change={kpis.revenueGrowth}
           icon={<TrendingUp className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="emerald"
         />
         <KPICard
           title={t.dashboard.netProfit}
-          value={formatETB(dashboardKPIs.netProfit, { compact: true })}
-          change={dashboardKPIs.profitGrowth}
+          value={formatETB(kpis.netProfit, { compact: true })}
+          change={kpis.profitGrowth}
           icon={<Wallet className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="amber"
         />
         <KPICard
           title={t.dashboard.vatCollected}
-          value={formatETB(dashboardKPIs.vatCollected, { compact: true })}
-          change={dashboardKPIs.vatGrowth}
+          value={formatETB(kpis.vatCollected || kpis.totalRevenue * 0.15, { compact: true })}
+          change={kpis.vatGrowth}
           icon={<Receipt className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="deep"
         />
         <KPICard
           title={t.dashboard.activeEmployees}
-          value={formatNumber(dashboardKPIs.activeEmployees)}
-          change={dashboardKPIs.employeeGrowth}
+          value={formatNumber(kpis.activeEmployees)}
+          change={kpis.employeeGrowth}
           icon={<Users className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="terracotta"
         />
@@ -125,7 +135,7 @@ export function DashboardModule() {
           className="lg:col-span-2"
         >
           <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={revenueTrend} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+            <AreaChart data={charts.revenueTrend} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
               <defs>
                 <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="oklch(0.52 0.14 162)" stopOpacity={0.3} />
@@ -180,44 +190,24 @@ export function DashboardModule() {
                 contentStyle={tooltipStyle}
                 formatter={(value: number) => formatETB(value)}
               />
-              <Legend
-                iconType="circle"
-                iconSize={8}
-                wrapperStyle={{ fontSize: "11px" }}
-                formatter={(value) => <span className="text-foreground/80">{value}</span>}
-              />
             </PieChart>
           </ResponsiveContainer>
-        </ChartCard>
-      </div>
-
-      {/* Top Products + Sales by Region */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard title={t.dashboard.topProducts} subtitle="Best sellers this quarter">
-          <div className="space-y-3">
-            {topProducts.map((product, idx) => (
-              <div key={product.name} className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0">
-                  {idx + 1}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{product.name}</p>
-                  <p className="text-xs text-muted-foreground">{formatNumber(product.sales)} units • {formatETB(product.revenue, { compact: true })}</p>
-                </div>
-                <span className={cn(
-                  "text-xs font-semibold px-2 py-0.5 rounded-md",
-                  product.change >= 0 ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"
-                )}>
-                  {formatPercent(product.change)}
-                </span>
+          <div className="grid grid-cols-2 gap-1.5 mt-2 text-xs">
+            {expenseBreakdown.map((item) => (
+              <div key={item.name} className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
+                <span className="text-muted-foreground truncate">{item.name}</span>
               </div>
             ))}
           </div>
         </ChartCard>
+      </div>
 
+      {/* Sales by Region + Recent Transactions */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <ChartCard title={t.dashboard.salesByRegion} subtitle="Distribution across Ethiopia">
           <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={salesByRegion} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
+            <BarChart data={charts.salesByRegion} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.90 0.015 85)" horizontal={false} />
               <XAxis
                 type="number"
@@ -242,10 +232,7 @@ export function DashboardModule() {
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
-      </div>
 
-      {/* Recent Transactions + Inventory Alerts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <ChartCard
           title={t.dashboard.recentTransactions}
           subtitle="Latest financial activity"
@@ -256,7 +243,7 @@ export function DashboardModule() {
           }
         >
           <div className="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
-            {recentTransactions.map((txn) => (
+            {recentTransactions.map((txn: { id: string; txnId: string; type: string; party: string; amount: number; date: string; method: string }) => (
               <div key={txn.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
                 <div className={cn(
                   "h-9 w-9 rounded-lg flex items-center justify-center shrink-0",
@@ -270,7 +257,7 @@ export function DashboardModule() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{txn.party}</p>
-                  <p className="text-xs text-muted-foreground">{txn.id} • {txn.method}</p>
+                  <p className="text-xs text-muted-foreground">{txn.txnId} • {txn.method}</p>
                 </div>
                 <div className="text-right shrink-0">
                   <p className={cn(
@@ -279,35 +266,8 @@ export function DashboardModule() {
                   )}>
                     {txn.type === "received" ? "+" : "-"}{formatETB(txn.amount, { compact: true })}
                   </p>
-                  <p className="text-xs text-muted-foreground">{txn.date}</p>
+                  <p className="text-xs text-muted-foreground">{new Date(txn.date).toLocaleDateString()}</p>
                 </div>
-              </div>
-            ))}
-          </div>
-        </ChartCard>
-
-        <ChartCard title={t.dashboard.inventoryAlerts} subtitle="Items requiring attention">
-          <div className="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
-            {inventoryAlerts.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
-                <div className={cn(
-                  "h-9 w-9 rounded-lg flex items-center justify-center shrink-0",
-                  item.severity === "critical" ? "bg-destructive/10" :
-                  item.severity === "warning" ? "bg-accent/30" :
-                  "bg-primary/10"
-                )}>
-                  <AlertTriangle className={cn(
-                    "h-4 w-4",
-                    item.severity === "critical" ? "text-destructive" :
-                    item.severity === "warning" ? "text-accent-foreground" :
-                    "text-primary"
-                  )} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{item.product}</p>
-                  <p className="text-xs text-muted-foreground">{item.warehouse} • {item.current} / {item.threshold} units</p>
-                </div>
-                <StatusBadge status={item.severity as "critical" | "warning" | "ok"} />
               </div>
             ))}
           </div>
@@ -321,17 +281,17 @@ export function DashboardModule() {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t.dashboard.fiscalHealth}</p>
-                <p className="mt-2 text-3xl font-bold text-primary">{dashboardKPIs.fiscalHealthScore}</p>
+                <p className="mt-2 text-3xl font-bold text-primary">{kpis.fiscalHealthScore}</p>
                 <p className="text-xs text-muted-foreground mt-1">out of 100</p>
               </div>
               <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
                 <ShieldCheck className="h-6 w-6 text-primary" />
               </div>
             </div>
-            <Progress value={dashboardKPIs.fiscalHealthScore} className="h-2" />
+            <Progress value={kpis.fiscalHealthScore} className="h-2" />
             <div className="mt-3 flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">Excellent standing</span>
-              <span className="text-primary font-medium">+4 vs last month</span>
+              <span className="text-muted-foreground">Compliance standing</span>
+              <span className="text-primary font-medium">{kpis.fiscalHealthScore >= 80 ? "Excellent" : kpis.fiscalHealthScore >= 60 ? "Good" : "Needs attention"}</span>
             </div>
           </CardContent>
         </Card>
@@ -347,24 +307,50 @@ export function DashboardModule() {
           }
         >
           <div className="space-y-2">
-            {upcomingTaxDeadlines.slice(0, 4).map((tax, idx) => (
-              <div key={idx} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
+            {tax.upcoming.slice(0, 4).map((tf: { id: string; type: string; dueDate: string; amount: number; status: string }) => (
+              <div key={tf.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
                 <div className="h-9 w-9 rounded-lg bg-accent/20 flex items-center justify-center shrink-0">
                   <Calendar className="h-4 w-4 text-accent-foreground" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{tax.type}</p>
-                  <p className="text-xs text-muted-foreground">Due: {tax.dueDate}</p>
+                  <p className="text-sm font-medium text-foreground truncate">{tf.type}</p>
+                  <p className="text-xs text-muted-foreground">Due: {new Date(tf.dueDate).toLocaleDateString()}</p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-sm font-semibold tabular-nums">{formatETB(tax.amount, { compact: true })}</p>
-                  <StatusBadge status={tax.status as "pending" | "overdue"} />
+                  <p className="text-sm font-semibold tabular-nums">{formatETB(tf.amount, { compact: true })}</p>
+                  <StatusBadge status={tf.status as "pending" | "overdue" | "filed"} />
                 </div>
               </div>
             ))}
           </div>
         </ChartCard>
       </div>
+
+      {/* Inventory Alerts */}
+      {inventory.lowStockProducts.length > 0 && (
+        <ChartCard title={t.dashboard.inventoryAlerts} subtitle="Items requiring attention">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {inventory.lowStockProducts.map((item: { id: string; name: string; sku: string; quantity: number; reorderLevel: number; status: string; warehouse: { name: string } }) => (
+              <div key={item.id} className="flex items-center gap-3 p-3 rounded-lg border border-border/60 hover:bg-muted/30">
+                <div className={cn(
+                  "h-9 w-9 rounded-lg flex items-center justify-center shrink-0",
+                  item.status === "outOfStock" ? "bg-destructive/10" : "bg-accent/30"
+                )}>
+                  <AlertTriangle className={cn(
+                    "h-4 w-4",
+                    item.status === "outOfStock" ? "text-destructive" : "text-accent-foreground"
+                  )} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
+                  <p className="text-xs text-muted-foreground">{item.warehouse?.name} • {item.quantity} / {item.reorderLevel} units</p>
+                </div>
+                <StatusBadge status={item.status as "lowStock" | "outOfStock"} />
+              </div>
+            ))}
+          </div>
+        </ChartCard>
+      )}
     </div>
   );
 }

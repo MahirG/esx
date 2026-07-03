@@ -20,6 +20,8 @@ import {
   Database,
   Globe,
   Download,
+  Loader2,
+  Plus,
 } from "lucide-react";
 import { KPICard } from "@/components/erp/ui/kpi-card";
 import { ChartCard } from "@/components/erp/ui/chart-card";
@@ -39,25 +41,51 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTranslation } from "@/lib/use-translation";
-import { systemUsers, organizationInfo, integrations } from "@/lib/mock-data";
+import { useSystemUsers } from "@/lib/api-hooks";
+import { UserForm } from "@/components/erp/forms/entity-forms";
 import { cn } from "@/lib/utils";
+
+const organizationInfo = {
+  name: "Addis Trading Enterprise",
+  tin: "0009847263",
+  vatNumber: "0009847263",
+  address: "Bole Road, Friendship Building, Addis Ababa, Ethiopia",
+  currency: "ETB (Ethiopian Birr)",
+  timezone: "Africa/Addis_Ababa (UTC+3)",
+  language: "English (Default) + Amharic",
+  fiscalYearStart: "July 7 (Ethiopian New Year)",
+};
+
+const integrationsData = [
+  { name: "Dashen Bank API", type: "Banking", status: "connected", lastSync: "2 min ago" },
+  { name: "Commercial Bank of Ethiopia", type: "Banking", status: "connected", lastSync: "5 min ago" },
+  { name: "Awash Bank", type: "Banking", status: "connected", lastSync: "12 min ago" },
+  { name: "Telebirr", type: "Mobile Money", status: "connected", lastSync: "1 min ago" },
+  { name: "Amole", type: "Mobile Money", status: "connected", lastSync: "8 min ago" },
+  { name: "ERCA e-Filing", type: "Government", status: "connected", lastSync: "1 hour ago" },
+  { name: "Ethio Post", type: "Logistics", status: "pending", lastSync: "Never" },
+  { name: "Ethio Telecom SMS", type: "Communication", status: "connected", lastSync: "30 min ago" },
+];
 
 export function AdminModule() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("users");
+  const [userModal, setUserModal] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const { data: users, isLoading } = useSystemUsers();
 
   const deploymentSteps = [
     {
       title: "Option 1: Cloud Deployment (AWS)",
       icon: <Cloud className="h-5 w-5" />,
       steps: [
-        "Install AWS CLI: `curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip && unzip awscliv2.zip && sudo ./aws/install`",
-        "Configure credentials: `aws configure`",
-        "Build Docker image: `docker build -t addis-erp:latest .`",
-        "Push to ECR: `aws ecr create-repository --repository-name addis-erp`",
-        "Deploy to ECS/Fargate: `aws ecs create-cluster --cluster-name addis-erp-prod`",
-        "Set up RDS PostgreSQL: `aws rds create-db-instance --db-instance-identifier addis-erp-db ...`",
+        "Install AWS CLI: curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip && unzip awscliv2.zip && sudo ./aws/install",
+        "Configure credentials: aws configure",
+        "Build Docker image: docker build -t addis-erp:latest .",
+        "Push to ECR: aws ecr create-repository --repository-name addis-erp",
+        "Deploy to ECS/Fargate: aws ecs create-cluster --cluster-name addis-erp-prod",
+        "Set up RDS PostgreSQL: aws rds create-db-instance --db-instance-identifier addis-erp-db",
         "Configure Application Load Balancer and Route53 DNS",
       ],
     },
@@ -65,13 +93,13 @@ export function AdminModule() {
       title: "Option 2: On-Premise Server",
       icon: <Server className="h-5 w-5" />,
       steps: [
-        "Install Node.js 20+: `curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -`",
-        "Install PostgreSQL 15: `sudo apt install postgresql postgresql-contrib`",
-        "Clone repository: `git clone https://github.com/addis-erp/suite.git`",
-        "Install dependencies: `cd addis-erp && npm install`",
-        "Set environment variables: `cp .env.example .env && nano .env`",
-        "Run database migrations: `npx prisma migrate deploy`",
-        "Build and start: `npm run build && npm start`",
+        "Install Node.js 20+: curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -",
+        "Install PostgreSQL 15: sudo apt install postgresql postgresql-contrib",
+        "Clone repository: git clone https://github.com/addis-erp/suite.git",
+        "Install dependencies: cd addis-erp && npm install",
+        "Set environment variables: cp .env.example .env && nano .env",
+        "Run database migrations: npx prisma migrate deploy",
+        "Build and start: npm run build && npm start",
         "Set up Nginx reverse proxy and SSL with Let's Encrypt",
       ],
     },
@@ -79,12 +107,12 @@ export function AdminModule() {
       title: "Option 3: Docker Container",
       icon: <Container className="h-5 w-5" />,
       steps: [
-        "Install Docker: `curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh`",
-        "Pull image: `docker pull addiserp/suite:latest`",
-        "Create network: `docker network create addis-erp-net`",
-        "Start PostgreSQL: `docker run -d --name addis-db --network addis-erp-net -e POSTGRES_PASSWORD=secure addiserp/db:latest`",
-        "Start ERP: `docker run -d --name addis-erp --network addis-erp-net -p 3000:3000 -e DATABASE_URL=postgresql://... addiserp/suite:latest`",
-        "Or use Docker Compose: `docker-compose up -d`",
+        "Install Docker: curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh",
+        "Pull image: docker pull addiserp/suite:latest",
+        "Create network: docker network create addis-erp-net",
+        "Start PostgreSQL: docker run -d --name addis-db --network addis-erp-net -e POSTGRES_PASSWORD=secure addiserp/db:latest",
+        "Start ERP: docker run -d --name addis-erp --network addis-erp-net -p 3000:3000 -e DATABASE_URL=postgresql://... addiserp/suite:latest",
+        "Or use Docker Compose: docker-compose up -d",
       ],
     },
   ];
@@ -97,21 +125,23 @@ export function AdminModule() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      <UserForm open={userModal} onClose={() => setUserModal(false)} />
+
       {/* Quick Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <KPICard
           title="System Users"
-          value={systemUsers.length.toString()}
+          value={(users?.length || 0).toString()}
           icon={<Users className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="emerald"
-          subtitle={`${systemUsers.filter((u) => u.status === "online").length} online now`}
+          subtitle={`${users?.filter((u: { status: string }) => u.status === "online").length || 0} online now`}
         />
         <KPICard
           title="Active Integrations"
-          value={integrations.filter((i) => i.status === "connected").length.toString()}
+          value={integrationsData.filter((i) => i.status === "connected").length.toString()}
           icon={<Plug className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="deep"
-          subtitle={`${integrations.length} total configured`}
+          subtitle={`${integrationsData.length} total configured`}
         />
         <KPICard
           title="Security Score"
@@ -143,56 +173,66 @@ export function AdminModule() {
         <TabsContent value="users">
           <ChartCard
             title={t.admin.users}
-            subtitle={`${systemUsers.length} users with role-based access`}
-            action={<Button size="sm" className="gradient-emerald text-white"><Users className="h-4 w-4 mr-1.5" />{t.admin.addUser}</Button>}
+            subtitle={`${users?.length || 0} users with role-based access`}
+            action={<Button size="sm" className="gradient-emerald text-white" onClick={() => setUserModal(true)}><Plus className="h-4 w-4 mr-1.5" />{t.admin.addUser}</Button>}
           >
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs">{t.admin.userName}</TableHead>
-                    <TableHead className="text-xs hidden sm:table-cell">Email</TableHead>
-                    <TableHead className="text-xs">{t.admin.role}</TableHead>
-                    <TableHead className="text-xs hidden md:table-cell">{t.admin.lastActive}</TableHead>
-                    <TableHead className="text-xs">Status</TableHead>
-                    <TableHead className="text-xs text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {systemUsers.map((user) => (
-                    <TableRow key={user.id} className="hover:bg-muted/30">
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-full gradient-emerald flex items-center justify-center text-white text-xs font-bold shrink-0 relative">
-                            {user.name.split(" ").map((n) => n[0]).join("")}
-                            {user.status === "online" && (
-                              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-primary border-2 border-card" />
-                            )}
-                          </div>
-                          <span className="text-sm font-medium">{user.name}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-xs hidden sm:table-cell text-muted-foreground">{user.email}</TableCell>
-                      <TableCell>
-                        <span className={cn(
-                          "inline-block text-xs font-medium px-2 py-0.5 rounded-md capitalize",
-                          user.role === "admin" && "bg-primary/10 text-primary",
-                          user.role === "manager" && "bg-[oklch(0.40_0.10_162)]/10 text-[oklch(0.40_0.10_162)]",
-                          user.role === "staff" && "bg-muted text-muted-foreground"
-                        )}>
-                          {t.login[user.role as "admin" | "manager" | "staff"]}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-xs hidden md:table-cell text-muted-foreground">{user.lastActive}</TableCell>
-                      <TableCell><StatusBadge status={user.status as "online" | "offline" | "away"} /></TableCell>
-                      <TableCell className="text-right">
-                        <Button size="sm" variant="ghost" className="text-xs h-7">Edit</Button>
-                      </TableCell>
+            {isLoading ? (
+              <div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">{t.admin.userName}</TableHead>
+                      <TableHead className="text-xs hidden sm:table-cell">Email</TableHead>
+                      <TableHead className="text-xs">{t.admin.role}</TableHead>
+                      <TableHead className="text-xs">2FA</TableHead>
+                      <TableHead className="text-xs hidden md:table-cell">{t.admin.lastActive}</TableHead>
+                      <TableHead className="text-xs">Status</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {users?.map((user: { id: string; name: string; email: string; role: string; avatar: string; twoFactor: boolean; status: string; lastActive: string }) => (
+                      <TableRow key={user.id} className="hover:bg-muted/30">
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <div className="h-9 w-9 rounded-full gradient-emerald flex items-center justify-center text-white text-xs font-bold shrink-0 relative">
+                              {user.avatar}
+                              {user.status === "online" && (
+                                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-primary border-2 border-card" />
+                              )}
+                            </div>
+                            <span className="text-sm font-medium">{user.name}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-xs hidden sm:table-cell text-muted-foreground">{user.email}</TableCell>
+                        <TableCell>
+                          <span className={cn(
+                            "inline-block text-xs font-medium px-2 py-0.5 rounded-md capitalize",
+                            user.role === "admin" && "bg-primary/10 text-primary",
+                            user.role === "manager" && "bg-[oklch(0.40_0.10_162)]/10 text-[oklch(0.40_0.10_162)]",
+                            user.role === "staff" && "bg-muted text-muted-foreground"
+                          )}>
+                            {t.login[user.role as "admin" | "manager" | "staff"]}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          {user.twoFactor ? (
+                            <span className="inline-flex items-center gap-1 text-xs text-primary"><Check className="h-3 w-3" />Enabled</span>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">Disabled</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-xs hidden md:table-cell text-muted-foreground">
+                          {new Date(user.lastActive).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell><StatusBadge status={user.status as "online" | "offline" | "away"} /></TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </ChartCard>
         </TabsContent>
 
@@ -203,19 +243,19 @@ export function AdminModule() {
               {
                 role: "Administrator",
                 color: "emerald",
-                users: 3,
+                users: users?.filter((u: { role: string }) => u.role === "admin").length || 0,
                 permissions: ["Full system access", "User management", "All modules", "Compliance & audit", "System settings", "API keys"],
               },
               {
                 role: "Manager",
                 color: "deep",
-                users: 4,
+                users: users?.filter((u: { role: string }) => u.role === "manager").length || 0,
                 permissions: ["Finance module", "Inventory module", "HR & Payroll", "Sales & CRM", "Reports (read)", "Limited compliance"],
               },
               {
                 role: "Staff",
                 color: "terracotta",
-                users: 5,
+                users: users?.filter((u: { role: string }) => u.role === "staff").length || 0,
                 permissions: ["Sales & CRM", "Inventory (own warehouse)", "Own profile", "Limited reports", "No compliance access"],
               },
             ].map((role) => (
@@ -298,7 +338,7 @@ export function AdminModule() {
         {/* Integrations Tab */}
         <TabsContent value="integrations">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {integrations.map((integration) => (
+            {integrationsData.map((integration) => (
               <Card key={integration.name} className="border-border/60 shadow-sm hover:shadow-md transition-shadow">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between mb-3">

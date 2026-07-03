@@ -9,9 +9,10 @@ import {
   Plus,
   FileText,
   TrendingUp,
-  Clock,
   Download,
   Briefcase,
+  Loader2,
+  Play,
 } from "lucide-react";
 import {
   Bar,
@@ -30,7 +31,6 @@ import { ChartCard } from "@/components/erp/ui/chart-card";
 import { StatusBadge } from "@/components/erp/ui/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -41,9 +41,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTranslation } from "@/lib/use-translation";
-import { employees, payrollSummary, attendanceToday } from "@/lib/mock-data";
+import {
+  useEmployees,
+  usePayroll,
+  useLeaveRequests,
+  useRunPayroll,
+  useUpdateLeave,
+} from "@/lib/api-hooks";
+import { EmployeeForm } from "@/components/erp/forms/entity-forms";
+import { calculatePayroll } from "@/lib/tax-engine";
 import { formatETB } from "@/lib/currency";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const tooltipStyle = {
   backgroundColor: "oklch(1 0.005 85)",
@@ -56,60 +65,72 @@ const tooltipStyle = {
 export function HRModule() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("employees");
+  const [empModal, setEmpModal] = useState(false);
+  const [payrollPeriod, setPayrollPeriod] = useState("July 2026");
+
+  const { data: employees, isLoading: empLoading } = useEmployees();
+  const { data: payrolls, isLoading: payLoading } = usePayroll("June 2026");
+  const { data: leaveReqs, isLoading: leaveLoading } = useLeaveRequests();
+  const runPayroll = useRunPayroll();
+  const updateLeave = useUpdateLeave();
+
+  const totalEmployees = employees?.length || 0;
+  const presentToday = Math.floor(totalEmployees * 0.9);
+  const onLeave = employees?.filter((e: { status: string }) => e.status === "leave").length || 0;
+  const monthlyPayroll = payrolls?.reduce((s: number, p: { netPay: number }) => s + p.netPay, 0) || 0;
 
   const attendanceData = [
-    { name: "Present", value: attendanceToday.present, color: "oklch(0.52 0.14 162)" },
-    { name: "On Leave", value: attendanceToday.onLeave, color: "oklch(0.72 0.13 75)" },
-    { name: "Remote", value: attendanceToday.remote, color: "oklch(0.40 0.10 162)" },
-    { name: "Absent", value: attendanceToday.absent, color: "oklch(0.60 0.10 35)" },
+    { name: "Present", value: presentToday, color: "oklch(0.52 0.14 162)" },
+    { name: "On Leave", value: onLeave, color: "oklch(0.72 0.13 75)" },
+    { name: "Remote", value: 12, color: "oklch(0.40 0.10 162)" },
+    { name: "Absent", value: Math.max(0, totalEmployees - presentToday - onLeave - 12), color: "oklch(0.60 0.10 35)" },
   ];
 
-  // Calculate net pay per employee (simplified)
-  const calculateNetPay = (gross: number) => {
-    const pension = gross * 0.07;
-    const taxableIncome = gross - pension;
-    // Simplified Ethiopian income tax brackets
-    let tax = 0;
-    if (taxableIncome <= 600) tax = taxableIncome * 0;
-    else if (taxableIncome <= 1650) tax = (taxableIncome - 600) * 0.1;
-    else if (taxableIncome <= 3200) tax = 105 + (taxableIncome - 1650) * 0.15;
-    else if (taxableIncome <= 5250) tax = 337.5 + (taxableIncome - 3200) * 0.2;
-    else if (taxableIncome <= 7800) tax = 747.5 + (taxableIncome - 5250) * 0.25;
-    else tax = 1385 + (taxableIncome - 7800) * 0.3;
-    return gross - pension - tax;
+  const handleRunPayroll = () => {
+    runPayroll.mutate({ period: payrollPeriod }, {
+      onSuccess: () => {
+        toast.success(`Payroll processed for ${payrollPeriod}`);
+      },
+    });
+  };
+
+  const handleLeaveAction = (id: string, status: "approved" | "rejected") => {
+    updateLeave.mutate({ id, status });
   };
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      <EmployeeForm open={empModal} onClose={() => setEmpModal(false)} />
+
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <KPICard
           title={t.hr.totalEmployees}
-          value={payrollSummary.employeeCount.toString()}
+          value={totalEmployees.toString()}
           icon={<Users className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="emerald"
           change={5.0}
         />
         <KPICard
           title={t.hr.presentToday}
-          value={attendanceToday.present.toString()}
+          value={presentToday.toString()}
           icon={<UserCheck className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="deep"
-          subtitle={`${((attendanceToday.present / payrollSummary.employeeCount) * 100).toFixed(0)}% attendance`}
+          subtitle={`${totalEmployees > 0 ? ((presentToday / totalEmployees) * 100).toFixed(0) : 0}% attendance`}
         />
         <KPICard
           title={t.hr.onLeave}
-          value={attendanceToday.onLeave.toString()}
+          value={onLeave.toString()}
           icon={<CalendarDays className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="amber"
-          subtitle={`${attendanceToday.remote} remote`}
+          subtitle="12 remote"
         />
         <KPICard
           title={t.hr.monthlyPayroll}
-          value={formatETB(payrollSummary.totalNet, { compact: true })}
+          value={formatETB(monthlyPayroll, { compact: true })}
           icon={<Wallet className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="terracotta"
-          subtitle={payrollSummary.period}
+          subtitle="June 2026"
         />
       </div>
 
@@ -122,7 +143,7 @@ export function HRModule() {
             <TabsTrigger value="benefits" className="text-xs sm:text-sm py-2">{t.hr.benefits}</TabsTrigger>
             <TabsTrigger value="leave" className="text-xs sm:text-sm py-2">{t.hr.leaveRequests}</TabsTrigger>
           </TabsList>
-          <Button size="sm" className="gradient-emerald text-white">
+          <Button size="sm" className="gradient-emerald text-white" onClick={() => setEmpModal(true)}>
             <Plus className="h-4 w-4 mr-1.5" />
             {t.hr.addEmployee}
           </Button>
@@ -130,60 +151,67 @@ export function HRModule() {
 
         {/* Employees Tab */}
         <TabsContent value="employees">
-          <ChartCard title={t.hr.employees} subtitle={`${employees.length} of ${payrollSummary.employeeCount} team members`}>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs">{t.hr.employeeName}</TableHead>
-                    <TableHead className="text-xs hidden sm:table-cell">{t.hr.position}</TableHead>
-                    <TableHead className="text-xs hidden md:table-cell">{t.hr.department}</TableHead>
-                    <TableHead className="text-xs text-right hidden sm:table-cell">{t.hr.salary}</TableHead>
-                    <TableHead className="text-xs text-right">{t.hr.netPay}</TableHead>
-                    <TableHead className="text-xs hidden lg:table-cell">{t.hr.joinDate}</TableHead>
-                    <TableHead className="text-xs">{t.hr.status}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {employees.map((emp) => (
-                    <TableRow key={emp.id} className="hover:bg-muted/30">
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-full gradient-emerald flex items-center justify-center text-white text-xs font-bold shrink-0">
-                            {emp.name.split(" ").map((n) => n[0]).join("")}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium truncate">{emp.name}</p>
-                            <p className="text-xs text-muted-foreground truncate sm:hidden">{emp.position}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-sm hidden sm:table-cell">{emp.position}</TableCell>
-                      <TableCell className="text-xs hidden md:table-cell">
-                        <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-md bg-muted text-muted-foreground capitalize">
-                          {t.hr.departments[emp.department as keyof typeof t.hr.departments]}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-sm text-right tabular-nums hidden sm:table-cell">{formatETB(emp.salary)}</TableCell>
-                      <TableCell className="text-sm font-semibold text-right tabular-nums text-primary">
-                        {formatETB(calculateNetPay(emp.salary))}
-                      </TableCell>
-                      <TableCell className="text-xs hidden lg:table-cell text-muted-foreground">{emp.joinDate}</TableCell>
-                      <TableCell>
-                        <StatusBadge status={emp.status as "active" | "leave"} />
-                      </TableCell>
+          <ChartCard title={t.hr.employees} subtitle={`${totalEmployees} team members`}>
+            {empLoading ? (
+              <div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">{t.hr.employeeName}</TableHead>
+                      <TableHead className="text-xs hidden sm:table-cell">{t.hr.position}</TableHead>
+                      <TableHead className="text-xs hidden md:table-cell">{t.hr.department}</TableHead>
+                      <TableHead className="text-xs text-right hidden sm:table-cell">{t.hr.salary}</TableHead>
+                      <TableHead className="text-xs text-right">{t.hr.netPay}</TableHead>
+                      <TableHead className="text-xs hidden lg:table-cell">{t.hr.joinDate}</TableHead>
+                      <TableHead className="text-xs">{t.hr.status}</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {employees?.map((emp: { id: string; name: string; position: string; department: string; salary: number; joinDate: string; status: string }) => {
+                      const calc = calculatePayroll(emp.salary);
+                      return (
+                        <TableRow key={emp.id} className="hover:bg-muted/30">
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="h-9 w-9 rounded-full gradient-emerald flex items-center justify-center text-white text-xs font-bold shrink-0">
+                                {emp.name.split(" ").map((n: string) => n[0]).join("")}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-sm font-medium truncate">{emp.name}</p>
+                                <p className="text-xs text-muted-foreground truncate sm:hidden">{emp.position}</p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-sm hidden sm:table-cell">{emp.position}</TableCell>
+                          <TableCell className="text-xs hidden md:table-cell">
+                            <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-md bg-muted text-muted-foreground capitalize">
+                              {t.hr.departments[emp.department as keyof typeof t.hr.departments]}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-sm text-right tabular-nums hidden sm:table-cell">{formatETB(emp.salary)}</TableCell>
+                          <TableCell className="text-sm font-semibold text-right tabular-nums text-primary">
+                            {formatETB(calc.netPay)}
+                          </TableCell>
+                          <TableCell className="text-xs hidden lg:table-cell text-muted-foreground">{new Date(emp.joinDate).toLocaleDateString()}</TableCell>
+                          <TableCell>
+                            <StatusBadge status={emp.status as "active" | "leave"} />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </ChartCard>
         </TabsContent>
 
         {/* Attendance Tab */}
         <TabsContent value="attendance" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <ChartCard title="Today's Attendance" subtitle={payrollSummary.period}>
+            <ChartCard title="Today's Attendance" subtitle="June 2026">
               <ResponsiveContainer width="100%" height={260}>
                 <PieChart>
                   <Pie
@@ -238,44 +266,6 @@ export function HRModule() {
               </ResponsiveContainer>
             </ChartCard>
           </div>
-
-          <ChartCard title="Recent Check-ins" subtitle="Today's attendance log">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs">Employee</TableHead>
-                    <TableHead className="text-xs hidden sm:table-cell">Department</TableHead>
-                    <TableHead className="text-xs">Check In</TableHead>
-                    <TableHead className="text-xs hidden sm:table-cell">Check Out</TableHead>
-                    <TableHead className="text-xs">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {employees.slice(0, 6).map((emp, idx) => (
-                    <TableRow key={emp.id} className="hover:bg-muted/30">
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full gradient-emerald flex items-center justify-center text-white text-xs font-bold shrink-0">
-                            {emp.name.split(" ").map((n) => n[0]).join("")}
-                          </div>
-                          <span className="text-sm font-medium">{emp.name}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-xs hidden sm:table-cell text-muted-foreground capitalize">
-                        {t.hr.departments[emp.department as keyof typeof t.hr.departments]}
-                      </TableCell>
-                      <TableCell className="text-xs">
-                        <span className="font-mono">{["08:42", "08:55", "09:03", "08:38", "09:12", "08:48"][idx]}</span>
-                      </TableCell>
-                      <TableCell className="text-xs hidden sm:table-cell font-mono text-muted-foreground">—</TableCell>
-                      <TableCell><StatusBadge status={emp.status === "active" ? "online" : "away"} /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </ChartCard>
         </TabsContent>
 
         {/* Payroll Tab */}
@@ -286,48 +276,59 @@ export function HRModule() {
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">{t.hr.monthlyPayroll}</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{payrollSummary.period}</p>
+                    <p className="text-2xl font-bold text-foreground mt-1">{payrollPeriod}</p>
                   </div>
                   <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
                     <Wallet className="h-6 w-6 text-primary" />
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{t.hr.grossSalary}</span>
-                    <span className="font-semibold tabular-nums">{formatETB(payrollSummary.totalGross)}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{t.hr.pension}</span>
-                    <span className="font-semibold tabular-nums text-destructive">-{formatETB(payrollSummary.totalPension)}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{t.hr.incomeTax}</span>
-                    <span className="font-semibold tabular-nums text-destructive">-{formatETB(payrollSummary.totalIncomeTax)}</span>
-                  </div>
-                  <div className="pt-3 border-t border-border flex items-center justify-between">
-                    <span className="text-sm font-medium">{t.hr.netPay}</span>
-                    <span className="text-xl font-bold text-primary tabular-nums">{formatETB(payrollSummary.totalNet)}</span>
-                  </div>
-                </div>
-                <Button className="w-full gradient-emerald text-white mt-4">
-                  <TrendingUp className="h-4 w-4 mr-2" />
-                  {t.hr.runPayroll}
-                </Button>
+                {payLoading ? (
+                  <div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
+                ) : (
+                  <>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">{t.hr.grossSalary}</span>
+                        <span className="font-semibold tabular-nums">{formatETB(payrolls?.reduce((s: number, p: { grossSalary: number }) => s + p.grossSalary, 0) || 0)}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">{t.hr.pension}</span>
+                        <span className="font-semibold tabular-nums text-destructive">-{formatETB(payrolls?.reduce((s: number, p: { pension: number }) => s + p.pension, 0) || 0)}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">{t.hr.incomeTax}</span>
+                        <span className="font-semibold tabular-nums text-destructive">-{formatETB(payrolls?.reduce((s: number, p: { incomeTax: number }) => s + p.incomeTax, 0) || 0)}</span>
+                      </div>
+                      <div className="pt-3 border-t border-border flex items-center justify-between">
+                        <span className="text-sm font-medium">{t.hr.netPay}</span>
+                        <span className="text-xl font-bold text-primary tabular-nums">{formatETB(monthlyPayroll)}</span>
+                      </div>
+                    </div>
+                    <Button
+                      className="w-full gradient-emerald text-white mt-4"
+                      onClick={handleRunPayroll}
+                      disabled={runPayroll.isPending}
+                    >
+                      {runPayroll.isPending ? (
+                        <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Processing...</>
+                      ) : (
+                        <><Play className="h-4 w-4 mr-2" />Run Payroll — {payrollPeriod}</>
+                      )}
+                    </Button>
+                  </>
+                )}
               </CardContent>
             </Card>
 
             <ChartCard title="Payroll Breakdown" subtitle="By department (ETB)">
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart
-                  data={[
-                    { dept: "Finance", amount: 96000 },
-                    { dept: "Operations", amount: 80000 },
-                    { dept: "Sales", amount: 114000 },
-                    { dept: "HR", amount: 28000 },
-                    { dept: "IT", amount: 30000 },
-                    { dept: "Admin", amount: 22000 },
-                  ]}
+                  data={Object.entries(
+                    employees?.reduce((acc: Record<string, number>, emp: { department: string; salary: number }) => {
+                      acc[emp.department] = (acc[emp.department] || 0) + emp.salary;
+                      return acc;
+                    }, {}) || {}
+                  ).map(([dept, amount]) => ({ dept: dept.charAt(0).toUpperCase() + dept.slice(1), amount }))}
                   margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.90 0.015 85)" vertical={false} />
@@ -353,15 +354,14 @@ export function HRModule() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {employees.slice(0, 6).map((emp) => {
-                    const net = calculateNetPay(emp.salary);
-                    const deductions = emp.salary - net;
+                  {payrolls?.map((p: { id: string; employee: { name: string }; grossSalary: number; pension: number; incomeTax: number; netPay: number }) => {
+                    const deductions = p.pension + p.incomeTax;
                     return (
-                      <TableRow key={emp.id} className="hover:bg-muted/30">
-                        <TableCell className="text-sm font-medium">{emp.name}</TableCell>
-                        <TableCell className="text-sm tabular-nums hidden sm:table-cell">{formatETB(emp.salary)}</TableCell>
+                      <TableRow key={p.id} className="hover:bg-muted/30">
+                        <TableCell className="text-sm font-medium">{p.employee.name}</TableCell>
+                        <TableCell className="text-sm tabular-nums hidden sm:table-cell">{formatETB(p.grossSalary)}</TableCell>
                         <TableCell className="text-sm tabular-nums hidden sm:table-cell text-destructive">-{formatETB(deductions)}</TableCell>
-                        <TableCell className="text-sm font-semibold tabular-nums text-right text-primary">{formatETB(net)}</TableCell>
+                        <TableCell className="text-sm font-semibold tabular-nums text-right text-primary">{formatETB(p.netPay)}</TableCell>
                         <TableCell className="text-right">
                           <Button size="sm" variant="ghost" className="text-xs text-primary">
                             <FileText className="h-3 w-3 mr-1" />{t.hr.payslip}
@@ -423,47 +423,75 @@ export function HRModule() {
         {/* Leave Requests Tab */}
         <TabsContent value="leave">
           <ChartCard title={t.hr.leaveRequests} subtitle="Pending approvals">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs">Employee</TableHead>
-                    <TableHead className="text-xs hidden sm:table-cell">Type</TableHead>
-                    <TableHead className="text-xs">Duration</TableHead>
-                    <TableHead className="text-xs hidden md:table-cell">Reason</TableHead>
-                    <TableHead className="text-xs">Status</TableHead>
-                    <TableHead className="text-xs text-right">Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {[
-                    { name: "Meseret Lemma", type: "Annual Leave", duration: "Jul 8 - Jul 15", reason: "Family vacation", status: "pending" },
-                    { name: "Daniel Kebede", type: "Sick Leave", duration: "Jul 4 - Jul 5", reason: "Medical appointment", status: "pending" },
-                    { name: "Bethel Solomon", type: "Emergency", duration: "Jul 6", reason: "Personal matter", status: "pending" },
-                    { name: "Nahom Tesfaye", type: "Annual Leave", duration: "Jul 10 - Jul 20", reason: "Wedding ceremony", status: "pending" },
-                    { name: "Hanna Mengistu", type: "Unpaid Leave", duration: "Jul 15 - Jul 22", reason: "Personal development", status: "pending" },
-                  ].map((req, idx) => (
-                    <TableRow key={idx} className="hover:bg-muted/30">
-                      <TableCell className="text-sm font-medium">{req.name}</TableCell>
-                      <TableCell className="text-xs hidden sm:table-cell">
-                        <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
-                          {req.type}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-xs">{req.duration}</TableCell>
-                      <TableCell className="text-xs hidden md:table-cell text-muted-foreground">{req.reason}</TableCell>
-                      <TableCell><StatusBadge status={req.status as "pending"} /></TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex gap-1 justify-end">
-                          <Button size="sm" variant="ghost" className="text-xs text-primary h-7">Approve</Button>
-                          <Button size="sm" variant="ghost" className="text-xs text-destructive h-7">Reject</Button>
-                        </div>
-                      </TableCell>
+            {leaveLoading ? (
+              <div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">Employee</TableHead>
+                      <TableHead className="text-xs hidden sm:table-cell">Type</TableHead>
+                      <TableHead className="text-xs">Duration</TableHead>
+                      <TableHead className="text-xs hidden md:table-cell">Reason</TableHead>
+                      <TableHead className="text-xs">Status</TableHead>
+                      <TableHead className="text-xs text-right">Action</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {leaveReqs?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center text-sm text-muted-foreground py-8">
+                          No leave requests.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      leaveReqs?.map((req: { id: string; employee: { name: string }; type: string; startDate: string; endDate: string; reason: string; status: string }) => (
+                        <TableRow key={req.id} className="hover:bg-muted/30">
+                          <TableCell className="text-sm font-medium">{req.employee.name}</TableCell>
+                          <TableCell className="text-xs hidden sm:table-cell">
+                            <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
+                              {req.type}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-xs">
+                            {new Date(req.startDate).toLocaleDateString()} - {new Date(req.endDate).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell className="text-xs hidden md:table-cell text-muted-foreground">{req.reason}</TableCell>
+                          <TableCell><StatusBadge status={req.status as "pending" | "approved" | "rejected"} /></TableCell>
+                          <TableCell className="text-right">
+                            {req.status === "pending" ? (
+                              <div className="flex gap-1 justify-end">
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="text-xs text-primary h-7"
+                                  onClick={() => handleLeaveAction(req.id, "approved")}
+                                  disabled={updateLeave.isPending}
+                                >
+                                  Approve
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="text-xs text-destructive h-7"
+                                  onClick={() => handleLeaveAction(req.id, "rejected")}
+                                  disabled={updateLeave.isPending}
+                                >
+                                  Reject
+                                </Button>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-muted-foreground">—</span>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </ChartCard>
         </TabsContent>
       </Tabs>

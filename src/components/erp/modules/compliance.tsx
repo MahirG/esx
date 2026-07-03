@@ -10,8 +10,7 @@ import {
   Clock,
   Download,
   ScrollText,
-  Building2,
-  TrendingUp,
+  Loader2,
 } from "lucide-react";
 import {
   RadialBar,
@@ -35,7 +34,11 @@ import {
 } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
 import { useTranslation } from "@/lib/use-translation";
-import { taxRules, auditLogs, upcomingTaxDeadlines } from "@/lib/mock-data";
+import {
+  useAuditLogs,
+  useTaxFilings,
+  useFileTax,
+} from "@/lib/api-hooks";
 import { formatETB } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 
@@ -47,14 +50,36 @@ const tooltipStyle = {
   color: "oklch(0.20 0.02 160)",
 };
 
+const taxRulesData = [
+  { name: "VAT (Value Added Tax)", rate: "15%", description: "Standard rate for taxable goods and services", threshold: "500,000 ETB annual turnover" },
+  { name: "Turnover Tax", rate: "2%", description: "For businesses not registered for VAT", threshold: "100,000 ETB annual turnover" },
+  { name: "Withholding Tax (Payment)", rate: "2%", description: "On payments to suppliers", threshold: "All taxable payments" },
+  { name: "Withholding Tax (Import)", rate: "3%", description: "On import payments", threshold: "All imports" },
+  { name: "Business Income Tax", rate: "30%", description: "Corporate income tax", threshold: "All registered companies" },
+  { name: "Pension Contribution (Employer)", rate: "11%", description: "Social security contribution", threshold: "All employees" },
+  { name: "Pension Contribution (Employee)", rate: "7%", description: "Social security contribution", threshold: "All employees" },
+  { name: "Excise Tax", rate: "Variable", description: "On specific goods (alcohol, tobacco, fuel)", threshold: "Specific products" },
+];
+
 export function ComplianceModule() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("overview");
+  const [entityFilter, setEntityFilter] = useState("all");
 
-  const complianceScore = 87;
-  const filedCount = upcomingTaxDeadlines.filter((d) => d.status === "filed").length;
-  const pendingCount = upcomingTaxDeadlines.filter((d) => d.status === "pending").length;
-  const overdueCount = upcomingTaxDeadlines.filter((d) => d.status === "overdue").length;
+  const { data: auditLogs, isLoading: logLoading } = useAuditLogs(entityFilter);
+  const { data: taxFilings, isLoading: taxLoading } = useTaxFilings();
+  const fileTax = useFileTax();
+
+  const filedCount = taxFilings?.filter((d: { status: string }) => d.status === "filed").length || 0;
+  const pendingCount = taxFilings?.filter((d: { status: string }) => d.status === "pending").length || 0;
+  const overdueCount = taxFilings?.filter((d: { status: string }) => d.status === "overdue").length || 0;
+  const complianceScore = taxFilings && taxFilings.length > 0
+    ? Math.round((filedCount / taxFilings.length) * 100)
+    : 87;
+
+  const handleFileTax = (id: string) => {
+    fileTax.mutate({ id });
+  };
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -65,14 +90,14 @@ export function ComplianceModule() {
           value={`${complianceScore}/100`}
           icon={<ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="emerald"
-          subtitle="Excellent standing"
+          subtitle="ERCA standing"
         />
         <KPICard
-          title={t.compliance.vatReturns}
+          title="Filed"
           value={filedCount.toString()}
           icon={<FileText className="h-5 w-5 sm:h-6 sm:w-6" />}
           accent="deep"
-          subtitle="Filed this period"
+          subtitle="This period"
         />
         <KPICard
           title={t.compliance.deadlines}
@@ -130,19 +155,19 @@ export function ComplianceModule() {
                 <div className="space-y-2 mt-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">VAT Compliance</span>
-                    <span className="font-semibold text-primary">95%</span>
+                    <span className="font-semibold text-primary">{Math.min(100, complianceScore + 8)}%</span>
                   </div>
-                  <Progress value={95} className="h-1.5" />
+                  <Progress value={Math.min(100, complianceScore + 8)} className="h-1.5" />
                   <div className="flex items-center justify-between text-xs mt-2">
                     <span className="text-muted-foreground">Tax Filing</span>
-                    <span className="font-semibold text-primary">82%</span>
+                    <span className="font-semibold text-primary">{complianceScore - 5}%</span>
                   </div>
-                  <Progress value={82} className="h-1.5" />
+                  <Progress value={complianceScore - 5} className="h-1.5" />
                   <div className="flex items-center justify-between text-xs mt-2">
                     <span className="text-muted-foreground">Audit Readiness</span>
-                    <span className="font-semibold text-primary">88%</span>
+                    <span className="font-semibold text-primary">{complianceScore + 1}%</span>
                   </div>
-                  <Progress value={88} className="h-1.5" />
+                  <Progress value={complianceScore + 1} className="h-1.5" />
                 </div>
               </CardContent>
             </Card>
@@ -217,7 +242,7 @@ export function ComplianceModule() {
         <TabsContent value="taxRules">
           <ChartCard title={t.compliance.taxRules} subtitle="Ethiopian tax regulations applied">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {taxRules.map((rule) => (
+              {taxRulesData.map((rule) => (
                 <Card key={rule.name} className="border-border/60 shadow-sm">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
@@ -246,90 +271,142 @@ export function ComplianceModule() {
         {/* Deadlines Tab */}
         <TabsContent value="deadlines">
           <ChartCard title={t.compliance.deadlines} subtitle="Upcoming tax filing deadlines">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs">{t.compliance.taxRules}</TableHead>
-                    <TableHead className="text-xs">{t.compliance.nextDeadline}</TableHead>
-                    <TableHead className="text-xs text-right">Amount Due</TableHead>
-                    <TableHead className="text-xs">{t.compliance.status}</TableHead>
-                    <TableHead className="text-xs text-right">Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {upcomingTaxDeadlines.map((deadline, idx) => (
-                    <TableRow key={idx} className="hover:bg-muted/30">
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className={cn(
-                            "h-9 w-9 rounded-lg flex items-center justify-center shrink-0",
-                            deadline.status === "overdue" ? "bg-destructive/10" :
-                            deadline.status === "pending" ? "bg-accent/20" : "bg-primary/10"
-                          )}>
-                            <Calendar className={cn(
-                              "h-4 w-4",
-                              deadline.status === "overdue" ? "text-destructive" :
-                              deadline.status === "pending" ? "text-accent-foreground" : "text-primary"
-                            )} />
-                          </div>
-                          <span className="text-sm font-medium">{deadline.type}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{deadline.dueDate}</TableCell>
-                      <TableCell className="text-sm font-semibold text-right tabular-nums">{formatETB(deadline.amount)}</TableCell>
-                      <TableCell><StatusBadge status={deadline.status as "filed" | "pending" | "overdue"} /></TableCell>
-                      <TableCell className="text-right">
-                        <Button size="sm" variant="outline" className="text-xs h-7">
-                          {deadline.status === "overdue" ? "Pay Now" : "File Now"}
-                        </Button>
-                      </TableCell>
+            {taxLoading ? (
+              <div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">{t.compliance.taxRules}</TableHead>
+                      <TableHead className="text-xs">{t.compliance.nextDeadline}</TableHead>
+                      <TableHead className="text-xs text-right">Amount Due</TableHead>
+                      <TableHead className="text-xs">{t.compliance.status}</TableHead>
+                      <TableHead className="text-xs text-right">Action</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {taxFilings?.map((filing: { id: string; type: string; period: string; dueDate: string; amount: number; status: string }) => (
+                      <TableRow key={filing.id} className="hover:bg-muted/30">
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <div className={cn(
+                              "h-9 w-9 rounded-lg flex items-center justify-center shrink-0",
+                              filing.status === "overdue" ? "bg-destructive/10" :
+                              filing.status === "pending" ? "bg-accent/20" : "bg-primary/10"
+                            )}>
+                              <Calendar className={cn(
+                                "h-4 w-4",
+                                filing.status === "overdue" ? "text-destructive" :
+                                filing.status === "pending" ? "text-accent-foreground" : "text-primary"
+                              )} />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">{filing.type}</p>
+                              <p className="text-xs text-muted-foreground">{filing.period}</p>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{new Date(filing.dueDate).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-sm font-semibold text-right tabular-nums">{formatETB(filing.amount)}</TableCell>
+                        <TableCell><StatusBadge status={filing.status as "filed" | "pending" | "overdue"} /></TableCell>
+                        <TableCell className="text-right">
+                          {filing.status !== "filed" ? (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-xs h-7"
+                              onClick={() => handleFileTax(filing.id)}
+                              disabled={fileTax.isPending}
+                            >
+                              File Now
+                            </Button>
+                          ) : (
+                            <span className="text-xs text-primary flex items-center gap-1 justify-end">
+                              <CheckCircle2 className="h-3 w-3" />Filed
+                            </span>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </ChartCard>
         </TabsContent>
 
         {/* Audit Log Tab */}
         <TabsContent value="audit">
-          <ChartCard title={t.compliance.auditTrail} subtitle="Complete activity log for compliance">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs">{t.compliance.user}</TableHead>
-                    <TableHead className="text-xs">{t.compliance.action}</TableHead>
-                    <TableHead className="text-xs hidden sm:table-cell">{t.compliance.entity}</TableHead>
-                    <TableHead className="text-xs hidden md:table-cell">{t.compliance.timestamp}</TableHead>
-                    <TableHead className="text-xs hidden lg:table-cell">IP Address</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {auditLogs.map((log, idx) => (
-                    <TableRow key={idx} className="hover:bg-muted/30">
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full gradient-emerald flex items-center justify-center text-white text-xs font-bold shrink-0">
-                            {log.user.split(" ").map((n) => n[0]).join("")}
-                          </div>
-                          <span className="text-sm font-medium">{log.user}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-sm">{log.action}</TableCell>
-                      <TableCell className="text-xs hidden sm:table-cell">
-                        <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
-                          {log.entity}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-xs hidden md:table-cell font-mono text-muted-foreground">{log.timestamp}</TableCell>
-                      <TableCell className="text-xs hidden lg:table-cell font-mono text-muted-foreground">{log.ip}</TableCell>
+          <ChartCard
+            title={t.compliance.auditTrail}
+            subtitle="Complete activity log for compliance"
+            action={
+              <div className="flex gap-2">
+                {["all", "Finance", "Inventory", "HR", "Sales", "Compliance", "Admin"].map((entity) => (
+                  <Button
+                    key={entity}
+                    size="sm"
+                    variant={entityFilter === entity ? "default" : "outline"}
+                    className={cn("text-xs h-7", entityFilter === entity && "gradient-emerald text-white")}
+                    onClick={() => setEntityFilter(entity)}
+                  >
+                    {entity === "all" ? "All" : entity}
+                  </Button>
+                ))}
+              </div>
+            }
+          >
+            {logLoading ? (
+              <div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">{t.compliance.user}</TableHead>
+                      <TableHead className="text-xs">{t.compliance.action}</TableHead>
+                      <TableHead className="text-xs hidden sm:table-cell">{t.compliance.entity}</TableHead>
+                      <TableHead className="text-xs hidden md:table-cell">{t.compliance.timestamp}</TableHead>
+                      <TableHead className="text-xs hidden lg:table-cell">IP Address</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {auditLogs?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center text-sm text-muted-foreground py-8">
+                          No audit logs found.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      auditLogs?.map((log: { id: string; userName: string; action: string; entity: string; details: string | null; timestamp: string; ipAddress: string | null }) => (
+                        <TableRow key={log.id} className="hover:bg-muted/30">
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="h-8 w-8 rounded-full gradient-emerald flex items-center justify-center text-white text-xs font-bold shrink-0">
+                                {log.userName.split(" ").map((n: string) => n[0]).join("")}
+                              </div>
+                              <span className="text-sm font-medium">{log.userName}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            {log.action}
+                            {log.details && <p className="text-xs text-muted-foreground mt-0.5">{log.details}</p>}
+                          </TableCell>
+                          <TableCell className="text-xs hidden sm:table-cell">
+                            <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
+                              {log.entity}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-xs hidden md:table-cell font-mono text-muted-foreground">{new Date(log.timestamp).toLocaleString()}</TableCell>
+                          <TableCell className="text-xs hidden lg:table-cell font-mono text-muted-foreground">{log.ipAddress}</TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </ChartCard>
         </TabsContent>
       </Tabs>
