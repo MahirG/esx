@@ -39,8 +39,10 @@ import {
   useTaxFilings,
   useFileTax,
 } from "@/lib/api-hooks";
+import { exportAuditLogHTML, exportTaxReportHTML, exportAuditLogsCSV } from "@/lib/html-export";
 import { formatETB } from "@/lib/currency";
 import { cn } from "@/lib/utils";
+import { FileDown } from "lucide-react";
 
 const tooltipStyle = {
   backgroundColor: "oklch(1 0.005 85)",
@@ -270,7 +272,17 @@ export function ComplianceModule() {
 
         {/* Deadlines Tab */}
         <TabsContent value="deadlines">
-          <ChartCard title={t.compliance.deadlines} subtitle="Upcoming tax filing deadlines">
+          <ChartCard
+            title={t.compliance.deadlines}
+            subtitle="Upcoming tax filing deadlines"
+            action={
+              taxFilings && taxFilings.length > 0 ? (
+                <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => exportTaxReportHTML(taxFilings as any)}>
+                  <FileText className="h-3 w-3 mr-1" />HTML Report
+                </Button>
+              ) : undefined
+            }
+          >
             {taxLoading ? (
               <div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
             ) : (
@@ -342,7 +354,17 @@ export function ComplianceModule() {
             title={t.compliance.auditTrail}
             subtitle="Complete activity log for compliance"
             action={
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
+                {auditLogs && auditLogs.length > 0 && (
+                  <>
+                    <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => exportAuditLogHTML(auditLogs as any)}>
+                      <FileText className="h-3 w-3 mr-1" />HTML
+                    </Button>
+                    <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => exportAuditLogsCSV(auditLogs as any)}>
+                      <FileDown className="h-3 w-3 mr-1" />CSV
+                    </Button>
+                  </>
+                )}
                 {["all", "Finance", "Inventory", "HR", "Sales", "Compliance", "Admin"].map((entity) => (
                   <Button
                     key={entity}

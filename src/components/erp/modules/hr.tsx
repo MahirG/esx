@@ -49,10 +49,12 @@ import {
   useUpdateLeave,
 } from "@/lib/api-hooks";
 import { EmployeeForm } from "@/components/erp/forms/entity-forms";
+import { exportPayslipHTML, exportEmployeesHTML, exportEmployeesCSV } from "@/lib/html-export";
 import { calculatePayroll } from "@/lib/tax-engine";
 import { formatETB } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { FileDown, Eye } from "lucide-react";
 
 const tooltipStyle = {
   backgroundColor: "oklch(1 0.005 85)",
@@ -341,7 +343,24 @@ export function HRModule() {
             </ChartCard>
           </div>
 
-          <ChartCard title="Payslips" subtitle="Generate and download employee payslips" action={<Button size="sm" variant="outline"><Download className="h-3 w-3 mr-1" />Export All</Button>}>
+          <ChartCard
+            title="Payslips"
+            subtitle="Generate and download employee payslips"
+            action={
+              <div className="flex gap-2">
+                {employees && employees.length > 0 && (
+                  <>
+                    <Button size="sm" variant="outline" onClick={() => exportEmployeesHTML(employees as any)}>
+                      <Eye className="h-3 w-3 mr-1" />HTML
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => exportEmployeesCSV(employees as any)}>
+                      <FileDown className="h-3 w-3 mr-1" />CSV
+                    </Button>
+                  </>
+                )}
+              </div>
+            }
+          >
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -350,21 +369,26 @@ export function HRModule() {
                     <TableHead className="text-xs hidden sm:table-cell">Gross (ETB)</TableHead>
                     <TableHead className="text-xs hidden sm:table-cell">Deductions</TableHead>
                     <TableHead className="text-xs text-right">Net Pay</TableHead>
-                    <TableHead className="text-xs text-right">Action</TableHead>
+                    <TableHead className="text-xs text-right">Payslip</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {payrolls?.map((p: { id: string; employee: { name: string }; grossSalary: number; pension: number; incomeTax: number; netPay: number }) => {
+                  {payrolls?.map((p: any) => {
                     const deductions = p.pension + p.incomeTax;
                     return (
                       <TableRow key={p.id} className="hover:bg-muted/30">
-                        <TableCell className="text-sm font-medium">{p.employee.name}</TableCell>
+                        <TableCell className="text-sm font-medium">{p.employee?.name}</TableCell>
                         <TableCell className="text-sm tabular-nums hidden sm:table-cell">{formatETB(p.grossSalary)}</TableCell>
                         <TableCell className="text-sm tabular-nums hidden sm:table-cell text-destructive">-{formatETB(deductions)}</TableCell>
                         <TableCell className="text-sm font-semibold tabular-nums text-right text-primary">{formatETB(p.netPay)}</TableCell>
                         <TableCell className="text-right">
-                          <Button size="sm" variant="ghost" className="text-xs text-primary">
-                            <FileText className="h-3 w-3 mr-1" />{t.hr.payslip}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-xs text-primary"
+                            onClick={() => exportPayslipHTML(p.employee, { grossSalary: p.grossSalary, pension: p.pension, incomeTax: p.incomeTax, netPay: p.netPay, period: p.period })}
+                          >
+                            <Eye className="h-3 w-3 mr-1" />View HTML
                           </Button>
                         </TableCell>
                       </TableRow>

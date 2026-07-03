@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
   Search,
-  Bell,
   Sun,
   Moon,
   Globe,
@@ -16,7 +15,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +26,7 @@ import {
 import { useERPStore } from "@/stores/erp-store";
 import { useTranslation } from "@/lib/use-translation";
 import { cn } from "@/lib/utils";
+import { NotificationProvider } from "./notification-provider";
 
 export function Header() {
   const { t, language, isAmharic, toggleLanguage } = useTranslation();
@@ -158,46 +157,8 @@ export function Header() {
           )}
         </Button>
 
-        {/* Notifications */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-9 w-9 relative">
-              <Bell className="h-4 w-4" />
-              <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80">
-            <DropdownMenuLabel className="flex items-center justify-between">
-              <span>Notifications</span>
-              <Badge variant="secondary" className="text-xs">3 new</Badge>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-              <div className="flex items-center gap-2 w-full">
-                <div className="h-2 w-2 rounded-full bg-destructive" />
-                <span className="text-xs font-medium">VAT Return Overdue</span>
-                <span className="text-xs text-muted-foreground ml-auto">2h</span>
-              </div>
-              <p className="text-xs text-muted-foreground">June VAT return due in 3 days</p>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-              <div className="flex items-center gap-2 w-full">
-                <div className="h-2 w-2 rounded-full bg-accent-foreground" />
-                <span className="text-xs font-medium">Low Stock Alert</span>
-                <span className="text-xs text-muted-foreground ml-auto">4h</span>
-              </div>
-              <p className="text-xs text-muted-foreground">Yirgacheffe Coffee below reorder level</p>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-              <div className="flex items-center gap-2 w-full">
-                <div className="h-2 w-2 rounded-full bg-primary" />
-                <span className="text-xs font-medium">Payment Received</span>
-                <span className="text-xs text-muted-foreground ml-auto">6h</span>
-              </div>
-              <p className="text-xs text-muted-foreground">ETB 184,000 from Selam Trading</p>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Notifications — Real-time alerts from database */}
+        <NotificationProvider />
 
         {/* User avatar */}
         {user && (

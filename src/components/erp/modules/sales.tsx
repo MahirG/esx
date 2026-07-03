@@ -49,8 +49,10 @@ import {
   usePipeline,
 } from "@/lib/api-hooks";
 import { CustomerForm, QuotationForm, DealForm } from "@/components/erp/forms/entity-forms";
+import { exportQuotationHTML, exportCustomersCSV } from "@/lib/html-export";
 import { formatETB } from "@/lib/currency";
 import { cn } from "@/lib/utils";
+import { Eye, FileDown } from "lucide-react";
 
 const tooltipStyle = {
   backgroundColor: "oklch(1 0.005 85)",
@@ -261,7 +263,12 @@ export function SalesModule() {
 
         {/* Quotations Tab */}
         <TabsContent value="quotations">
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-end gap-2 mb-4">
+            {customers && customers.length > 0 && (
+              <Button variant="outline" size="sm" onClick={() => exportCustomersCSV(customers as any)}>
+                <FileDown className="h-4 w-4 mr-1.5" />Export CSV
+              </Button>
+            )}
             <Button size="sm" className="gradient-emerald text-white" onClick={() => setQuoteModal(true)}>
               <Plus className="h-4 w-4 mr-1.5" />{t.sales.newQuote}
             </Button>
@@ -282,26 +289,37 @@ export function SalesModule() {
                       <TableHead className="text-xs text-right">Total</TableHead>
                       <TableHead className="text-xs hidden md:table-cell">Valid Until</TableHead>
                       <TableHead className="text-xs">Status</TableHead>
+                      <TableHead className="text-xs text-right">View</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {quotations?.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={8} className="text-center text-sm text-muted-foreground py-8">
+                        <TableCell colSpan={9} className="text-center text-sm text-muted-foreground py-8">
                           No quotations yet. Create your first quote!
                         </TableCell>
                       </TableRow>
                     ) : (
-                      quotations?.map((quote: { id: string; quoteNo: string; customer: { name: string }; date: string; amount: number; vatAmount: number; total: number; validUntil: string; status: string }) => (
+                      quotations?.map((quote: any) => (
                         <TableRow key={quote.id} className="hover:bg-muted/30">
                           <TableCell className="text-xs font-mono">{quote.quoteNo}</TableCell>
-                          <TableCell className="text-sm font-medium">{quote.customer.name}</TableCell>
+                          <TableCell className="text-sm font-medium">{quote.customer?.name}</TableCell>
                           <TableCell className="text-xs hidden sm:table-cell text-muted-foreground">{new Date(quote.date).toLocaleDateString()}</TableCell>
                           <TableCell className="text-sm text-right tabular-nums">{formatETB(quote.amount)}</TableCell>
                           <TableCell className="text-sm text-right tabular-nums hidden sm:table-cell text-muted-foreground">{formatETB(quote.vatAmount)}</TableCell>
                           <TableCell className="text-sm font-semibold text-right tabular-nums text-primary">{formatETB(quote.total)}</TableCell>
                           <TableCell className="text-xs hidden md:table-cell text-muted-foreground">{new Date(quote.validUntil).toLocaleDateString()}</TableCell>
-                          <TableCell><StatusBadge status={quote.status as "sent" | "accepted" | "expired" | "pending"} /></TableCell>
+                          <TableCell><StatusBadge status={quote.status} /></TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="text-xs text-primary h-7"
+                              onClick={() => exportQuotationHTML(quote)}
+                            >
+                              <Eye className="h-3 w-3 mr-1" />HTML
+                            </Button>
+                          </TableCell>
                         </TableRow>
                       ))
                     )}

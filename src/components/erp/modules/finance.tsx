@@ -50,8 +50,10 @@ import {
   useCreateTransaction,
 } from "@/lib/api-hooks";
 import { TransactionForm, AccountForm, BankForm } from "@/components/erp/forms/entity-forms";
+import { exportTransactionsHTML, exportTransactionsCSV, exportFinancialStatementsHTML } from "@/lib/html-export";
 import { formatETB } from "@/lib/currency";
 import { cn } from "@/lib/utils";
+import { FileDown } from "lucide-react";
 
 const tooltipStyle = {
   backgroundColor: "oklch(1 0.005 85)",
@@ -212,7 +214,21 @@ export function FinanceModule() {
           <ChartCard
             title={t.finance.transactions}
             subtitle="Latest activity across all accounts"
-            action={<Button size="sm" className="gradient-emerald text-white" onClick={() => setTxnModal(true)}><Plus className="h-4 w-4 mr-1" />{t.finance.newTransaction}</Button>}
+            action={
+              <div className="flex gap-2">
+                {transactions && transactions.length > 0 && (
+                  <>
+                    <Button size="sm" variant="outline" onClick={() => exportTransactionsHTML(transactions as any)}>
+                      <FileText className="h-4 w-4 mr-1" />HTML
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => exportTransactionsCSV(transactions as any)}>
+                      <FileDown className="h-4 w-4 mr-1" />CSV
+                    </Button>
+                  </>
+                )}
+                <Button size="sm" className="gradient-emerald text-white" onClick={() => setTxnModal(true)}><Plus className="h-4 w-4 mr-1" />{t.finance.newTransaction}</Button>
+              </div>
+            }
           >
             <TransactionTable transactions={transactions?.slice(0, 8) || []} loading={txnLoading} />
           </ChartCard>
@@ -355,10 +371,10 @@ export function FinanceModule() {
             <ChartCard title="Tax Reports" subtitle="Generate compliance documents">
               <div className="space-y-2">
                 {[
-                  { name: t.finance.profitLoss, period: "Q2 2026", icon: <FileText className="h-4 w-4" /> },
-                  { name: t.finance.balanceSheet, period: "As of Jun 30", icon: <FileText className="h-4 w-4" /> },
-                  { name: t.finance.cashFlow, period: "FY 2025-26", icon: <FileText className="h-4 w-4" /> },
-                  { name: t.finance.vatReturns, period: "Monthly", icon: <Receipt className="h-4 w-4" /> },
+                  { name: t.finance.profitLoss, period: "Q2 2026", icon: <FileText className="h-4 w-4" />, action: () => accounts && exportFinancialStatementsHTML(accounts as any, "pnl") },
+                  { name: t.finance.balanceSheet, period: "As of Jun 30", icon: <FileText className="h-4 w-4" />, action: () => accounts && exportFinancialStatementsHTML(accounts as any, "balance") },
+                  { name: t.finance.cashFlow, period: "FY 2025-26", icon: <FileText className="h-4 w-4" />, action: () => transactions && exportTransactionsHTML(transactions as any) },
+                  { name: t.finance.vatReturns, period: "Monthly", icon: <Receipt className="h-4 w-4" />, action: () => accounts && exportFinancialStatementsHTML(accounts as any, "pnl") },
                 ].map((report) => (
                   <div key={report.name} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/30 transition-colors border border-border/40">
                     <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
@@ -368,15 +384,15 @@ export function FinanceModule() {
                       <p className="text-sm font-medium text-foreground">{report.name}</p>
                       <p className="text-xs text-muted-foreground">{report.period}</p>
                     </div>
-                    <Button variant="ghost" size="sm" className="text-xs text-primary">
-                      <Download className="h-3 w-3 mr-1" />PDF
+                    <Button variant="ghost" size="sm" className="text-xs text-primary" onClick={report.action}>
+                      <FileText className="h-3 w-3 mr-1" />View HTML
                     </Button>
                   </div>
                 ))}
                 <div className="mt-4 p-3 rounded-lg bg-primary/5 border border-primary/20 flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
                   <p className="text-xs text-foreground">
-                    All reports are ERCA-compliant and follow Ethiopian accounting standards.
+                    All reports are ERCA-compliant and follow Ethiopian accounting standards. Click "View HTML" to open in browser.
                   </p>
                 </div>
               </div>

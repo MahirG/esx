@@ -41,8 +41,11 @@ import {
   useStockMovements,
 } from "@/lib/api-hooks";
 import { ProductForm, SupplierForm, StockAdjustmentForm } from "@/components/erp/forms/entity-forms";
+import { BarcodeScanner } from "@/components/erp/forms/barcode-scanner";
+import { exportInventoryHTML, exportProductsCSV } from "@/lib/html-export";
 import { formatETB } from "@/lib/currency";
 import { cn } from "@/lib/utils";
+import { FileDown, FileText } from "lucide-react";
 
 const tooltipStyle = {
   backgroundColor: "oklch(1 0.005 85)",
@@ -59,6 +62,7 @@ export function InventoryModule() {
   const [productModal, setProductModal] = useState(false);
   const [supplierModal, setSupplierModal] = useState(false);
   const [adjustModal, setAdjustModal] = useState(false);
+  const [scannerModal, setScannerModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | undefined>();
 
   const { data: products, isLoading: prodLoading } = useProducts(searchQuery);
@@ -93,6 +97,7 @@ export function InventoryModule() {
         productId={selectedProduct?.id}
         productName={selectedProduct?.name}
       />
+      <BarcodeScanner open={scannerModal} onClose={() => setScannerModal(false)} />
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -135,7 +140,7 @@ export function InventoryModule() {
             <TabsTrigger value="movements" className="text-xs sm:text-sm py-2">{t.inventory.stockMovements}</TabsTrigger>
           </TabsList>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => setScannerModal(true)}>
               <ScanLine className="h-4 w-4 mr-1.5" />
               {t.inventory.scanBarcode}
             </Button>
@@ -162,6 +167,16 @@ export function InventoryModule() {
               <Filter className="h-4 w-4 mr-1.5" />
               Filter
             </Button>
+            {products && products.length > 0 && (
+              <>
+                <Button variant="outline" size="sm" onClick={() => exportInventoryHTML(products as any)}>
+                  <FileText className="h-4 w-4 mr-1.5" />HTML
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => exportProductsCSV(products as any)}>
+                  <FileDown className="h-4 w-4 mr-1.5" />CSV
+                </Button>
+              </>
+            )}
           </div>
 
           <ChartCard title={t.inventory.products} subtitle={`${products?.length || 0} items`}>
