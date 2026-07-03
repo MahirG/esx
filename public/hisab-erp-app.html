@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hisab ERP — Ethiopian Business Intelligence</title>
+<style>
+/* ===== RESET & BASE ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg-primary: #0F171E;
+  --bg-secondary: #1A2433;
+  --bg-tertiary: #232F3E;
+  --bg-card: #1A2433;
+  --bg-hover: #232F3E;
+  --accent: #00A8E1;
+  --accent-bright: #2BD5F5;
+  --accent-glow: rgba(0, 168, 225, 0.4);
+  --accent-gradient: linear-gradient(135deg, #00A8E1 0%, #2BD5F5 100%);
+  --text-primary: #FFFFFF;
+  --text-secondary: #ABB7C4;
+  --text-tertiary: #8197A4;
+  --success: #4CAF50;
+  --warning: #FFB74D;
+  --danger: #FF5252;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(0, 168, 225, 0.4);
+}
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+button { font-family: inherit; cursor: pointer; border: none; }
+a { color: var(--accent-bright); text-decoration: none; }
+input, select { font-family: inherit; }
+
+/* ===== LOGIN SCREEN ===== */
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  background: var(--bg-primary);
+}
+.login-hero {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(0,168,225,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(43,213,245,0.1) 0%, transparent 50%),
+    var(--bg-primary);
+}
+.login-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,168,225,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,168,225,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+.login-hero > * { position: relative; z-index: 1; }
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo-mark {
+  width: 48px;
+  height: 48px;
+  background: var(--accent-gradient);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--bg-primary);
+  box-shadow: 0 4px 24px var(--accent-glow);
+}
+.login-logo-text { font-size: 24px; font-weight: 700; }
+.login-logo-text .accent { color: var(--accent-bright); }
+.login-hero-content { max-width: 500px; }
+.login-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(0,168,225,0.1);
+  border: 1px solid rgba(0,168,225,0.3);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-bright);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 24px;
+}
+.login-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent-bright);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent-bright);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.login-hero h1 {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1.05;
+  margin-bottom: 24px;
+  letter-spacing: -2px;
+}
+.gradient-text {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.login-hero p {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+.login-modules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-width: 400px;
+}
+.login-module {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.login-module span { color: var(--accent-bright); }
+.login-trust {
+  display: flex;
+  gap: 24px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+.login-trust div { display: flex; align-items: center; gap: 6px; }
+
+.login-form-side {
+  width: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background: var(--bg-primary);
+}
+.login-form { width: 100%; max-width: 360px; }
+.login-form h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+.login-form .subtitle { color: var(--text-tertiary); font-size: 14px; margin-bottom: 32px; }
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+.form-input {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 15px;
+  transition: all 0.2s;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(0,168,225,0.05);
+}
+.input-wrap { position: relative; }
+.input-wrap .icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  font-size: 16px;
+}
+.role-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.role-btn {
+  padding: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.role-btn.active {
+  background: rgba(0,168,225,0.1);
+  border-color: var(--accent);
+  color: var(--accent-bright);
+}
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent-gradient);
+  color: var(--bg-primary);
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 4px 20px var(--accent-glow);
+  transition: all 0.3s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px var(--accent-glow); }
+.btn-secondary {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 14px;
+  margin-top: 12px;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.06); border-color: var(--border-hover); }
+.login-divider {
+  text-align: center;
+  margin: 24px 0;
+  position: relative;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+.login-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0; right: 0;
+  height: 1px;
+  background: var(--border);
+}
+.login-divider span {
+  background: var(--bg-primary);
+  padding: 0 12px;
+  position: relative;
+}
+.demo-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  margin-top: 8px;
+}
+.demo-btn:hover { color: var(--accent-bright); }
+
+/* ===== MAIN APP LAYOUT ===== */
+.app { display: none; min-height: 100vh; }
+.app.active { display: flex; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 256px;
+  background: var(--bg-primary);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sidebar-header .logo-mark { width: 40px; height: 40px; font-size: 20px; }
+.sidebar-brand { font-size: 16px; font-weight: 700; }
+.sidebar-brand .accent { color: var(--accent-bright); }
+.sidebar-brand .tagline { font-size: 10px; color: var(--text-tertiary); font-weight: 400; display: block; }
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+}
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+  padding: 0 12px;
+  margin-bottom: 8px;
+}
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  transition: all 0.2s;
+  background: transparent;
+  text-align: left;
+}
+.nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.nav-item.active {
+  background: var(--accent-gradient);
+  color: var(--bg-primary);
+  font-weight: 600;
+}
+.nav-item .icon { font-size: 18px; width: 20px; text-align: center; }
+.sidebar-footer {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 10px;
+}
+.user-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bg-primary);
+}
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-size: 13px; font-weight: 600; }
+.user-role { font-size: 11px; color: var(--text-tertiary); text-transform: capitalize; }
+.logout-btn {
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 16px;
+  padding: 4px;
+}
+.logout-btn:hover { color: var(--danger); }
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: rgba(15, 23, 30, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.header-title { flex: 1; }
+.header-title h1 { font-size: 18px; font-weight: 700; }
+.header-title p { font-size: 12px; color: var(--text-tertiary); }
+.header-search {
+  width: 280px;
+  padding: 8px 12px 8px 36px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  position: relative;
+}
+.search-wrap { position: relative; }
+.search-wrap .icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+}
+.header-icon-btn {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s;
+}
+.header-icon-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.notification-dot {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 16px; height: 16px;
+  background: var(--danger);
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== PAGE CONTENT ===== */
+.page-content {
+  flex: 1;
+  padding: 24px 32px;
+  overflow-y: auto;
+}
+
+/* ===== KPI CARDS ===== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  transition: all 0.3s;
+}
+.kpi-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+.kpi-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-tertiary); }
+.kpi-value { font-size: 26px; font-weight: 800; margin: 8px 0; }
+.kpi-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.kpi-change.up { background: rgba(76,175,80,0.15); color: var(--success); }
+.kpi-change.down { background: rgba(255,82,82,0.15); color: var(--danger); }
+.kpi-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+.kpi-icon.cyan { background: rgba(0,168,225,0.1); color: var(--accent-bright); }
+.kpi-icon.amber { background: rgba(255,183,77,0.15); color: var(--warning); }
+.kpi-icon.green { background: rgba(76,175,80,0.15); color: var(--success); }
+.kpi-icon.red { background: rgba(255,82,82,0.15); color: var(--danger); }
+
+/* ===== CHART CARDS ===== */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.chart-grid.equal { grid-template-columns: 1fr 1fr; }
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+}
+.chart-card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.chart-card-subtitle { font-size: 12px; color: var(--text-tertiary); margin-bottom: 16px; }
+.chart-container { width: 100%; }
+
+/* ===== TABLES ===== */
+.data-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.data-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.data-card-title { font-size: 15px; font-weight: 700; }
+.data-card-subtitle { font-size: 12px; color: var(--text-tertiary); }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 12px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+tr:hover td { background: rgba(255,255,255,0.02); }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.font-mono { font-family: 'Courier New', monospace; font-size: 12px; }
+.font-bold { font-weight: 700; }
+.text-primary { color: var(--accent-bright); }
+.text-danger { color: var(--danger); }
+.text-success { color: var(--success); }
+.text-muted { color: var(--text-tertiary); }
+
+/* ===== BADGES ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.badge::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
+}
+.badge.success { background: rgba(76,175,80,0.15); color: var(--success); }
+.badge.warning { background: rgba(255,183,77,0.15); color: var(--warning); }
+.badge.danger { background: rgba(255,82,82,0.15); color: var(--danger); }
+.badge.info { background: rgba(0,168,225,0.15); color: var(--accent-bright); }
+.badge.neutral { background: rgba(255,255,255,0.08); color: var(--text-secondary); }
+
+/* ===== TABS ===== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-card);
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+.tab {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.tab:hover { color: var(--text-primary); }
+.tab.active { background: var(--accent-gradient); color: var(--bg-primary); font-weight: 600; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-accent { background: var(--accent-gradient); color: var(--bg-primary); }
+.btn-accent:hover { transform: translateY(-1px); box-shadow: 0 4px 16px var(--accent-glow); }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-primary); }
+.btn-outline:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.03); }
+.btn-sm { padding: 5px 10px; font-size: 11px; }
+
+/* ===== GRID LAYOUTS ===== */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+
+/* ===== BANK CARDS ===== */
+.bank-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  transition: all 0.3s;
+}
+.bank-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+.bank-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.bank-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+.bank-name { font-size: 14px; font-weight: 700; margin-top: 12px; }
+.bank-account { font-size: 11px; color: var(--text-tertiary); font-family: monospace; margin-top: 2px; }
+.bank-balance-label { font-size: 11px; color: var(--text-tertiary); margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+.bank-balance { font-size: 22px; font-weight: 800; margin-top: 4px; }
+
+/* ===== EMPLOYEE/PRODUCT ROW ===== */
+.entity-row { display: flex; align-items: center; gap: 12px; }
+.entity-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bg-primary);
+  flex-shrink: 0;
+}
+.entity-name { font-size: 13px; font-weight: 600; }
+.entity-sub { font-size: 11px; color: var(--text-tertiary); }
+
+/* ===== PROGRESS BAR ===== */
+.progress {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent-gradient);
+  border-radius: 100px;
+}
+
+/* ===== TAX BREAKDOWN ===== */
+.tax-card {
+  background: rgba(0,168,225,0.05);
+  border: 1px solid rgba(0,168,225,0.2);
+  border-radius: 12px;
+  padding: 20px;
+}
+.tax-card-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-tertiary); }
+.tax-card-value { font-size: 28px; font-weight: 800; color: var(--accent-bright); margin-top: 8px; }
+
+/* ===== DEPLOYMENT ===== */
+.deploy-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.deploy-header {
+  background: rgba(255,255,255,0.03);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.deploy-header .icon {
+  width: 32px; height: 32px;
+  background: rgba(0,168,225,0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-bright);
+}
+.deploy-header .title { font-size: 14px; font-weight: 700; }
+.deploy-body { padding: 16px; }
+.deploy-step {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  align-items: flex-start;
+}
+.deploy-step-num {
+  width: 20px; height: 20px;
+  background: rgba(0,168,225,0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-bright);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.deploy-step code {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.03);
+  padding: 4px 8px;
+  border-radius: 4px;
+  word-break: break-all;
+}
+
+/* ===== MODULE SECTIONS ===== */
+.module-section { display: none; }
+.module-section.active { display: block; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .chart-grid { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .login-hero { display: none; }
+  .login-form-side { width: 100%; }
+}
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .header-search { display: none; }
+  .grid-2, .grid-4 { grid-template-columns: 1fr; }
+  .page-content { padding: 16px; }
+  .header { padding: 12px 16px; }
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,168,225,0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,168,225,0.5); }
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-hero">
+    <div class="login-logo">
+      <div class="logo-mark">H</div>
+      <div class="login-logo-text">Hisab<span class="accent">ERP</span></div>
+    </div>
+    <div class="login-hero-content">
+      <div class="login-badge">ERCA Compliant</div>
+      <h1>Run your<br><span class="gradient-text">Ethiopian business</span><br>with confidence.</h1>
+      <p>Unified finance, inventory, HR, sales & compliance — built for ETB, Amharic + English, and local tax regulations.</p>
+      <div class="login-modules">
+        <div class="login-module"><span>💰</span> Finance</div>
+        <div class="login-module"><span>📦</span> Inventory</div>
+        <div class="login-module"><span>👥</span> HR & Payroll</div>
+        <div class="login-module"><span>🛒</span> Sales & CRM</div>
+      </div>
+    </div>
+    <div class="login-trust">
+      <div>🔒 256-bit Encryption</div>
+      <div>✓ ISO 27001</div>
+      <div>🏢 Local Data Residency</div>
+    </div>
+  </div>
+  <div class="login-form-side">
+    <div class="login-form">
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Sign in to your ERP workspace</p>
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-wrap">
+          <span class="icon">✉</span>
+          <input type="email" class="form-input" value="abebe.b@hisaberp.et" placeholder="you@business.et">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <span class="icon">🔒</span>
+          <input type="password" class="form-input" value="••••••••" placeholder="Enter your password">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Select Role</label>
+        <div class="role-selector">
+          <button class="role-btn active" onclick="selectRole(this)">Administrator</button>
+          <button class="role-btn" onclick="selectRole(this)">Manager</button>
+          <button class="role-btn" onclick="selectRole(this)">Staff</button>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="login()">Sign In →</button>
+      <div class="login-divider"><span>OR</span></div>
+      <button class="btn-secondary">🔑 Biometric Login</button>
+      <button class="demo-btn" onclick="login()">Use Demo Account →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div class="app" id="mainApp">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-mark">H</div>
+      <div class="sidebar-brand">
+        Hisab<span class="accent">ERP</span>
+        <span class="tagline">Ethiopian Business Intelligence</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Modules</div>
+      <button class="nav-item active" onclick="switchModule('dashboard', this)">
+        <span class="icon">📊</span> Dashboard
+      </button>
+      <button class="nav-item" onclick="switchModule('finance', this)">
+        <span class="icon">💰</span> Finance
+      </button>
+      <button class="nav-item" onclick="switchModule('inventory', this)">
+        <span class="icon">📦</span> Inventory
+      </button>
+      <button class="nav-item" onclick="switchModule('hr', this)">
+        <span class="icon">👥</span> HR & Payroll
+      </button>
+      <button class="nav-item" onclick="switchModule('sales', this)">
+        <span class="icon">🛒</span> Sales & CRM
+      </button>
+      <button class="nav-item" onclick="switchModule('compliance', this)">
+        <span class="icon">🛡️</span> Compliance
+      </button>
+      <button class="nav-item" onclick="switchModule('admin', this)">
+        <span class="icon">⚙️</span> Admin Panel
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">AB</div>
+        <div class="user-info">
+          <div class="user-name">Abebe Bekele</div>
+          <div class="user-role">Administrator</div>
+        </div>
+        <button class="logout-btn" onclick="logout()" title="Logout">⏏</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title">
+        <h1 id="pageTitle">Business Overview</h1>
+        <p id="pageSubtitle">Real-time KPIs across your enterprise</p>
+      </div>
+      <div class="search-wrap">
+        <span class="icon">🔍</span>
+        <input class="header-search" placeholder="Search modules...">
+      </div>
+      <button class="header-icon-btn" title="Online Status">📡</button>
+      <button class="header-icon-btn" title="Language">🌐 EN</button>
+      <button class="header-icon-btn" title="Theme">🌙</button>
+      <button class="header-icon-btn" title="Notifications">
+        🔔
+        <span class="notification-dot">7</span>
+      </button>
+      <div class="user-avatar">AB</div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-content" id="pageContent">
+</div>
+</div>
+
+<script>
+// ===== DATA =====
+const data = {
+  transactions: [
+    { id: 'TXN-2848', type: 'received', party: 'Test Customer PLC', amount: 50000, method: 'Dashen Bank', date: '2026-07-03', status: 'completed' },
+    { id: 'TXN-2841', type: 'received', party: 'Selam Trading PLC', amount: 184000, method: 'Dashen Bank', date: '2026-07-03', status: 'completed' },
+    { id: 'TXN-2840', type: 'sent', party: 'Mekdim Suppliers', amount: 92000, method: 'CBE', date: '2026-07-03', status: 'completed' },
+    { id: 'TXN-2839', type: 'received', party: 'Bekele Retail Store', amount: 47200, method: 'Telebirr', date: '2026-07-02', status: 'completed' },
+    { id: 'TXN-2838', type: 'received', party: 'Hidase Construction', amount: 312000, method: 'Awash Bank', date: '2026-07-02', status: 'completed' },
+    { id: 'TXN-2837', type: 'sent', party: 'Ethio Telecom', amount: 18400, method: 'Amole', date: '2026-07-01', status: 'completed' },
+    { id: 'TXN-2836', type: 'received', party: 'Yenus Market', amount: 68500, method: 'Telebirr', date: '2026-07-01', status: 'completed' },
+  ],
+  banks: [
+    { name: 'Dashen Bank', account: 'DASH-5021-8842', balance: 4840000, color: '#00A8E1', icon: '🏦' },
+    { name: 'Commercial Bank of Ethiopia', account: 'CBE-3329-1174', balance: 6280000, color: '#2BD5F5', icon: '🏦' },
+    { name: 'Awash Bank', account: 'AWASH-7741-2208', balance: 2920000, color: '#FFB74D', icon: '🏦' },
+    { name: 'Telebirr', account: 'TB-+251911442880', balance: 184000, color: '#4CAF50', icon: '📱' },
+    { name: 'Amole', account: 'AMO-882194', balance: 92000, color: '#BB86FC', icon: '📱' },
+  ],
+  accounts: [
+    { code: '1000', name: 'Cash & Equivalents', type: 'Asset', balance: 14280000 },
+    { code: '1200', name: 'Accounts Receivable', type: 'Asset', balance: 3840000 },
+    { code: '1500', name: 'Inventory', type: 'Asset', balance: 5920000 },
+    { code: '1700', name: 'Fixed Assets', type: 'Asset', balance: 12400000 },
+    { code: '2000', name: 'Accounts Payable', type: 'Liability', balance: 2780000 },
+    { code: '2200', name: 'VAT Payable', type: 'Liability', balance: 276750 },
+    { code: '2300', name: 'Pension Payable', type: 'Liability', balance: 476000 },
+    { code: '3000', name: "Owner's Equity", type: 'Equity', balance: 28000000 },
+    { code: '4000', name: 'Sales Revenue', type: 'Revenue', balance: 18450000 },
+    { code: '5000', name: 'Cost of Goods Sold', type: 'Expense', balance: 9200000 },
+    { code: '6000', name: 'Operating Expenses', type: 'Expense', balance: 4930000 },
+  ],
+  products: [
+    { sku: 'BS-500', name: 'Berbere Spice 500g', category: 'Spices', qty: 248, price: 300, warehouse: 'Addis Ababa', status: 'inStock' },
+    { sku: 'YC-1KG', name: 'Yirgacheffe Coffee 1kg', category: 'Coffee', qty: 18, price: 600, warehouse: 'Addis Ababa', status: 'lowStock' },
+    { sku: 'IF-5KG', name: 'Injera Flour 5kg', category: 'Grains', qty: 8, price: 300, warehouse: 'Bahir Dar', status: 'outOfStock' },
+    { sku: 'TG-25KG', name: 'Teff Grain 25kg', category: 'Grains', qty: 120, price: 1800, warehouse: 'Hawassa', status: 'inStock' },
+    { sku: 'HW-GABI', name: 'Hand-woven Gabi', category: 'Textiles', qty: 24, price: 1500, warehouse: 'Dire Dawa', status: 'lowStock' },
+    { sku: 'EH-1KG', name: 'Ethiopian Honey 1kg', category: 'Natural', qty: 84, price: 450, warehouse: 'Addis Ababa', status: 'inStock' },
+    { sku: 'KS-500', name: 'Kolo Mixed Snack 500g', category: 'Snacks', qty: 320, price: 180, warehouse: 'Addis Ababa', status: 'inStock' },
+    { sku: 'TB-1L', name: 'Tella Traditional Brew 1L', category: 'Beverages', qty: 980, price: 200, warehouse: 'Bahir Dar', status: 'inStock' },
+    { sku: 'SP-1KG', name: 'Shiro Powder 1kg', category: 'Spices', qty: 12, price: 380, warehouse: 'Addis Ababa', status: 'lowStock' },
+    { sku: 'SS-5KG', name: 'Sesame Seeds 5kg', category: 'Seeds', qty: 0, price: 950, warehouse: 'Dire Dawa', status: 'outOfStock' },
+  ],
+  warehouses: [
+    { name: 'Addis Ababa Warehouse', location: 'Addis Ababa, Akaki Kality', capacity: 85, products: 1248, value: 3280000 },
+    { name: 'Dire Dawa Warehouse', location: 'Dire Dawa, Keble 09', capacity: 62, products: 842, value: 1840000 },
+    { name: 'Bahir Dar Warehouse', location: 'Bahir Dar, Amhara', capacity: 74, products: 684, value: 920000 },
+    { name: 'Hawassa Warehouse', location: 'Hawassa, SNNPR', capacity: 48, products: 420, value: 580000 },
+  ],
+  suppliers: [
+    { name: 'Mekdim Suppliers PLC', contact: '+251 911 234 567', email: 'info@mekdim.et', products: 24, leadTime: 5, rating: 4.7 },
+    { name: 'Selam Trading Enterprise', contact: '+251 911 345 678', email: 'sales@selam.et', products: 18, leadTime: 7, rating: 4.5 },
+    { name: 'Yenus Agricultural Coop', contact: '+251 911 456 789', email: 'contact@yenus.et', products: 32, leadTime: 4, rating: 4.8 },
+    { name: 'Bekele Textiles', contact: '+251 911 567 890', email: 'info@bekele.et', products: 12, leadTime: 10, rating: 4.3 },
+    { name: 'Hidase Logistics', contact: '+251 911 678 901', email: 'ops@hidase.et', products: 8, leadTime: 3, rating: 4.6 },
+  ],
+  employees: [
+    { id: 'E-001', name: 'Abebe Bekele', position: 'Finance Manager', dept: 'finance', salary: 42000, joinDate: '2021-03-15', status: 'active' },
+    { id: 'E-002', name: 'Sara Tadesse', position: 'HR Specialist', dept: 'hr', salary: 28000, joinDate: '2022-07-01', status: 'active' },
+    { id: 'E-003', name: 'Yohannes Girma', position: 'Inventory Supervisor', dept: 'operations', salary: 32000, joinDate: '2020-11-20', status: 'active' },
+    { id: 'E-004', name: 'Hanna Mengistu', position: 'Sales Representative', dept: 'sales', salary: 24000, joinDate: '2023-02-10', status: 'active' },
+    { id: 'E-005', name: 'Daniel Kebede', position: 'IT Support', dept: 'it', salary: 30000, joinDate: '2022-09-05', status: 'active' },
+    { id: 'E-006', name: 'Meseret Lemma', position: 'Accountant', dept: 'finance', salary: 26000, joinDate: '2021-12-01', status: 'leave' },
+    { id: 'E-007', name: 'Rahel Alemu', position: 'Sales Lead', dept: 'sales', salary: 36000, joinDate: '2020-05-18', status: 'active' },
+    { id: 'E-008', name: 'Tewodros Assefa', position: 'Operations Manager', dept: 'operations', salary: 48000, joinDate: '2019-08-22', status: 'active' },
+    { id: 'E-009', name: 'Bethel Solomon', position: 'Marketing Specialist', dept: 'sales', salary: 28000, joinDate: '2023-04-12', status: 'active' },
+    { id: 'E-010', name: 'Nahom Tesfaye', position: 'Admin Assistant', dept: 'admin', salary: 22000, joinDate: '2022-10-30', status: 'active' },
+  ],
+  customers: [
+    { name: 'Selam Trading PLC', contact: '+251 911 234 567', email: 'purchase@selamtrading.et', orders: 184, ltv: 2840000, status: 'vip' },
+    { name: 'Bekele Retail Store', contact: '+251 911 345 678', email: 'bekele.retail@gmail.com', orders: 142, ltv: 980000, status: 'active' },
+    { name: 'Hidase Construction', contact: '+251 911 456 789', email: 'procurement@hidase.et', orders: 96, ltv: 4200000, status: 'vip' },
+    { name: 'Yenus Market', contact: '+251 911 567 890', email: 'yenus.market@gmail.com', orders: 78, ltv: 412000, status: 'active' },
+    { name: 'Merkato Distributors', contact: '+251 911 678 901', email: 'info@merkato.et', orders: 64, ltv: 1840000, status: 'active' },
+    { name: 'Piazza Food Mart', contact: '+251 911 789 012', email: 'piazza.food@gmail.com', orders: 52, ltv: 268000, status: 'active' },
+    { name: 'Bole Mini Market', contact: '+251 911 890 123', email: 'bole.mini@gmail.com', orders: 42, ltv: 198000, status: 'regular' },
+    { name: 'Sarbet Wholesale', contact: '+251 911 901 234', email: 'sarbet.wholesale@gmail.com', orders: 38, ltv: 412000, status: 'regular' },
+  ],
+  quotations: [
+    { no: 'Q-2026-090', customer: 'Selam Trading PLC', date: '2026-07-03', amount: 30000, vat: 4500, total: 34500, status: 'sent', validUntil: '2026-07-17' },
+    { no: 'Q-2026-084', customer: 'Selam Trading PLC', date: '2026-07-02', amount: 60000, vat: 9000, total: 69000, status: 'sent', validUntil: '2026-07-16' },
+    { no: 'Q-2026-083', customer: 'Hidase Construction', date: '2026-07-01', amount: 276000, vat: 41400, total: 317400, status: 'accepted', validUntil: '2026-07-15' },
+    { no: 'Q-2026-082', customer: 'Merkato Distributors', date: '2026-06-30', amount: 54000, vat: 8100, total: 62100, status: 'pending', validUntil: '2026-07-14' },
+    { no: 'Q-2026-081', customer: 'Bole Mini Market', date: '2026-06-29', amount: 15200, vat: 2280, total: 17480, status: 'expired', validUntil: '2026-07-13' },
+    { no: 'Q-2026-080', customer: 'Bekele Retail Store', date: '2026-06-28', amount: 60000, vat: 9000, total: 69000, status: 'accepted', validUntil: '2026-07-12' },
+  ],
+  pipeline: [
+    { stage: 'lead', label: 'Lead', count: 24, value: 1840000 },
+    { stage: 'qualified', label: 'Qualified', count: 18, value: 2760000 },
+    { stage: 'proposal', label: 'Proposal', count: 12, value: 4200000 },
+    { stage: 'negotiation', label: 'Negotiation', count: 8, value: 3840000 },
+    { stage: 'won', label: 'Won', count: 14, value: 9240000 },
+    { stage: 'lost', label: 'Lost', count: 6, value: 920000 },
+  ],
+  taxFilings: [
+    { type: 'Monthly VAT Return', period: 'June 2026', amount: 276750, dueDate: '2026-07-25', status: 'pending' },
+    { type: 'Withholding Tax', period: 'June 2026', amount: 92400, dueDate: '2026-07-15', status: 'filed' },
+    { type: 'Pension Contribution', period: 'June 2026', amount: 476000, dueDate: '2026-07-10', status: 'filed' },
+    { type: 'Turnover Tax Q2', period: 'Q2 2026', amount: 184000, dueDate: '2026-07-31', status: 'pending' },
+    { type: 'Business Income Tax', period: 'FY 2025-26', amount: 1296000, dueDate: '2026-07-15', status: 'overdue' },
+  ],
+  auditLogs: [
+    { time: '2026-07-03 20:39:41', user: 'Yohannes Girma', action: 'StockOut for TG-25KG - Teff Grain 25kg', entity: 'Inventory', details: '5 units. Barcode scan', ip: '196.188.44.30' },
+    { time: '2026-07-03 20:19:24', user: 'Abebe Bekele', action: 'Created transaction TXN-2848', entity: 'Finance', details: 'received 50000 ETB from Test Customer PLC', ip: '196.188.44.22' },
+    { time: '2026-07-03 14:32:18', user: 'Abebe Bekele', action: 'Approved invoice INV-2026-084', entity: 'Finance', details: 'Payment received from Selam Trading', ip: '196.188.44.22' },
+    { time: '2026-07-03 13:18:42', user: 'Sara Tadesse', action: 'Updated employee record E-004', entity: 'HR', details: 'Salary adjustment', ip: '196.188.44.22' },
+    { time: '2026-07-03 11:24:09', user: 'Yohannes Girma', action: 'Adjusted inventory for P-003', entity: 'Inventory', details: 'Stock correction', ip: '196.188.44.30' },
+    { time: '2026-07-03 09:48:55', user: 'Rahel Alemu', action: 'Generated VAT return for June 2026', entity: 'Compliance', details: '', ip: '196.188.44.22' },
+    { time: '2026-07-02 17:12:38', user: 'Tewodros Assefa', action: 'Modified supplier S-002 contact', entity: 'Inventory', details: '', ip: '196.188.44.30' },
+    { time: '2026-07-02 15:42:11', user: 'Hanna Mengistu', action: 'Created quotation Q-2026-084', entity: 'Sales', details: '', ip: '196.188.44.18' },
+  ],
+  users: [
+    { name: 'Abebe Bekele', email: 'abebe.b@hisaberp.et', role: 'admin', status: 'online', twoFA: true, avatar: 'AB' },
+    { name: 'Sara Tadesse', email: 'sara.t@hisaberp.et', role: 'manager', status: 'online', twoFA: true, avatar: 'ST' },
+    { name: 'Yohannes Girma', email: 'yohannes.g@hisaberp.et', role: 'manager', status: 'away', twoFA: true, avatar: 'YG' },
+    { name: 'Hanna Mengistu', email: 'hanna.m@hisaberp.et', role: 'staff', status: 'offline', twoFA: false, avatar: 'HM' },
+    { name: 'Daniel Kebede', email: 'daniel.k@hisaberp.et', role: 'admin', status: 'offline', twoFA: true, avatar: 'DK' },
+    { name: 'Rahel Alemu', email: 'rahel.a@hisaberp.et', role: 'manager', status: 'online', twoFA: true, avatar: 'RA' },
+    { name: 'Tewodros Assefa', email: 'tewodros.a@hisaberp.et', role: 'admin', status: 'online', twoFA: true, avatar: 'TA' },
+    { name: 'Bethel Solomon', email: 'bethel.s@hisaberp.et', role: 'staff', status: 'away', twoFA: false, avatar: 'BS' },
+  ],
+};
+
+// ===== HELPERS =====
+function formatETB(amount, compact) {
+  if (compact) {
+    if (Math.abs(amount) >= 1000000) return 'ETB ' + (amount/1000000).toFixed(2) + 'M';
+    if (Math.abs(amount) >= 1000) return 'ETB ' + (amount/1000).toFixed(1) + 'K';
+  }
+  return amount.toLocaleString() + ' ETB';
+}
+function getStatusBadge(status) {
+  const map = {
+    completed: 'success', filed: 'success', active: 'success', online: 'success',
+    inStock: 'success', accepted: 'success', connected: 'success', won: 'success', present: 'success', approved: 'success',
+    pending: 'warning', lowStock: 'warning', sent: 'warning', away: 'warning', warning: 'warning', critical: 'warning',
+    overdue: 'danger', outOfStock: 'danger', expired: 'danger', offline: 'danger', lost: 'danger', absent: 'danger', rejected: 'danger',
+    vip: 'info', regular: 'neutral', leave: 'warning',
+  };
+  const labels = {
+    completed: 'Completed', filed: 'Filed', active: 'Active', online: 'Online',
+    inStock: 'In Stock', accepted: 'Accepted', connected: 'Connected', won: 'Won', present: 'Present', approved: 'Approved',
+    pending: 'Pending', lowStock: 'Low Stock', sent: 'Sent', away: 'Away', warning: 'Warning', critical: 'Critical',
+    overdue: 'Overdue', outOfStock: 'Out of Stock', expired: 'Expired', offline: 'Offline', lost: 'Lost', absent: 'Absent', rejected: 'Rejected',
+    vip: 'VIP', regular: 'Regular', leave: 'On Leave',
+  };
+  const cls = map[status] || 'neutral';
+  const label = labels[status] || status;
+  return '<span class="badge ' + cls + '">' + label + '</span>';
+}
+function getInitials(name) {
+  return name.split(' ').slice(0,2).map(n => n[0]).join('');
+}
+
+// ===== AUTH =====
+function selectRole(btn) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function login() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainApp').classList.add('active');
+  renderDashboard();
+}
+function logout() {
+  document.getElementById('mainApp').classList.remove('active');
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+
+// ===== MODULE SWITCHING =====
+const moduleTitles = {
+  dashboard: { title: 'Business Overview', subtitle: 'Real-time KPIs across your enterprise' },
+  finance: { title: 'Finance & Accounting', subtitle: 'Automated accounting workflows with ETB & VAT compliance' },
+  inventory: { title: 'Inventory & Warehouses', subtitle: 'Real-time stock tracking across all locations' },
+  hr: { title: 'Human Resources & Payroll', subtitle: 'Ethiopian labor law compliant employee management' },
+  sales: { title: 'Sales & Customer Relations', subtitle: 'Manage customers, quotations, and sales pipelines' },
+  compliance: { title: 'Compliance & Audit', subtitle: 'Ethiopian tax regulations and audit trail' },
+  admin: { title: 'Admin Panel', subtitle: 'System administration and configuration' },
+};
+
+function switchModule(module, btn) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('pageTitle').textContent = moduleTitles[module].title;
+  document.getElementById('pageSubtitle').textContent = moduleTitles[module].subtitle;
+  const renderFn = { dashboard: renderDashboard, finance: renderFinance, inventory: renderInventory, hr: renderHR, sales: renderSales, compliance: renderCompliance, admin: renderAdmin };
+  renderFn[module]();
+}
+
+// ===== DASHBOARD =====
+function renderDashboard() {
+  const totalRevenue = data.transactions.filter(t => t.type === 'received').reduce((s,t) => s+t.amount, 0);
+  const totalExpenses = data.transactions.filter(t => t.type === 'sent').reduce((s,t) => s+t.amount, 0);
+  const netProfit = totalRevenue - totalExpenses;
+  const totalBankBalance = data.banks.reduce((s,b) => s+b.balance, 0);
+  const lowStockProducts = data.products.filter(p => p.status !== 'inStock');
+
+  const content = `
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div>
+            <div class="kpi-label">Total Revenue</div>
+            <div class="kpi-value">${formatETB(totalRevenue, true)}</div>
+            <div class="kpi-change up">↑ 12.4% vs last month</div>
+          </div>
+          <div class="kpi-icon cyan">📈</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div>
+            <div class="kpi-label">Net Profit</div>
+            <div class="kpi-value">${formatETB(netProfit, true)}</div>
+            <div class="kpi-change up">↑ 8.7%</div>
+          </div>
+          <div class="kpi-icon green">💰</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div>
+            <div class="kpi-label">VAT Collected</div>
+            <div class="kpi-value">${formatETB(totalRevenue * 0.15, true)}</div>
+            <div class="kpi-change up">↑ 15.2%</div>
+          </div>
+          <div class="kpi-icon amber">🧾</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div>
+            <div class="kpi-label">Active Employees</div>
+            <div class="kpi-value">10</div>
+            <div class="kpi-change up">↑ 5.0%</div>
+          </div>
+          <div class="kpi-icon cyan">👥</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-title">Revenue Trend (12 Months)</div>
+        <div class="chart-card-subtitle">Revenue vs Expenses vs Profit</div>
+        <div class="chart-container">
+          ${renderAreaChart()}
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">Expense Breakdown</div>
+        <div class="chart-card-subtitle">By category (ETB)</div>
+        <div class="chart-container">
+          ${renderPieChart()}
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid equal">
+      <div class="data-card">
+        <div class="data-card-header">
+          <div>
+            <div class="data-card-title">Recent Transactions</div>
+            <div class="data-card-subtitle">Latest financial activity</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="switchModule('finance')">View all →</button>
+        </div>
+        <table>
+          <thead><tr><th>ID</th><th>Party</th><th>Method</th><th class="text-right">Amount</th></tr></thead>
+          <tbody>
+            ${data.transactions.slice(0,5).map(t => `
+              <tr>
+                <td class="font-mono">${t.id}</td>
+                <td>${t.party}</td>
+                <td class="text-muted">${t.method}</td>
+                <td class="text-right font-bold ${t.type === 'received' ? 'text-primary' : 'text-danger'}">${t.type === 'received' ? '+' : '-'}${formatETB(t.amount, true)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="data-card">
+        <div class="data-card-header">
+          <div>
+            <div class="data-card-title">Inventory Alerts</div>
+            <div class="data-card-subtitle">Items requiring attention</div>
+          </div>
+        </div>
+        ${lowStockProducts.slice(0,5).map(p => `
+          <div class="entity-row" style="padding:8px 0; border-bottom:1px solid var(--border)">
+            <div class="entity-avatar" style="background:${p.status === 'outOfStock' ? 'var(--danger)' : 'var(--warning)'}">⚠</div>
+            <div style="flex:1">
+              <div class="entity-name">${p.name}</div>
+              <div class="entity-sub">${p.warehouse} • ${p.qty} units remaining</div>
+            </div>
+            ${getStatusBadge(p.status)}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="data-card" style="margin-bottom:0">
+        <div class="data-card-header">
+          <div>
+            <div class="data-card-title">Fiscal Health Score</div>
+            <div class="data-card-subtitle">ERCA Assessment</div>
+          </div>
+        </div>
+        <div style="text-align:center; padding:20px 0">
+          <div style="font-size:48px; font-weight:800; color:var(--accent-bright)">87</div>
+          <div class="text-muted" style="font-size:13px">out of 100</div>
+          <div class="progress" style="margin-top:16px">
+            <div class="progress-fill" style="width:87%"></div>
+          </div>
+          <div style="margin-top:12px; font-size:13px; color:var(--success)">✓ Excellent standing</div>
+        </div>
+      </div>
+      <div class="data-card" style="margin-bottom:0">
+        <div class="data-card-header">
+          <div>
+            <div class="data-card-title">Upcoming Tax Deadlines</div>
+            <div class="data-card-subtitle">ERCA filing deadlines</div>
+          </div>
+        </div>
+        ${data.taxFilings.slice(0,4).map(tf => `
+          <div class="entity-row" style="padding:10px 0; border-bottom:1px solid var(--border)">
+            <div class="entity-avatar" style="background:var(--accent)">📅</div>
+            <div style="flex:1">
+              <div class="entity-name">${tf.type}</div>
+              <div class="entity-sub">Due: ${tf.dueDate}</div>
+            </div>
+            <div style="text-align:right">
+              <div class="font-bold">${formatETB(tf.amount, true)}</div>
+              ${getStatusBadge(tf.status)}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  document.getElementById('pageContent').innerHTML = content;
+}
+
+// ===== CHARTS =====
+function renderAreaChart() {
+  const months = ['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'];
+  const revenue = [1240,1380,1520,1410,1680,1950,1720,1840,1680,1920,2050,2180];
+  const expenses = [890,920,1050,980,1120,1240,1180,1210,1090,1270,1340,1410];
+  const w = 500, h = 240, pad = 30;
+  const max = Math.max(...revenue) + 200;
+  const xStep = (w - pad * 2) / 11;
+  const yScale = (v) => h - pad - (v / max) * (h - pad * 2);
+
+  const path = (arr, offset = 0) => arr.map((v, i) => (i === 0 ? 'M' : 'L') + (pad + i * xStep + offset) + ',' + yScale(v)).join(' ');
+  const area = (arr) => path(arr) + ` L${pad + 11 * xStep},${h - pad} L${pad},${h - pad} Z`;
+
+  return `
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%; height:240px">
+      <defs>
+        <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#00A8E1" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#00A8E1" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="expGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#FF5252" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#FF5252" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      ${[0,0.25,0.5,0.75,1].map(p => {
+        const y = pad + p * (h - pad * 2);
+        return `<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="3,3"/>`;
+      }).join('')}
+      ${months.map((m, i) => `<text x="${pad + i * xStep}" y="${h - 8}" fill="#8197A4" font-size="10" text-anchor="middle">${m}</text>`).join('')}
+      <path d="${area(revenue)}" fill="url(#revGrad)"/>
+      <path d="${area(expenses)}" fill="url(#expGrad)"/>
+      <path d="${path(revenue)}" fill="none" stroke="#00A8E1" stroke-width="2"/>
+      <path d="${path(expenses)}" fill="none" stroke="#FF5252" stroke-width="2"/>
+    </svg>
+  `;
+}
+
+function renderPieChart() {
+  const items = [
+    { name: 'Payroll', value: 6800000, color: '#00A8E1' },
+    { name: 'Inventory', value: 4200000, color: '#2BD5F5' },
+    { name: 'Operations', value: 2100000, color: '#FFB74D' },
+    { name: 'Marketing', value: 980000, color: '#4CAF50' },
+    { name: 'IT', value: 740000, color: '#BB86FC' },
+    { name: 'Legal', value: 420000, color: '#FF5252' },
+  ];
+  const total = items.reduce((s,i) => s+i.value, 0);
+  const cx = 100, cy = 100, r = 70, ir = 40;
+  let cumAngle = -90;
+  const slices = items.map(item => {
+    const angle = (item.value / total) * 360;
+    const startAngle = cumAngle;
+    const endAngle = cumAngle + angle;
+    cumAngle = endAngle;
+    const x1 = cx + r * Math.cos(startAngle * Math.PI / 180);
+    const y1 = cy + r * Math.sin(startAngle * Math.PI / 180);
+    const x2 = cx + r * Math.cos(endAngle * Math.PI / 180);
+    const y2 = cy + r * Math.sin(endAngle * Math.PI / 180);
+    const x3 = cx + ir * Math.cos(endAngle * Math.PI / 180);
+    const y3 = cy + ir * Math.sin(endAngle * Math.PI / 180);
+    const x4 = cx + ir * Math.cos(startAngle * Math.PI / 180);
+    const y4 = cy + ir * Math.sin(startAngle * Math.PI / 180);
+    const largeArc = angle > 180 ? 1 : 0;
+    return `<path d="M${x1},${y1} A${r},${r} 0 ${largeArc} 1 ${x2},${y2} L${x3},${y3} A${ir},${ir} 0 ${largeArc} 0 ${x4},${y4} Z" fill="${item.color}"/>`;
+  }).join('');
+  return `
+    <svg viewBox="0 0 200 200" style="width:200px; height:200px; margin:0 auto; display:block">
+      ${slices}
+    </svg>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:12px; font-size:11px">
+      ${items.map(i => `<div style="display:flex; align-items:center; gap:6px"><span style="width:8px; height:8px; border-radius:50%; background:${i.color}"></span><span class="text-muted">${i.name}</span></div>`).join('')}
+    </div>
+  `;
+}
+
+function renderBarChart(chartData, color = '#00A8E1') {
+  const max = Math.max(...chartData.map(d => d.value));
+  const w = 500, h = 240, pad = 30;
+  const barW = (w - pad * 2) / chartData.length * 0.6;
+  const gap = (w - pad * 2) / chartData.length;
+  return `
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%; height:240px">
+      ${chartData.map((d, i) => {
+        const barH = (d.value / max) * (h - pad * 2);
+        const x = pad + i * gap + (gap - barW) / 2;
+        const y = h - pad - barH;
+        return `
+          <rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="4" fill="${color}" opacity="${0.4 + (i / chartData.length) * 0.6}"/>
+          <text x="${x + barW/2}" y="${h - 8}" fill="#8197A4" font-size="10" text-anchor="middle">${d.label}</text>
+        `;
+      }).join('')}
+    </svg>
+  `;
+}
+
+// ===== FINANCE =====
+function renderFinance() {
+  const totalBalance = data.banks.reduce((s,b) => s+b.balance, 0);
+  const monthlyIncome = data.transactions.filter(t => t.type === 'received').reduce((s,t) => s+t.amount, 0);
+  const monthlyExpense = data.transactions.filter(t => t.type === 'sent').reduce((s,t) => s+t.amount, 0);
+  const netCash = monthlyIncome - monthlyExpense;
+
+  const content = `
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Account Balance</div>
+          <div class="kpi-value">${formatETB(totalBalance, true)}</div>
+          <div class="kpi-change up">↑ 8.4%</div>
+        </div><div class="kpi-icon cyan">💳</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Income</div>
+          <div class="kpi-value">${formatETB(monthlyIncome, true)}</div>
+          <div class="kpi-change up">↑ 12.6%</div>
+        </div><div class="kpi-icon green">📈</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Expenses</div>
+          <div class="kpi-value">${formatETB(monthlyExpense, true)}</div>
+          <div class="kpi-change down">↓ 4.2%</div>
+        </div><div class="kpi-icon red">📉</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Net Cash Flow</div>
+          <div class="kpi-value">${formatETB(netCash, true)}</div>
+          <div class="kpi-change up">↑ 18.3%</div>
+        </div><div class="kpi-icon amber">💰</div></div>
+      </div>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header">
+        <div><div class="data-card-title">Transactions</div><div class="data-card-subtitle">All transactions this period</div></div>
+        <button class="btn btn-accent btn-sm">+ New Transaction</button>
+      </div>
+      <table>
+        <thead><tr><th>ID</th><th>Type</th><th>Party</th><th>Method</th><th>Date</th><th class="text-right">Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          ${data.transactions.map(t => `
+            <tr>
+              <td class="font-mono">${t.id}</td>
+              <td><span class="badge ${t.type === 'received' ? 'success' : 'danger'}">${t.type === 'received' ? 'Received' : 'Sent'}</span></td>
+              <td>${t.party}</td>
+              <td class="text-muted">${t.method}</td>
+              <td class="text-muted">${t.date}</td>
+              <td class="text-right font-bold ${t.type === 'received' ? 'text-primary' : 'text-danger'}">${t.type === 'received' ? '+' : '-'}${formatETB(t.amount, true)}</td>
+              <td>${getStatusBadge(t.status)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2">
+      <div class="data-card">
+        <div class="data-card-header"><div><div class="data-card-title">Chart of Accounts</div><div class="data-card-subtitle">Standard Ethiopian chart</div></div></div>
+        <table>
+          <thead><tr><th>Code</th><th>Account Name</th><th>Type</th><th class="text-right">Balance</th></tr></thead>
+          <tbody>
+            ${data.accounts.map(a => `
+              <tr>
+                <td class="font-mono">${a.code}</td>
+                <td>${a.name}</td>
+                <td><span class="badge neutral">${a.type}</span></td>
+                <td class="text-right font-bold">${formatETB(a.balance)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="data-card">
+          <div class="data-card-header"><div><div class="data-card-title">VAT Compliance (15%)</div></div></div>
+          <div class="tax-card">
+            <div class="tax-card-label">VAT Collected</div>
+            <div class="tax-card-value">${formatETB(monthlyIncome * 0.15, true)}</div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px">
+            <div style="background:var(--bg-tertiary); padding:12px; border-radius:8px">
+              <div class="text-muted" style="font-size:11px">Withholding Tax (2%)</div>
+              <div class="font-bold" style="margin-top:4px">${formatETB(monthlyExpense * 0.02)}</div>
+            </div>
+            <div style="background:var(--bg-tertiary); padding:12px; border-radius:8px">
+              <div class="text-muted" style="font-size:11px">Business Income Tax (30%)</div>
+              <div class="font-bold" style="margin-top:4px">${formatETB(netCash * 0.30, true)}</div>
+            </div>
+          </div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-header"><div><div class="data-card-title">Bank Accounts</div></div></div>
+          ${data.banks.map(b => `
+            <div class="entity-row" style="padding:8px 0; border-bottom:1px solid var(--border)">
+              <div class="entity-avatar" style="background:${b.color}">${b.icon}</div>
+              <div style="flex:1">
+                <div class="entity-name">${b.name}</div>
+                <div class="entity-sub font-mono">${b.account}</div>
+              </div>
+              <div class="font-bold text-right">${formatETB(b.balance, true)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('pageContent').innerHTML = content;
+}
+
+// ===== INVENTORY =====
+function renderInventory() {
+  const totalStockValue = data.products.reduce((s,p) => s + p.qty * p.price, 0);
+  const lowStock = data.products.filter(p => p.status === 'lowStock').length;
+  const outOfStock = data.products.filter(p => p.status === 'outOfStock').length;
+
+  const content = `
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Total Products</div>
+          <div class="kpi-value">${data.products.length}</div>
+          <div class="text-muted" style="font-size:12px">${data.products.reduce((s,p) => s+p.qty, 0)} units total</div>
+        </div><div class="kpi-icon cyan">📦</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Low Stock Items</div>
+          <div class="kpi-value">${lowStock + outOfStock}</div>
+          <div class="text-muted" style="font-size:12px">${outOfStock} out of stock</div>
+        </div><div class="kpi-icon amber">⚠</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Total Stock Value</div>
+          <div class="kpi-value">${formatETB(totalStockValue, true)}</div>
+          <div class="kpi-change up">↑ 6.2%</div>
+        </div><div class="kpi-icon green">💰</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Warehouses</div>
+          <div class="kpi-value">${data.warehouses.length}</div>
+          <div class="text-muted" style="font-size:12px">Across Ethiopia</div>
+        </div><div class="kpi-icon cyan">🏭</div></div>
+      </div>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header">
+        <div><div class="data-card-title">Products</div><div class="data-card-subtitle">${data.products.length} items</div></div>
+        <div style="display:flex; gap:8px">
+          <button class="btn btn-outline btn-sm">📷 Scan Barcode</button>
+          <button class="btn btn-accent btn-sm">+ Add Product</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Product</th><th>SKU</th><th>Category</th><th class="text-right">Qty</th><th class="text-right">Unit Price</th><th>Warehouse</th><th>Status</th></tr></thead>
+        <tbody>
+          ${data.products.map(p => `
+            <tr>
+              <td class="font-bold">${p.name}</td>
+              <td class="font-mono">${p.sku}</td>
+              <td class="text-muted">${p.category}</td>
+              <td class="text-right font-bold">${p.qty}</td>
+              <td class="text-right">${formatETB(p.price)}</td>
+              <td class="text-muted">${p.warehouse}</td>
+              <td>${getStatusBadge(p.status)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2">
+      <div class="data-card">
+        <div class="data-card-header"><div><div class="data-card-title">Warehouses</div></div></div>
+        ${data.warehouses.map(w => `
+          <div style="padding:16px 0; border-bottom:1px solid var(--border)">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+              <div>
+                <div class="font-bold" style="font-size:14px">🏭 ${w.name}</div>
+                <div class="text-muted" style="font-size:12px">📍 ${w.location}</div>
+              </div>
+              ${getStatusBadge('active')}
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:12px 0">
+              <div><div class="text-muted" style="font-size:11px">Products</div><div class="font-bold">${w.products}</div></div>
+              <div><div class="text-muted" style="font-size:11px">Capacity</div><div class="font-bold">${w.capacity}%</div></div>
+              <div><div class="text-muted" style="font-size:11px">Value</div><div class="font-bold">${formatETB(w.value, true)}</div></div>
+            </div>
+            <div class="progress"><div class="progress-fill" style="width:${w.capacity}%; background:${w.capacity > 80 ? 'var(--danger)' : 'var(--accent-gradient)'}"></div></div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="data-card">
+        <div class="data-card-header"><div><div class="data-card-title">Suppliers</div></div></div>
+        ${data.suppliers.map(s => `
+          <div class="entity-row" style="padding:12px 0; border-bottom:1px solid var(--border)">
+            <div class="entity-avatar" style="background:var(--warning)">🚚</div>
+            <div style="flex:1">
+              <div class="entity-name">${s.name}</div>
+              <div class="entity-sub">${s.contact} • ${s.leadTime} days lead time</div>
+            </div>
+            <div style="text-align:right">
+              <div class="font-bold text-primary">★ ${s.rating}</div>
+              <div class="text-muted" style="font-size:11px">${s.products} products</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  document.getElementById('pageContent').innerHTML = content;
+}
+
+// ===== HR =====
+function renderHR() {
+  function calcNet(gross) {
+    const pension = gross * 0.07;
+    const taxable = gross - pension;
+    let tax = 0;
+    if (taxable > 7800) tax = 1385 + (taxable - 7800) * 0.30;
+    else if (taxable > 5250) tax = 747.5 + (taxable - 5250) * 0.25;
+    else if (taxable > 3200) tax = 337.5 + (taxable - 3200) * 0.20;
+    else if (taxable > 1650) tax = 105 + (taxable - 1650) * 0.15;
+    else if (taxable > 600) tax = (taxable - 600) * 0.10;
+    return Math.round(gross - pension - tax);
+  }
+  const depts = { finance: 'Finance', operations: 'Operations', sales: 'Sales', hr: 'HR', it: 'IT', admin: 'Admin' };
+  const totalPayroll = data.employees.reduce((s,e) => s + e.salary, 0);
+
+  const content = `
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Total Employees</div>
+          <div class="kpi-value">${data.employees.length}</div>
+          <div class="kpi-change up">↑ 5.0%</div>
+        </div><div class="kpi-icon cyan">👥</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Present Today</div>
+          <div class="kpi-value">9</div>
+          <div class="text-muted" style="font-size:12px">90% attendance</div>
+        </div><div class="kpi-icon green">✓</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">On Leave</div>
+          <div class="kpi-value">1</div>
+          <div class="text-muted" style="font-size:12px">1 remote</div>
+        </div><div class="kpi-icon amber">📅</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Monthly Payroll</div>
+          <div class="kpi-value">${formatETB(totalPayroll, true)}</div>
+          <div class="text-muted" style="font-size:12px">June 2026</div>
+        </div><div class="kpi-icon red">💰</div></div>
+      </div>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header">
+        <div><div class="data-card-title">Employees</div><div class="data-card-subtitle">${data.employees.length} team members</div></div>
+        <button class="btn btn-accent btn-sm">+ Add Employee</button>
+      </div>
+      <table>
+        <thead><tr><th>Employee</th><th>Position</th><th>Department</th><th class="text-right">Gross</th><th class="text-right">Net Pay</th><th>Status</th></tr></thead>
+        <tbody>
+          ${data.employees.map(e => `
+            <tr>
+              <td><div class="entity-row"><div class="entity-avatar">${getInitials(e.name)}</div><div><div class="entity-name">${e.name}</div><div class="entity-sub">${e.id}</div></div></div></td>
+              <td>${e.position}</td>
+              <td><span class="badge neutral">${depts[e.dept]}</span></td>
+              <td class="text-right">${formatETB(e.salary)}</td>
+              <td class="text-right font-bold text-primary">${formatETB(calcNet(e.salary))}</td>
+              <td>${getStatusBadge(e.status)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2">
+      <div class="data-card">
+        <div class="data-card-header"><div><div class="data-card-title">Payroll Summary — June 2026</div></div></div>
+        <div style="space-y:12px">
+          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:14px"><span class="text-muted">Gross Salary Total</span><span class="font-bold">${formatETB(totalPayroll)}</span></div>
+          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:14px"><span class="text-muted">Pension (7%)</span><span class="font-bold text-danger">-${formatETB(totalPayroll * 0.07)}</span></div>
+          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:14px"><span class="text-muted">Income Tax (PAYE)</span><span class="font-bold text-danger">-${formatETB(totalPayroll * 0.20)}</span></div>
+          <div style="display:flex; justify-content:space-between; padding:12px 0; font-size:16px"><span class="font-bold">Net Pay Total</span><span class="font-bold text-primary">${formatETB(totalPayroll * 0.73)}</span></div>
+        </div>
+        <button class="btn btn-accent" style="width:100%; margin-top:16px">▶ Run Payroll — July 2026</button>
+      </div>
+      <div class="data-card">
+        <div class="data-card-header"><div><div class="data-card-title">Benefits</div></div></div>
+        ${[
+          { name: 'Pension Fund', coverage: '100%', employer: '11%', employee: '7%', icon: '💰' },
+          { name: 'Health Insurance', coverage: '92%', employer: 'Full', employee: 'Optional', icon: '🏥' },
+          { name: 'Transport Allowance', coverage: '100%', employer: 'ETB 2,000/mo', employee: '—', icon: '🚌' },
+          { name: 'Meal Allowance', coverage: '88%', employer: 'ETB 1,500/mo', employee: '—', icon: '🍽' },
+          { name: 'Annual Bonus', coverage: '100%', employer: '1 month', employee: '—', icon: '🎁' },
+        ].map(b => `
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border)">
+            <div class="kpi-icon cyan" style="width:36px; height:36px; font-size:16px">${b.icon}</div>
+            <div style="flex:1">
+              <div class="font-bold" style="font-size:13px">${b.name}</div>
+              <div class="text-muted" style="font-size:11px">Employer: ${b.employer} • Employee: ${b.employee}</div>
+            </div>
+            <span class="badge info">${b.coverage}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  document.getElementById('pageContent').innerHTML = content;
+}
+
+// ===== SALES =====
+function renderSales() {
+  const totalCustomers = data.customers.length;
+  const totalLifetime = data.customers.reduce((s,c) => s+c.ltv, 0);
+  const pendingQuotes = data.quotations.filter(q => q.status === 'sent' || q.status === 'pending').length;
+  const wonDeals = data.pipeline.find(p => p.stage === 'won');
+  const totalDeals = data.pipeline.reduce((s,p) => s+p.count, 0);
+  const conversionRate = ((wonDeals.count / totalDeals) * 100).toFixed(1);
+
+  const content = `
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Total Customers</div>
+          <div class="kpi-value">${totalCustomers}</div>
+          <div class="kpi-change up">↑ 8.2%</div>
+        </div><div class="kpi-icon cyan">👥</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Monthly Sales</div>
+          <div class="kpi-value">ETB 2.18M</div>
+          <div class="kpi-change up">↑ 12.4%</div>
+        </div><div class="kpi-icon green">🛒</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Pending Quotes</div>
+          <div class="kpi-value">${pendingQuotes}</div>
+          <div class="text-muted" style="font-size:12px">Awaiting response</div>
+        </div><div class="kpi-icon amber">📄</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Conversion Rate</div>
+          <div class="kpi-value">${conversionRate}%</div>
+          <div class="kpi-change up">↑ 3.1%</div>
+        </div><div class="kpi-icon cyan">🎯</div></div>
+      </div>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header">
+        <div><div class="data-card-title">Sales Pipeline</div><div class="data-card-subtitle">Deal value by stage</div></div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:20px">
+        ${data.pipeline.map(p => {
+          const colors = { lead: '#FFB74D', qualified: '#00A8E1', proposal: '#2BD5F5', negotiation: '#BB86FC', won: '#4CAF50', lost: '#FF5252' };
+          return `
+            <div style="background:var(--bg-tertiary); border-radius:12px; padding:16px; text-align:center">
+              <div style="font-size:24px; font-weight:800; color:${colors[p.stage]}">${p.count}</div>
+              <div style="font-size:12px; color:var(--text-secondary); margin:4px 0">${p.label}</div>
+              <div style="font-size:11px; color:var(--text-tertiary)">${formatETB(p.value, true)}</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+      ${renderBarChart(data.pipeline.map(p => ({ label: p.label, value: p.value })))}
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header">
+        <div><div class="data-card-title">Quotations</div><div class="data-card-subtitle">${data.quotations.length} quotations this period</div></div>
+        <button class="btn btn-accent btn-sm">+ New Quotation</button>
+      </div>
+      <table>
+        <thead><tr><th>Quote #</th><th>Customer</th><th>Date</th><th class="text-right">Amount</th><th class="text-right">VAT</th><th class="text-right">Total</th><th>Status</th></tr></thead>
+        <tbody>
+          ${data.quotations.map(q => `
+            <tr>
+              <td class="font-mono">${q.no}</td>
+              <td class="font-bold">${q.customer}</td>
+              <td class="text-muted">${q.date}</td>
+              <td class="text-right">${formatETB(q.amount)}</td>
+              <td class="text-right text-muted">${formatETB(q.vat)}</td>
+              <td class="text-right font-bold text-primary">${formatETB(q.total)}</td>
+              <td>${getStatusBadge(q.status)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header"><div><div class="data-card-title">Customers</div><div class="data-card-subtitle">${totalCustomers} active • ${formatETB(totalLifetime, true)} lifetime value</div></div></div>
+      <table>
+        <thead><tr><th>Customer</th><th>Contact</th><th class="text-right">Orders</th><th class="text-right">Lifetime Value</th><th>Status</th></tr></thead>
+        <tbody>
+          ${data.customers.map(c => `
+            <tr>
+              <td><div class="entity-row"><div class="entity-avatar" style="background:${c.status === 'vip' ? 'var(--accent-gradient)' : 'var(--bg-tertiary)'}">${getInitials(c.name)}</div><div class="entity-name">${c.name}</div></div></td>
+              <td class="text-muted font-mono" style="font-size:12px">${c.contact}</td>
+              <td class="text-right font-bold">${c.orders}</td>
+              <td class="text-right font-bold text-primary">${formatETB(c.ltv, true)}</td>
+              <td>${getStatusBadge(c.status)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  document.getElementById('pageContent').innerHTML = content;
+}
+
+// ===== COMPLIANCE =====
+function renderCompliance() {
+  const filed = data.taxFilings.filter(t => t.status === 'filed').length;
+  const pending = data.taxFilings.filter(t => t.status === 'pending').length;
+  const overdue = data.taxFilings.filter(t => t.status === 'overdue').length;
+  const complianceScore = Math.round((filed / data.taxFilings.length) * 100);
+
+  const content = `
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Compliance Score</div>
+          <div class="kpi-value">${complianceScore}/100</div>
+          <div class="text-muted" style="font-size:12px">ERCA standing</div>
+        </div><div class="kpi-icon green">🛡️</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Filed</div>
+          <div class="kpi-value">${filed}</div>
+          <div class="text-muted" style="font-size:12px">This period</div>
+        </div><div class="kpi-icon cyan">✓</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Pending</div>
+          <div class="kpi-value">${pending}</div>
+          <div class="text-muted" style="font-size:12px">Pending deadlines</div>
+        </div><div class="kpi-icon amber">⏰</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Overdue</div>
+          <div class="kpi-value">${overdue}</div>
+          <div class="text-muted" style="font-size:12px">Requires action</div>
+        </div><div class="kpi-icon red">⚠</div></div>
+      </div>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header"><div><div class="data-card-title">Tax Deadlines</div><div class="data-card-subtitle">Upcoming tax filing deadlines</div></div></div>
+      <table>
+        <thead><tr><th>Tax Type</th><th>Period</th><th>Due Date</th><th class="text-right">Amount Due</th><th>Status</th><th class="text-right">Action</th></tr></thead>
+        <tbody>
+          ${data.taxFilings.map(tf => `
+            <tr>
+              <td class="font-bold">${tf.type}</td>
+              <td class="text-muted">${tf.period}</td>
+              <td class="text-muted">${tf.dueDate}</td>
+              <td class="text-right font-bold">${formatETB(tf.amount)}</td>
+              <td>${getStatusBadge(tf.status)}</td>
+              <td class="text-right">${tf.status !== 'filed' ? '<button class="btn btn-outline btn-sm">File Now</button>' : '<span class="text-success">✓ Filed</span>'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header">
+        <div><div class="data-card-title">Audit Trail</div><div class="data-card-subtitle">Complete activity log for compliance</div></div>
+      </div>
+      <table>
+        <thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Module</th><th>Details</th><th>IP Address</th></tr></thead>
+        <tbody>
+          ${data.auditLogs.map(log => `
+            <tr>
+              <td class="font-mono text-muted" style="font-size:11px">${log.time}</td>
+              <td><div class="entity-row"><div class="entity-avatar" style="width:28px; height:28px; font-size:10px">${getInitials(log.user)}</div><span style="font-size:13px">${log.user}</span></div></td>
+              <td>${log.action}</td>
+              <td><span class="badge info">${log.entity}</span></td>
+              <td class="text-muted" style="font-size:12px">${log.details || '—'}</td>
+              <td class="font-mono text-muted" style="font-size:11px">${log.ip}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header"><div><div class="data-card-title">Ethiopian Tax Rules</div></div></div>
+      <div class="grid-2">
+        ${[
+          { name: 'VAT (Value Added Tax)', rate: '15%', desc: 'Standard rate for taxable goods', threshold: '500,000 ETB turnover' },
+          { name: 'Turnover Tax', rate: '2%', desc: 'For non-VAT registered businesses', threshold: '100,000 ETB turnover' },
+          { name: 'Withholding Tax', rate: '2%', desc: 'On payments to suppliers', threshold: 'All taxable payments' },
+          { name: 'Business Income Tax', rate: '30%', desc: 'Corporate income tax', threshold: 'All registered companies' },
+          { name: 'Pension (Employee)', rate: '7%', desc: 'Social security contribution', threshold: 'All employees' },
+          { name: 'Pension (Employer)', rate: '11%', desc: 'Social security contribution', threshold: 'All employees' },
+        ].map(rule => `
+          <div style="background:var(--bg-tertiary); border-radius:12px; padding:16px; display:flex; align-items:center; gap:12px">
+            <div class="kpi-icon cyan">📜</div>
+            <div style="flex:1">
+              <div class="font-bold" style="font-size:13px">${rule.name}</div>
+              <div class="text-muted" style="font-size:11px">${rule.desc}</div>
+              <div class="text-muted" style="font-size:11px; margin-top:4px">Threshold: ${rule.threshold}</div>
+            </div>
+            <div style="font-size:20px; font-weight:800; color:var(--accent-bright)">${rule.rate}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  document.getElementById('pageContent').innerHTML = content;
+}
+
+// ===== ADMIN =====
+function renderAdmin() {
+  const content = `
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">System Users</div>
+          <div class="kpi-value">${data.users.length}</div>
+          <div class="text-muted" style="font-size:12px">${data.users.filter(u => u.status === 'online').length} online now</div>
+        </div><div class="kpi-icon cyan">👥</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Active Integrations</div>
+          <div class="kpi-value">7</div>
+          <div class="text-muted" style="font-size:12px">8 total configured</div>
+        </div><div class="kpi-icon green">🔌</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">Security Score</div>
+          <div class="kpi-value">A+</div>
+          <div class="text-muted" style="font-size:12px">2FA + Biometric active</div>
+        </div><div class="kpi-icon amber">🛡️</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><div>
+          <div class="kpi-label">System Uptime</div>
+          <div class="kpi-value">99.98%</div>
+          <div class="text-muted" style="font-size:12px">Last 30 days</div>
+        </div><div class="kpi-icon green">☁</div></div>
+      </div>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header">
+        <div><div class="data-card-title">User Management</div><div class="data-card-subtitle">${data.users.length} users with role-based access</div></div>
+        <button class="btn btn-accent btn-sm">+ Add User</button>
+      </div>
+      <table>
+        <thead><tr><th>User</th><th>Email</th><th>Role</th><th>2FA</th><th>Status</th></tr></thead>
+        <tbody>
+          ${data.users.map(u => `
+            <tr>
+              <td><div class="entity-row"><div class="entity-avatar" style="position:relative">${u.avatar}${u.status === 'online' ? '<span style="position:absolute; bottom:-2px; right:-2px; width:10px; height:10px; background:var(--success); border-radius:50%; border:2px solid var(--bg-card)"></span>' : ''}</div><div class="entity-name">${u.name}</div></div></td>
+              <td class="text-muted" style="font-size:12px">${u.email}</td>
+              <td><span class="badge ${u.role === 'admin' ? 'info' : u.role === 'manager' ? 'success' : 'neutral'}">${u.role}</span></td>
+              <td>${u.twoFA ? '<span class="text-success">✓ Enabled</span>' : '<span class="text-muted">Disabled</span>'}</td>
+              <td>${getStatusBadge(u.status)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header"><div><div class="data-card-title">Deployment Instructions</div><div class="data-card-subtitle">Cloud, on-premise, and Docker guides</div></div></div>
+      <div class="deploy-card">
+        <div class="deploy-header">
+          <div class="icon">☁</div>
+          <div class="title">Option 1: Cloud Deployment (AWS)</div>
+        </div>
+        <div class="deploy-body">
+          <div class="deploy-step"><div class="deploy-step-num">1</div><code>curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip && unzip awscliv2.zip && sudo ./aws/install</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">2</div><code>aws configure</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">3</div><code>docker build -t hisab-erp:latest .</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">4</div><code>aws ecr create-repository --repository-name hisab-erp</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">5</div><code>aws ecs create-cluster --cluster-name hisab-erp-prod</code></div>
+        </div>
+      </div>
+      <div class="deploy-card">
+        <div class="deploy-header">
+          <div class="icon">🖥</div>
+          <div class="title">Option 2: On-Premise Server</div>
+        </div>
+        <div class="deploy-body">
+          <div class="deploy-step"><div class="deploy-step-num">1</div><code>curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">2</div><code>sudo apt install postgresql postgresql-contrib</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">3</div><code>git clone https://github.com/hisab-erp/suite.git</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">4</div><code>cd hisab-erp && npm install</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">5</div><code>npx prisma migrate deploy</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">6</div><code>npm run build && npm start</code></div>
+        </div>
+      </div>
+      <div class="deploy-card">
+        <div class="deploy-header">
+          <div class="icon">📦</div>
+          <div class="title">Option 3: Docker Container</div>
+        </div>
+        <div class="deploy-body">
+          <div class="deploy-step"><div class="deploy-step-num">1</div><code>curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">2</div><code>docker pull hisaberp/suite:latest</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">3</div><code>docker network create hisab-erp-net</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">4</div><code>docker run -d --name hisab-erp -p 3000:3000 hisaberp/suite:latest</code></div>
+          <div class="deploy-step"><div class="deploy-step-num">5</div><code>docker-compose up -d</code></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header"><div><div class="data-card-title">Integrations</div></div></div>
+      <div class="grid-3">
+        ${[
+          { name: 'Dashen Bank API', type: 'Banking', status: 'connected', sync: '2 min ago' },
+          { name: 'Commercial Bank of Ethiopia', type: 'Banking', status: 'connected', sync: '5 min ago' },
+          { name: 'Awash Bank', type: 'Banking', status: 'connected', sync: '12 min ago' },
+          { name: 'Telebirr', type: 'Mobile Money', status: 'connected', sync: '1 min ago' },
+          { name: 'Amole', type: 'Mobile Money', status: 'connected', sync: '8 min ago' },
+          { name: 'ERCA e-Filing', type: 'Government', status: 'connected', sync: '1 hour ago' },
+        ].map(i => `
+          <div style="background:var(--bg-tertiary); border-radius:12px; padding:16px">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px">
+              <div class="kpi-icon cyan" style="width:36px; height:36px; font-size:16px">${i.type === 'Banking' ? '🏦' : i.type === 'Mobile Money' ? '📱' : '🏛'}</div>
+              ${getStatusBadge(i.status)}
+            </div>
+            <div class="font-bold" style="font-size:13px; margin-top:8px">${i.name}</div>
+            <div class="text-muted" style="font-size:11px">${i.type}</div>
+            <div class="text-muted" style="font-size:11px; margin-top:8px; padding-top:8px; border-top:1px solid var(--border)">Last sync: ${i.sync}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  document.getElementById('pageContent').innerHTML = content;
+}
+
+// ===== INIT =====
+renderDashboard();
+</script>
+</body>
+</html>
