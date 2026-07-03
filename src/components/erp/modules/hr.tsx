@@ -1,0 +1,472 @@
+"use client";
+
+import { useState } from "react";
+import {
+  Users,
+  UserCheck,
+  CalendarDays,
+  Wallet,
+  Plus,
+  FileText,
+  TrendingUp,
+  Clock,
+  Download,
+  Briefcase,
+} from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { KPICard } from "@/components/erp/ui/kpi-card";
+import { ChartCard } from "@/components/erp/ui/chart-card";
+import { StatusBadge } from "@/components/erp/ui/status-badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useTranslation } from "@/lib/use-translation";
+import { employees, payrollSummary, attendanceToday } from "@/lib/mock-data";
+import { formatETB } from "@/lib/currency";
+import { cn } from "@/lib/utils";
+
+const tooltipStyle = {
+  backgroundColor: "oklch(1 0.005 85)",
+  border: "1px solid oklch(0.90 0.015 85)",
+  borderRadius: "0.5rem",
+  fontSize: "12px",
+  color: "oklch(0.20 0.02 160)",
+};
+
+export function HRModule() {
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState("employees");
+
+  const attendanceData = [
+    { name: "Present", value: attendanceToday.present, color: "oklch(0.52 0.14 162)" },
+    { name: "On Leave", value: attendanceToday.onLeave, color: "oklch(0.72 0.13 75)" },
+    { name: "Remote", value: attendanceToday.remote, color: "oklch(0.40 0.10 162)" },
+    { name: "Absent", value: attendanceToday.absent, color: "oklch(0.60 0.10 35)" },
+  ];
+
+  // Calculate net pay per employee (simplified)
+  const calculateNetPay = (gross: number) => {
+    const pension = gross * 0.07;
+    const taxableIncome = gross - pension;
+    // Simplified Ethiopian income tax brackets
+    let tax = 0;
+    if (taxableIncome <= 600) tax = taxableIncome * 0;
+    else if (taxableIncome <= 1650) tax = (taxableIncome - 600) * 0.1;
+    else if (taxableIncome <= 3200) tax = 105 + (taxableIncome - 1650) * 0.15;
+    else if (taxableIncome <= 5250) tax = 337.5 + (taxableIncome - 3200) * 0.2;
+    else if (taxableIncome <= 7800) tax = 747.5 + (taxableIncome - 5250) * 0.25;
+    else tax = 1385 + (taxableIncome - 7800) * 0.3;
+    return gross - pension - tax;
+  };
+
+  return (
+    <div className="space-y-4 sm:space-y-6">
+      {/* KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <KPICard
+          title={t.hr.totalEmployees}
+          value={payrollSummary.employeeCount.toString()}
+          icon={<Users className="h-5 w-5 sm:h-6 sm:w-6" />}
+          accent="emerald"
+          change={5.0}
+        />
+        <KPICard
+          title={t.hr.presentToday}
+          value={attendanceToday.present.toString()}
+          icon={<UserCheck className="h-5 w-5 sm:h-6 sm:w-6" />}
+          accent="deep"
+          subtitle={`${((attendanceToday.present / payrollSummary.employeeCount) * 100).toFixed(0)}% attendance`}
+        />
+        <KPICard
+          title={t.hr.onLeave}
+          value={attendanceToday.onLeave.toString()}
+          icon={<CalendarDays className="h-5 w-5 sm:h-6 sm:w-6" />}
+          accent="amber"
+          subtitle={`${attendanceToday.remote} remote`}
+        />
+        <KPICard
+          title={t.hr.monthlyPayroll}
+          value={formatETB(payrollSummary.totalNet, { compact: true })}
+          icon={<Wallet className="h-5 w-5 sm:h-6 sm:w-6" />}
+          accent="terracotta"
+          subtitle={payrollSummary.period}
+        />
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+          <TabsList className="grid w-full sm:w-auto grid-cols-2 sm:grid-cols-5 h-auto">
+            <TabsTrigger value="employees" className="text-xs sm:text-sm py-2">{t.hr.employees}</TabsTrigger>
+            <TabsTrigger value="attendance" className="text-xs sm:text-sm py-2">{t.hr.attendance}</TabsTrigger>
+            <TabsTrigger value="payroll" className="text-xs sm:text-sm py-2">{t.hr.payroll}</TabsTrigger>
+            <TabsTrigger value="benefits" className="text-xs sm:text-sm py-2">{t.hr.benefits}</TabsTrigger>
+            <TabsTrigger value="leave" className="text-xs sm:text-sm py-2">{t.hr.leaveRequests}</TabsTrigger>
+          </TabsList>
+          <Button size="sm" className="gradient-emerald text-white">
+            <Plus className="h-4 w-4 mr-1.5" />
+            {t.hr.addEmployee}
+          </Button>
+        </div>
+
+        {/* Employees Tab */}
+        <TabsContent value="employees">
+          <ChartCard title={t.hr.employees} subtitle={`${employees.length} of ${payrollSummary.employeeCount} team members`}>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-xs">{t.hr.employeeName}</TableHead>
+                    <TableHead className="text-xs hidden sm:table-cell">{t.hr.position}</TableHead>
+                    <TableHead className="text-xs hidden md:table-cell">{t.hr.department}</TableHead>
+                    <TableHead className="text-xs text-right hidden sm:table-cell">{t.hr.salary}</TableHead>
+                    <TableHead className="text-xs text-right">{t.hr.netPay}</TableHead>
+                    <TableHead className="text-xs hidden lg:table-cell">{t.hr.joinDate}</TableHead>
+                    <TableHead className="text-xs">{t.hr.status}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {employees.map((emp) => (
+                    <TableRow key={emp.id} className="hover:bg-muted/30">
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="h-9 w-9 rounded-full gradient-emerald flex items-center justify-center text-white text-xs font-bold shrink-0">
+                            {emp.name.split(" ").map((n) => n[0]).join("")}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium truncate">{emp.name}</p>
+                            <p className="text-xs text-muted-foreground truncate sm:hidden">{emp.position}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm hidden sm:table-cell">{emp.position}</TableCell>
+                      <TableCell className="text-xs hidden md:table-cell">
+                        <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-md bg-muted text-muted-foreground capitalize">
+                          {t.hr.departments[emp.department as keyof typeof t.hr.departments]}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-sm text-right tabular-nums hidden sm:table-cell">{formatETB(emp.salary)}</TableCell>
+                      <TableCell className="text-sm font-semibold text-right tabular-nums text-primary">
+                        {formatETB(calculateNetPay(emp.salary))}
+                      </TableCell>
+                      <TableCell className="text-xs hidden lg:table-cell text-muted-foreground">{emp.joinDate}</TableCell>
+                      <TableCell>
+                        <StatusBadge status={emp.status as "active" | "leave"} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </ChartCard>
+        </TabsContent>
+
+        {/* Attendance Tab */}
+        <TabsContent value="attendance" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <ChartCard title="Today's Attendance" subtitle={payrollSummary.period}>
+              <ResponsiveContainer width="100%" height={260}>
+                <PieChart>
+                  <Pie
+                    data={attendanceData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={90}
+                    paddingAngle={2}
+                  >
+                    {attendanceData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={tooltipStyle} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {attendanceData.map((item) => (
+                  <div key={item.name} className="flex items-center gap-2 text-xs">
+                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
+                    <span className="text-muted-foreground flex-1">{item.name}</span>
+                    <span className="font-semibold">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            </ChartCard>
+
+            <ChartCard title="Weekly Attendance Trend" subtitle="Last 7 days" className="lg:col-span-2">
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart
+                  data={[
+                    { day: "Mon", present: 132, absent: 10 },
+                    { day: "Tue", present: 138, absent: 4 },
+                    { day: "Wed", present: 134, absent: 8 },
+                    { day: "Thu", present: 128, absent: 14 },
+                    { day: "Fri", present: 130, absent: 12 },
+                    { day: "Sat", present: 98, absent: 44 },
+                    { day: "Sun", present: 0, absent: 142 },
+                  ]}
+                  margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.90 0.015 85)" vertical={false} />
+                  <XAxis dataKey="day" tick={{ fontSize: 11, fill: "oklch(0.50 0.02 160)" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: "oklch(0.50 0.02 160)" }} axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Bar dataKey="present" stackId="a" fill="oklch(0.52 0.14 162)" radius={[0, 0, 0, 0]} barSize={28} />
+                  <Bar dataKey="absent" stackId="a" fill="oklch(0.60 0.10 35)" radius={[4, 4, 0, 0]} barSize={28} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
+
+          <ChartCard title="Recent Check-ins" subtitle="Today's attendance log">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-xs">Employee</TableHead>
+                    <TableHead className="text-xs hidden sm:table-cell">Department</TableHead>
+                    <TableHead className="text-xs">Check In</TableHead>
+                    <TableHead className="text-xs hidden sm:table-cell">Check Out</TableHead>
+                    <TableHead className="text-xs">Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {employees.slice(0, 6).map((emp, idx) => (
+                    <TableRow key={emp.id} className="hover:bg-muted/30">
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full gradient-emerald flex items-center justify-center text-white text-xs font-bold shrink-0">
+                            {emp.name.split(" ").map((n) => n[0]).join("")}
+                          </div>
+                          <span className="text-sm font-medium">{emp.name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-xs hidden sm:table-cell text-muted-foreground capitalize">
+                        {t.hr.departments[emp.department as keyof typeof t.hr.departments]}
+                      </TableCell>
+                      <TableCell className="text-xs">
+                        <span className="font-mono">{["08:42", "08:55", "09:03", "08:38", "09:12", "08:48"][idx]}</span>
+                      </TableCell>
+                      <TableCell className="text-xs hidden sm:table-cell font-mono text-muted-foreground">—</TableCell>
+                      <TableCell><StatusBadge status={emp.status === "active" ? "online" : "away"} /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </ChartCard>
+        </TabsContent>
+
+        {/* Payroll Tab */}
+        <TabsContent value="payroll" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Card className="border-border/60 shadow-sm">
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide">{t.hr.monthlyPayroll}</p>
+                    <p className="text-2xl font-bold text-foreground mt-1">{payrollSummary.period}</p>
+                  </div>
+                  <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Wallet className="h-6 w-6 text-primary" />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">{t.hr.grossSalary}</span>
+                    <span className="font-semibold tabular-nums">{formatETB(payrollSummary.totalGross)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">{t.hr.pension}</span>
+                    <span className="font-semibold tabular-nums text-destructive">-{formatETB(payrollSummary.totalPension)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">{t.hr.incomeTax}</span>
+                    <span className="font-semibold tabular-nums text-destructive">-{formatETB(payrollSummary.totalIncomeTax)}</span>
+                  </div>
+                  <div className="pt-3 border-t border-border flex items-center justify-between">
+                    <span className="text-sm font-medium">{t.hr.netPay}</span>
+                    <span className="text-xl font-bold text-primary tabular-nums">{formatETB(payrollSummary.totalNet)}</span>
+                  </div>
+                </div>
+                <Button className="w-full gradient-emerald text-white mt-4">
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  {t.hr.runPayroll}
+                </Button>
+              </CardContent>
+            </Card>
+
+            <ChartCard title="Payroll Breakdown" subtitle="By department (ETB)">
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart
+                  data={[
+                    { dept: "Finance", amount: 96000 },
+                    { dept: "Operations", amount: 80000 },
+                    { dept: "Sales", amount: 114000 },
+                    { dept: "HR", amount: 28000 },
+                    { dept: "IT", amount: 30000 },
+                    { dept: "Admin", amount: 22000 },
+                  ]}
+                  margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.90 0.015 85)" vertical={false} />
+                  <XAxis dataKey="dept" tick={{ fontSize: 10, fill: "oklch(0.50 0.02 160)" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: "oklch(0.50 0.02 160)" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                  <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => formatETB(value)} />
+                  <Bar dataKey="amount" radius={[4, 4, 0, 0]} fill="oklch(0.52 0.14 162)" barSize={32} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
+
+          <ChartCard title="Payslips" subtitle="Generate and download employee payslips" action={<Button size="sm" variant="outline"><Download className="h-3 w-3 mr-1" />Export All</Button>}>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-xs">Employee</TableHead>
+                    <TableHead className="text-xs hidden sm:table-cell">Gross (ETB)</TableHead>
+                    <TableHead className="text-xs hidden sm:table-cell">Deductions</TableHead>
+                    <TableHead className="text-xs text-right">Net Pay</TableHead>
+                    <TableHead className="text-xs text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {employees.slice(0, 6).map((emp) => {
+                    const net = calculateNetPay(emp.salary);
+                    const deductions = emp.salary - net;
+                    return (
+                      <TableRow key={emp.id} className="hover:bg-muted/30">
+                        <TableCell className="text-sm font-medium">{emp.name}</TableCell>
+                        <TableCell className="text-sm tabular-nums hidden sm:table-cell">{formatETB(emp.salary)}</TableCell>
+                        <TableCell className="text-sm tabular-nums hidden sm:table-cell text-destructive">-{formatETB(deductions)}</TableCell>
+                        <TableCell className="text-sm font-semibold tabular-nums text-right text-primary">{formatETB(net)}</TableCell>
+                        <TableCell className="text-right">
+                          <Button size="sm" variant="ghost" className="text-xs text-primary">
+                            <FileText className="h-3 w-3 mr-1" />{t.hr.payslip}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </ChartCard>
+        </TabsContent>
+
+        {/* Benefits Tab */}
+        <TabsContent value="benefits">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { name: "Pension Fund", coverage: "100%", employer: "11%", employee: "7%", icon: <Wallet className="h-5 w-5" />, color: "emerald" },
+              { name: "Health Insurance", coverage: "92%", employer: "Full", employee: "Optional", icon: <Briefcase className="h-5 w-5" />, color: "deep" },
+              { name: "Transport Allowance", coverage: "100%", employer: "ETB 2,000/mo", employee: "—", icon: <TrendingUp className="h-5 w-5" />, color: "amber" },
+              { name: "Meal Allowance", coverage: "88%", employer: "ETB 1,500/mo", employee: "—", icon: <TrendingUp className="h-5 w-5" />, color: "terracotta" },
+              { name: "Annual Bonus", coverage: "100%", employer: "1 month", employee: "—", icon: <FileText className="h-5 w-5" />, color: "emerald" },
+              { name: "Emergency Leave", coverage: "100%", employer: "5 days/yr", employee: "—", icon: <CalendarDays className="h-5 w-5" />, color: "deep" },
+            ].map((benefit) => (
+              <Card key={benefit.name} className="border-border/60 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-5">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className={cn(
+                      "h-11 w-11 rounded-xl flex items-center justify-center",
+                      benefit.color === "emerald" && "bg-primary/10 text-primary",
+                      benefit.color === "deep" && "bg-[oklch(0.40_0.10_162)]/10 text-[oklch(0.40_0.10_162)]",
+                      benefit.color === "amber" && "bg-accent/20 text-accent-foreground",
+                      benefit.color === "terracotta" && "bg-[oklch(0.60_0.10_35)]/10 text-[oklch(0.60_0.10_35)]"
+                    )}>
+                      {benefit.icon}
+                    </div>
+                    <span className="text-xs font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-md">
+                      {benefit.coverage}
+                    </span>
+                  </div>
+                  <p className="text-sm font-semibold text-foreground">{benefit.name}</p>
+                  <div className="mt-3 pt-3 border-t border-border/60 space-y-1.5 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Employer</span>
+                      <span className="font-medium">{benefit.employer}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Employee</span>
+                      <span className="font-medium">{benefit.employee}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        {/* Leave Requests Tab */}
+        <TabsContent value="leave">
+          <ChartCard title={t.hr.leaveRequests} subtitle="Pending approvals">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-xs">Employee</TableHead>
+                    <TableHead className="text-xs hidden sm:table-cell">Type</TableHead>
+                    <TableHead className="text-xs">Duration</TableHead>
+                    <TableHead className="text-xs hidden md:table-cell">Reason</TableHead>
+                    <TableHead className="text-xs">Status</TableHead>
+                    <TableHead className="text-xs text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[
+                    { name: "Meseret Lemma", type: "Annual Leave", duration: "Jul 8 - Jul 15", reason: "Family vacation", status: "pending" },
+                    { name: "Daniel Kebede", type: "Sick Leave", duration: "Jul 4 - Jul 5", reason: "Medical appointment", status: "pending" },
+                    { name: "Bethel Solomon", type: "Emergency", duration: "Jul 6", reason: "Personal matter", status: "pending" },
+                    { name: "Nahom Tesfaye", type: "Annual Leave", duration: "Jul 10 - Jul 20", reason: "Wedding ceremony", status: "pending" },
+                    { name: "Hanna Mengistu", type: "Unpaid Leave", duration: "Jul 15 - Jul 22", reason: "Personal development", status: "pending" },
+                  ].map((req, idx) => (
+                    <TableRow key={idx} className="hover:bg-muted/30">
+                      <TableCell className="text-sm font-medium">{req.name}</TableCell>
+                      <TableCell className="text-xs hidden sm:table-cell">
+                        <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
+                          {req.type}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-xs">{req.duration}</TableCell>
+                      <TableCell className="text-xs hidden md:table-cell text-muted-foreground">{req.reason}</TableCell>
+                      <TableCell><StatusBadge status={req.status as "pending"} /></TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex gap-1 justify-end">
+                          <Button size="sm" variant="ghost" className="text-xs text-primary h-7">Approve</Button>
+                          <Button size="sm" variant="ghost" className="text-xs text-destructive h-7">Reject</Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </ChartCard>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
