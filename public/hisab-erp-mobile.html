@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0F171E">
+<title>Hisab ERP — Ethiopian Business Intelligence</title>
+<style>
+/* ===== RESET ===== */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg-primary:#0F171E;--bg-secondary:#1A2433;--bg-tertiary:#232F3E;--bg-card:#1A2433;
+  --accent:#00A8E1;--accent-bright:#2BD5F5;--accent-glow:rgba(0,168,225,.4);
+  --accent-gradient:linear-gradient(135deg,#00A8E1 0%,#2BD5F5 100%);
+  --text-primary:#FFFFFF;--text-secondary:#ABB7C4;--text-tertiary:#8197A4;
+  --success:#4CAF50;--warning:#FFB74D;--danger:#FF5252;--purple:#BB86FC;
+  --border:rgba(255,255,255,.08);--border-hover:rgba(0,168,225,.4);
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  background:var(--bg-primary);color:var(--text-primary);line-height:1.5;
+  font-size:14px;-webkit-font-smoothing:antialiased;user-select:none;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:16px} /* prevent iOS zoom */
+.app-container{max-width:480px;margin:0 auto;position:relative;height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--bg-primary)}
+.screen{display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen.active{display:block}
+.icon-btn{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);transition:all .2s}
+.icon-btn:active{background:var(--bg-tertiary);transform:scale(.95)}
+
+/* ===== LOGIN ===== */
+.login-screen{display:flex;flex-direction:column;min-height:100vh;background:var(--bg-primary);position:relative;overflow:hidden}
+.login-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(0,168,225,.15) 0%,transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(43,213,245,.1) 0%,transparent 60%)}
+.login-content{position:relative;z-index:1;padding:48px 28px 28px;display:flex;flex-direction:column;min-height:100vh}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:48px}
+.logo-mark{width:48px;height:48px;background:var(--accent-gradient);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:var(--bg-primary);box-shadow:0 4px 24px var(--accent-glow)}
+.login-logo-text{font-size:22px;font-weight:700}
+.login-logo-text .accent{color:var(--accent-bright)}
+.login-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(0,168,225,.1);border:1px solid rgba(0,168,225,.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--accent-bright);text-transform:uppercase;letter-spacing:1px;margin-bottom:20px;align-self:flex-start}
+.login-badge::before{content:'';width:6px;height:6px;background:var(--accent-bright);border-radius:50%;box-shadow:0 0 8px var(--accent-bright);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.login-screen h1{font-size:32px;font-weight:800;line-height:1.15;letter-spacing:-1px;margin-bottom:12px}
+.gradient-text{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-screen .subtitle{font-size:15px;color:var(--text-secondary);margin-bottom:32px}
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-tertiary);margin-bottom:8px}
+.form-input{width:100%;padding:14px 16px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;color:var(--text-primary);font-size:16px;transition:all .2s}
+.form-input:focus{outline:none;border-color:var(--accent);background:rgba(0,168,225,.05)}
+.form-input::placeholder{color:var(--text-tertiary)}
+.role-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px}
+.role-btn{padding:10px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;color:var(--text-tertiary);font-size:13px;font-weight:500;transition:all .2s}
+.role-btn.active{background:rgba(0,168,225,.1);border-color:var(--accent);color:var(--accent-bright)}
+.btn-primary{width:100%;padding:16px;background:var(--accent-gradient);color:var(--bg-primary);border-radius:12px;font-weight:700;font-size:16px;box-shadow:0 4px 20px var(--accent-glow);transition:all .2s}
+.btn-primary:active{transform:scale(.98)}
+.btn-secondary{width:100%;padding:14px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;color:var(--text-primary);font-weight:600;font-size:14px;margin-top:12px;transition:all .2s}
+.btn-secondary:active{background:rgba(255,255,255,.06)}
+.login-divider{text-align:center;margin:20px 0;position:relative;color:var(--text-tertiary);font-size:12px}
+.login-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)}
+.login-divider span{background:var(--bg-primary);padding:0 12px;position:relative}
+.demo-btn{width:100%;padding:12px;background:transparent;color:var(--text-tertiary);font-size:13px;margin-top:4px}
+.demo-btn:active{color:var(--accent-bright)}
+.biometric-btn{display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* ===== APP HEADER ===== */
+.app-header{padding:calc(12px + var(--safe-top)) 16px 12px;background:rgba(15,23,30,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.header-logo{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.header-logo .logo-mark{width:32px;height:32px;font-size:16px;border-radius:9px}
+.header-brand{font-size:15px;font-weight:700}
+.header-brand .accent{color:var(--accent-bright)}
+.header-actions{display:flex;gap:4px;align-items:center}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 6px var(--success)}
+.lang-badge{font-size:11px;font-weight:700;color:var(--accent-bright);background:rgba(0,168,225,.1);padding:4px 8px;border-radius:6px}
+
+/* ===== PAGE TITLE ===== */
+.page-title-bar{padding:20px 16px 12px}
+.page-title{font-size:24px;font-weight:800;letter-spacing:-.5px}
+.page-subtitle{font-size:13px;color:var(--text-tertiary);margin-top:2px}
+
+/* ===== KPI CARDS ===== */
+.kpi-scroll{display:flex;gap:12px;padding:0 16px 16px;overflow-x:auto;scrollbar-width:none}
+.kpi-scroll::-webkit-scrollbar{display:none}
+.kpi-card{min-width:150px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px;flex-shrink:0}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-tertiary);margin-bottom:8px}
+.kpi-value{font-size:20px;font-weight:800;line-height:1.2}
+.kpi-change{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;margin-top:6px;padding:2px 6px;border-radius:4px}
+.kpi-change.up{background:rgba(76,175,80,.15);color:var(--success)}
+.kpi-change.down{background:rgba(255,82,82,.15);color:var(--danger)}
+.kpi-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+.kpi-icon.cyan{background:rgba(0,168,225,.1);color:var(--accent-bright)}
+.kpi-icon.green{background:rgba(76,175,80,.15);color:var(--success)}
+.kpi-icon.amber{background:rgba(255,183,77,.15);color:var(--warning)}
+.kpi-icon.red{background:rgba(255,82,82,.15);color:var(--danger)}
+
+/* ===== CARDS ===== */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px;margin:0 16px 16px}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.card-title{font-size:15px;font-weight:700}
+.card-subtitle{font-size:12px;color:var(--text-tertiary);margin-top:2px}
+.card-link{font-size:12px;color:var(--accent-bright);font-weight:600}
+
+/* ===== LISTS ===== */
+.list-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.list-item:last-child{border-bottom:none}
+.list-avatar{width:40px;height:40px;border-radius:12px;background:var(--accent-gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--bg-primary);flex-shrink:0}
+.list-avatar.round{border-radius:50%}
+.list-avatar.amber{background:var(--warning)}
+.list-avatar.red{background:var(--danger)}
+.list-avatar.green{background:var(--success)}
+.list-avatar.purple{background:var(--purple)}
+.list-content{flex:1;min-width:0}
+.list-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-sub{font-size:12px;color:var(--text-tertiary);margin-top:2px}
+.list-right{text-align:right;flex-shrink:0}
+.list-amount{font-size:14px;font-weight:700}
+.list-amount.positive{color:var(--accent-bright)}
+.list-amount.negative{color:var(--danger)}
+.list-time{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+
+/* ===== BADGES ===== */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:100px;font-size:10px;font-weight:600}
+.badge::before{content:'';width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.7}
+.badge.success{background:rgba(76,175,80,.15);color:var(--success)}
+.badge.warning{background:rgba(255,183,77,.15);color:var(--warning)}
+.badge.danger{background:rgba(255,82,82,.15);color:var(--danger)}
+.badge.info{background:rgba(0,168,225,.15);color:var(--accent-bright)}
+.badge.neutral{background:rgba(255,255,255,.08);color:var(--text-secondary)}
+.badge.purple{background:rgba(187,134,252,.15);color:var(--purple)}
+
+/* ===== TABS ===== */
+.tab-row{display:flex;gap:4px;padding:0 16px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+.tab-row::-webkit-scrollbar{display:none}
+.tab-btn{padding:8px 16px;border-radius:100px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-tertiary);font-size:13px;font-weight:500;white-space:nowrap;transition:all .2s}
+.tab-btn.active{background:var(--accent-gradient);color:var(--bg-primary);font-weight:600;border-color:transparent}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{display:flex;background:rgba(15,23,30,.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 4px calc(8px + var(--safe-bottom));position:relative;z-index:100}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;color:var(--text-tertiary);transition:all .2s}
+.nav-item.active{color:var(--accent-bright)}
+.nav-item:active{transform:scale(.92)}
+.nav-icon{font-size:22px;line-height:1}
+.nav-label{font-size:10px;font-weight:600}
+
+/* ===== FAB ===== */
+.fab{position:absolute;bottom:80px;right:20px;width:56px;height:56px;border-radius:50%;background:var(--accent-gradient);color:var(--bg-primary);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:300;box-shadow:0 8px 24px var(--accent-glow);z-index:50;transition:all .2s}
+.fab:active{transform:scale(.9)}
+
+/* ===== BOTTOM SHEET MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;backdrop-filter:blur(4px)}
+.modal-overlay.active{display:block}
+.bottom-sheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg-secondary);border-radius:24px 24px 0 0;padding:8px 20px calc(24px + var(--safe-bottom));z-index:201;max-height:90vh;overflow-y:auto;transition:transform .3s ease;transform:translate(-50%,100%)}
+.bottom-sheet.active{transform:translate(-50%,0)}
+.sheet-handle{width:40px;height:4px;background:var(--text-tertiary);border-radius:2px;margin:8px auto 20px;opacity:.5}
+.sheet-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.sheet-subtitle{font-size:13px;color:var(--text-tertiary);margin-bottom:20px}
+
+/* ===== FORMS ===== */
+.form-row{margin-bottom:16px}
+.form-row label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-tertiary);margin-bottom:8px}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:14px 16px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;color:var(--text-primary);font-size:16px}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:none;border-color:var(--accent)}
+.form-row select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238197A4' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-row{display:flex;gap:8px;margin-top:8px}
+.btn-cancel{flex:1;padding:14px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;color:var(--text-primary);font-weight:600;font-size:14px}
+.btn-submit{flex:2;padding:14px;background:var(--accent-gradient);color:var(--bg-primary);border-radius:12px;font-weight:700;font-size:14px}
+
+/* ===== TABLES (mobile cards) ===== */
+.data-row{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px;margin:0 16px 10px;display:flex;align-items:center;gap:12px}
+.data-row:active{background:var(--bg-tertiary)}
+
+/* ===== CHARTS ===== */
+.chart-box{width:100%;overflow:hidden}
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:160px;padding:12px 0}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.bar{width:100%;background:var(--accent-gradient);border-radius:6px 6px 0 0;min-height:4px;transition:height .3s}
+.bar-label{font-size:10px;color:var(--text-tertiary)}
+
+/* ===== QUICK ACTIONS ===== */
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 16px 16px}
+.quick-btn{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .2s}
+.quick-btn:active{transform:scale(.95);border-color:var(--border-hover)}
+.quick-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(0,168,225,.1)}
+.quick-label{font-size:11px;color:var(--text-secondary);text-align:center;font-weight:500}
+
+/* ===== SEARCH ===== */
+.search-bar{padding:0 16px 16px}
+.search-input{width:100%;padding:12px 16px 12px 44px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;color:var(--text-primary);font-size:14px}
+.search-wrap{position:relative}
+.search-wrap .icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text-tertiary)}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--bg-tertiary);color:var(--text-primary);padding:14px 24px;border-radius:12px;font-size:13px;font-weight:600;z-index:300;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .3s;max-width:90%;text-align:center;border:1px solid var(--border)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:var(--success)}
+.toast.error{border-color:var(--danger)}
+
+/* ===== PROGRESS ===== */
+.progress{height:6px;background:rgba(255,255,255,.08);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent-gradient);border-radius:100px;transition:width .3s}
+
+/* ===== EMPTY STATE ===== */
+.empty{text-align:center;padding:48px 20px;color:var(--text-tertiary)}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:.3}
+.empty-title{font-size:15px;font-weight:600;color:var(--text-secondary);margin-bottom:4px}
+.empty-sub{font-size:13px}
+
+/* ===== FLEX UTILS ===== */
+.flex{display:flex}.flex-1{flex:1}.gap-8{gap:8px}.gap-12{gap:12px}
+.text-right{text-align:right}.text-center{text-align:center}
+.text-muted{color:var(--text-tertiary)}.text-primary{color:var(--accent-bright)}
+.text-danger{color:var(--danger)}.text-success{color:var(--success)}
+.font-bold{font-weight:700}.font-mono{font-family:'Courier New',monospace;font-size:12px}
+.mb-8{margin-bottom:8px}.mb-16{margin-bottom:16px}.mt-8{margin-top:8px}.mt-16{margin-top:16px}
+.hidden{display:none}
+
+/* ===== SCAN ANIMATION ===== */
+.scan-overlay{position:fixed;inset:0;background:#000;z-index:300;display:none;flex-direction:column}
+.scan-overlay.active{display:flex}
+.scan-header{padding:20px;display:flex;justify-content:space-between;align-items:center;color:#fff}
+.scan-view{flex:1;position:relative;overflow:hidden}
+.scan-view video{width:100%;height:100%;object-fit:cover}
+.scan-line{position:absolute;left:10%;right:10%;height:2px;background:var(--accent-bright);box-shadow:0 0 12px var(--accent-bright);animation:scan 2s ease-in-out infinite}
+@keyframes scan{0%,100%{top:20%}50%{top:80%}}
+.scan-corners{position:absolute;inset:15%;pointer-events:none}
+.scan-corners::before,.scan-corners::after{content:'';position:absolute;width:30px;height:30px;border:3px solid var(--accent-bright)}
+.scan-corners::before{top:0;left:0;border-right:none;border-bottom:none;border-radius:8px 0 0 0}
+.scan-corners::after{bottom:0;right:0;border-left:none;border-top:none;border-radius:0 0 8px 0}
+.scan-footer{padding:24px;text-align:center;color:#fff}
+
+/* ===== AMHARIC FONT ===== */
+[lang="am"]{font-family:'Noto Sans Ethiopic','Segoe UI',sans-serif}
+</style>
+</head>
+<body>
+<div class="app-container">
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-content">
+    <div class="login-logo">
+      <div class="logo-mark">H</div>
+      <div class="login-logo-text">Hisab<span class="accent">ERP</span></div>
+    </div>
+    <div class="login-badge" id="loginBadge">ERCA Compliant</div>
+    <h1 id="loginTitle">Run your <span class="gradient-text">Ethiopian business</span> with confidence.</h1>
+    <p class="subtitle" id="loginSubtitle">Finance, inventory, HR, sales & compliance — built for ETB and local tax.</p>
+
+    <div class="form-group">
+      <label class="form-label" id="lblEmail">Email Address</label>
+      <input type="email" class="form-input" id="emailInput" value="abebe.b@hisaberp.et" placeholder="you@business.et">
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="lblPassword">Password</label>
+      <input type="password" class="form-input" id="passInput" value="••••••••" placeholder="Enter password">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" id="lblRole">Select Role</label>
+      <div class="role-row">
+        <button class="role-btn active" onclick="selectRole(this)" data-role="admin" id="roleAdmin">Administrator</button>
+        <button class="role-btn" onclick="selectRole(this)" data-role="manager" id="roleManager">Manager</button>
+        <button class="role-btn" onclick="selectRole(this)" data-role="staff" id="roleStaff">Staff</button>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="login()" id="btnSignIn">Sign In →</button>
+    <div class="login-divider"><span id="orText">OR</span></div>
+    <button class="btn-secondary biometric-btn" onclick="biometricLogin()" id="btnBiometric">🔑 Biometric Login</button>
+    <button class="demo-btn" onclick="login()" id="btnDemo">Use Demo Account →</button>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="mainApp" class="hidden" style="display:none;flex-direction:column;height:100%">
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-logo">
+      <div class="logo-mark">H</div>
+      <div class="header-brand">Hisab<span class="accent">ERP</span></div>
+    </div>
+    <div class="header-actions">
+      <div class="status-dot" id="onlineDot"></div>
+      <button class="lang-badge" onclick="toggleLang()" id="langBadge">EN</button>
+      <button class="icon-btn" onclick="showNotifications()" id="bellBtn">🔔<span style="font-size:9px;position:absolute;top:4px;right:4px;background:var(--danger);color:#fff;border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center;font-weight:700" id="bellCount">3</span></button>
+    </div>
+  </header>
+
+  <!-- Screens -->
+  <div class="screen active" id="screen-dashboard"></div>
+  <div class="screen" id="screen-finance"></div>
+  <div class="screen" id="screen-inventory"></div>
+  <div class="screen" id="screen-sales"></div>
+  <div class="screen" id="screen-more"></div>
+
+  <!-- FAB -->
+  <button class="fab hidden" id="fab" onclick="fabAction()">+</button>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('dashboard',this)" id="nav-dashboard">
+      <span class="nav-icon">📊</span><span class="nav-label" id="navHome">Home</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('finance',this)" id="nav-finance">
+      <span class="nav-icon">💰</span><span class="nav-label" id="navFinance">Finance</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('inventory',this)" id="nav-inventory">
+      <span class="nav-icon">📦</span><span class="nav-label" id="navInventory">Stock</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('sales',this)" id="nav-sales">
+      <span class="nav-icon">🛒</span><span class="nav-label" id="navSales">Sales</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('more',this)" id="nav-more">
+      <span class="nav-icon">⚙️</span><span class="nav-label" id="navMore">More</span>
+    </button>
+  </nav>
+</div>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+<div class="bottom-sheet" id="bottomSheet">
+  <div class="sheet-handle"></div>
+  <div id="sheetContent"></div>
+</div>
+
+<!-- Scanner -->
+<div class="scan-overlay" id="scanOverlay">
+  <div class="scan-header">
+    <button class="icon-btn" onclick="closeScanner()" style="color:#fff">✕</button>
+    <span style="font-weight:600" id="scanTitle">Scan Barcode</span>
+    <div style="width:40px"></div>
+  </div>
+  <div class="scan-view">
+    <div class="scan-corners"></div>
+    <div class="scan-line"></div>
+  </div>
+  <div class="scan-footer">
+    <p id="scanHint" style="margin-bottom:16px;color:var(--text-tertiary)">Point your camera at a barcode</p>
+    <button class="btn-primary" onclick="simulateScan()" id="btnSimScan">Simulate Scan</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+</div>
+
+<script>
+// ============================================================
+// DATA LAYER — localStorage persistence with seed data
+// ============================================================
+const SEED = {
+  org: { name:'Hisab Trading Enterprise', tin:'0009847263', vat:'0009847263', address:'Bole Road, Friendship Building, Addis Ababa', phone:'+251 11 663 0000', email:'info@hisaberp.et', vatRate:15 },
+  user: { name:'Abebe Bekele', email:'abebe.b@hisaberp.et', role:'admin', avatar:'AB' },
+  transactions: [
+    {id:'t1',txnId:'TXN-2841',type:'received',party:'Selam Trading PLC',amount:184000,method:'Dashen Bank',date:'2026-07-03',status:'completed',desc:'Payment for Invoice INV-1024'},
+    {id:'t2',txnId:'TXN-2840',type:'sent',party:'Mekdim Suppliers',amount:92000,method:'CBE',date:'2026-07-03',status:'completed',desc:'Raw materials purchase'},
+    {id:'t3',txnId:'TXN-2839',type:'received',party:'Bekele Retail Store',amount:47200,method:'Telebirr',date:'2026-07-02',status:'completed',desc:'Coffee order payment'},
+    {id:'t4',txnId:'TXN-2838',type:'received',party:'Hidase Construction',amount:312000,method:'Awash Bank',date:'2026-07-02',status:'completed',desc:'Bulk supply contract'},
+    {id:'t5',txnId:'TXN-2837',type:'sent',party:'Ethio Telecom',amount:18400,method:'Amole',date:'2026-07-01',status:'completed',desc:'Monthly internet bill'},
+    {id:'t6',txnId:'TXN-2836',type:'received',party:'Yenus Market',amount:68500,method:'Telebirr',date:'2026-07-01',status:'completed',desc:'Weekly restock'},
+  ],
+  banks: [
+    {id:'b1',name:'Dashen Bank',account:'DASH-5021-8842',balance:4840000,color:'#00A8E1',icon:'🏦'},
+    {id:'b2',name:'Commercial Bank of Ethiopia',account:'CBE-3329-1174',balance:6280000,color:'#2BD5F5',icon:'🏦'},
+    {id:'b3',name:'Awash Bank',account:'AWASH-7741-2208',balance:2920000,color:'#FFB74D',icon:'🏦'},
+    {id:'b4',name:'Telebirr',account:'+251911442880',balance:184000,color:'#4CAF50',icon:'📱'},
+    {id:'b5',name:'Amole',account:'AMO-882194',balance:92000,color:'#BB86FC',icon:'📱'},
+  ],
+  accounts: [
+    {id:'a1',code:'1000',name:'Cash & Equivalents',type:'Asset',balance:14280000},
+    {id:'a2',code:'1200',name:'Accounts Receivable',type:'Asset',balance:3840000},
+    {id:'a3',code:'1500',name:'Inventory',type:'Asset',balance:5920000},
+    {id:'a4',code:'1700',name:'Fixed Assets',type:'Asset',balance:12400000},
+    {id:'a5',code:'2000',name:'Accounts Payable',type:'Liability',balance:2780000},
+    {id:'a6',code:'2200',name:'VAT Payable',type:'Liability',balance:276750},
+    {id:'a7',code:'2300',name:'Pension Payable',type:'Liability',balance:476000},
+    {id:'a8',code:'3000',name:"Owner's Equity",type:'Equity',balance:28000000},
+    {id:'a9',code:'4000',name:'Sales Revenue',type:'Revenue',balance:18450000},
+    {id:'a10',code:'5000',name:'Cost of Goods Sold',type:'Expense',balance:9200000},
+    {id:'a11',code:'6000',name:'Operating Expenses',type:'Expense',balance:4930000},
+  ],
+  products: [
+    {id:'p1',sku:'BS-500',name:'Berbere Spice 500g',category:'Spices',qty:248,price:300,cost:180,reorder:50,warehouse:'Addis Ababa',status:'inStock'},
+    {id:'p2',sku:'YC-1KG',name:'Yirgacheffe Coffee 1kg',category:'Coffee',qty:18,price:600,cost:380,reorder:30,warehouse:'Addis Ababa',status:'lowStock'},
+    {id:'p3',sku:'IF-5KG',name:'Injera Flour 5kg',category:'Grains',qty:8,price:300,cost:210,reorder:25,warehouse:'Bahir Dar',status:'outOfStock'},
+    {id:'p4',sku:'TG-25KG',name:'Teff Grain 25kg',category:'Grains',qty:120,price:1800,cost:1400,reorder:100,warehouse:'Hawassa',status:'inStock'},
+    {id:'p5',sku:'HW-GABI',name:'Hand-woven Gabi',category:'Textiles',qty:24,price:1500,cost:900,reorder:30,warehouse:'Dire Dawa',status:'lowStock'},
+    {id:'p6',sku:'EH-1KG',name:'Ethiopian Honey 1kg',category:'Natural',qty:84,price:450,cost:280,reorder:40,warehouse:'Addis Ababa',status:'inStock'},
+    {id:'p7',sku:'KS-500',name:'Kolo Mixed Snack 500g',category:'Snacks',qty:320,price:180,cost:110,reorder:100,warehouse:'Addis Ababa',status:'inStock'},
+    {id:'p8',sku:'TB-1L',name:'Tella Traditional Brew 1L',category:'Beverages',qty:980,price:200,cost:120,reorder:200,warehouse:'Bahir Dar',status:'inStock'},
+  ],
+  suppliers: [
+    {id:'s1',name:'Mekdim Suppliers PLC',contact:'+251 911 234 567',email:'info@mekdim.et',products:24,leadTime:5,rating:4.7},
+    {id:'s2',name:'Selam Trading Enterprise',contact:'+251 911 345 678',email:'sales@selam.et',products:18,leadTime:7,rating:4.5},
+    {id:'s3',name:'Yenus Agricultural Coop',contact:'+251 911 456 789',email:'contact@yenus.et',products:32,leadTime:4,rating:4.8},
+    {id:'s4',name:'Bekele Textiles',contact:'+251 911 567 890',email:'info@bekele.et',products:12,leadTime:10,rating:4.3},
+    {id:'s5',name:'Hidase Logistics',contact:'+251 911 678 901',email:'ops@hidase.et',products:8,leadTime:3,rating:4.6},
+  ],
+  employees: [
+    {id:'e1',empId:'E-001',name:'Abebe Bekele',email:'abebe.b@hisaberp.et',phone:'+251911234567',position:'Finance Manager',dept:'finance',salary:42000,joinDate:'2021-03-15',status:'active'},
+    {id:'e2',empId:'E-002',name:'Sara Tadesse',email:'sara.t@hisaberp.et',phone:'+251911345678',position:'HR Specialist',dept:'hr',salary:28000,joinDate:'2022-07-01',status:'active'},
+    {id:'e3',empId:'E-003',name:'Yohannes Girma',email:'yohannes.g@hisaberp.et',phone:'+251911456789',position:'Inventory Supervisor',dept:'operations',salary:32000,joinDate:'2020-11-20',status:'active'},
+    {id:'e4',empId:'E-004',name:'Hanna Mengistu',email:'hanna.m@hisaberp.et',phone:'+251911567890',position:'Sales Representative',dept:'sales',salary:24000,joinDate:'2023-02-10',status:'active'},
+    {id:'e5',empId:'E-005',name:'Daniel Kebede',email:'daniel.k@hisaberp.et',phone:'+251911678901',position:'IT Support',dept:'it',salary:30000,joinDate:'2022-09-05',status:'active'},
+    {id:'e6',empId:'E-006',name:'Meseret Lemma',email:'meseret.l@hisaberp.et',phone:'+251911789012',position:'Accountant',dept:'finance',salary:26000,joinDate:'2021-12-01',status:'leave'},
+    {id:'e7',empId:'E-007',name:'Rahel Alemu',email:'rahel.a@hisaberp.et',phone:'+251911890123',position:'Sales Lead',dept:'sales',salary:36000,joinDate:'2020-05-18',status:'active'},
+    {id:'e8',empId:'E-008',name:'Tewodros Assefa',email:'tewodros.a@hisaberp.et',phone:'+251911901234',position:'Operations Manager',dept:'operations',salary:48000,joinDate:'2019-08-22',status:'active'},
+  ],
+  attendance: [
+    {id:'att1',empId:'e1',date:'2026-07-04',checkIn:'08:42',status:'present'},
+    {id:'att2',empId:'e2',date:'2026-07-04',checkIn:'08:55',status:'present'},
+    {id:'att3',empId:'e3',date:'2026-07-04',checkIn:'09:03',status:'present'},
+    {id:'att4',empId:'e4',date:'2026-07-04',checkIn:'08:38',status:'present'},
+    {id:'att5',empId:'e6',date:'2026-07-04',checkIn:null,status:'leave'},
+  ],
+  customers: [
+    {id:'c1',name:'Selam Trading PLC',contact:'+251 911 234 567',email:'purchase@selamtrading.et',orders:184,ltv:2840000,status:'vip'},
+    {id:'c2',name:'Bekele Retail Store',contact:'+251 911 345 678',email:'bekele.retail@gmail.com',orders:142,ltv:980000,status:'active'},
+    {id:'c3',name:'Hidase Construction',contact:'+251 911 456 789',email:'procurement@hidase.et',orders:96,ltv:4200000,status:'vip'},
+    {id:'c4',name:'Yenus Market',contact:'+251 911 567 890',email:'yenus.market@gmail.com',orders:78,ltv:412000,status:'active'},
+    {id:'c5',name:'Merkato Distributors',contact:'+251 911 678 901',email:'info@merkato.et',orders:64,ltv:1840000,status:'active'},
+    {id:'c6',name:'Bole Mini Market',contact:'+251 911 890 123',email:'bole.mini@gmail.com',orders:42,ltv:198000,status:'regular'},
+  ],
+  quotations: [
+    {id:'q1',quoteNo:'Q-2026-090',customerId:'c1',date:'2026-07-03',validUntil:'2026-07-17',amount:60000,vat:9000,total:69000,status:'sent',items:[{productId:'p1',qty:200,price:300,total:60000}]},
+    {id:'q2',quoteNo:'Q-2026-083',customerId:'c3',date:'2026-07-01',validUntil:'2026-07-15',amount:276000,vat:41400,total:317400,status:'accepted',items:[{productId:'p4',qty:100,price:1800,total:180000},{productId:'p2',qty:160,price:600,total:96000}]},
+    {id:'q3',quoteNo:'Q-2026-080',customerId:'c2',date:'2026-06-28',validUntil:'2026-07-12',amount:60000,vat:9000,total:69000,status:'accepted',items:[{productId:'p3',qty:200,price:300,total:60000}]},
+  ],
+  pipeline: [
+    {id:'d1',customerId:'c1',title:'Annual Supply Contract',value:1840000,stage:'negotiation'},
+    {id:'d2',customerId:'c2',title:'Retail Partnership',value:480000,stage:'proposal'},
+    {id:'d3',customerId:'c3',title:'Construction Materials',value:4200000,stage:'won'},
+    {id:'d4',customerId:'c5',title:'Distribution Deal',value:920000,stage:'lead'},
+  ],
+  taxFilings: [
+    {id:'tf1',type:'Monthly VAT Return',period:'June 2026',amount:276750,dueDate:'2026-07-25',status:'pending'},
+    {id:'tf2',type:'Withholding Tax',period:'June 2026',amount:92400,dueDate:'2026-07-15',status:'filed'},
+    {id:'tf3',type:'Pension Contribution',period:'June 2026',amount:476000,dueDate:'2026-07-10',status:'pending'},
+    {id:'tf4',type:'Business Income Tax',period:'FY 2025-26',amount:1296000,dueDate:'2026-07-15',status:'overdue'},
+  ],
+  auditLogs: [
+    {id:'al1',time:'2026-07-04 08:42',user:'Abebe Bekele',action:'Created transaction TXN-2841',entity:'Finance',ip:'196.188.44.22'},
+    {id:'al2',time:'2026-07-03 17:12',user:'Yohannes Girma',action:'Adjusted stock for Berbere Spice',entity:'Inventory',ip:'196.188.44.30'},
+    {id:'al3',time:'2026-07-03 14:32',user:'Sara Tadesse',action:'Updated employee E-004',entity:'HR',ip:'196.188.44.22'},
+    {id:'al4',time:'2026-07-03 09:48',user:'Rahel Alemu',action:'Generated VAT return',entity:'Compliance',ip:'196.188.44.22'},
+    {id:'al5',time:'2026-07-02 15:42',user:'Hanna Mengistu',action:'Created quotation Q-2026-090',entity:'Sales',ip:'196.188.44.18'},
+  ],
+  movements: [
+    {id:'m1',productId:'p1',type:'StockOut',qty:24,ref:'Selam Trading PLC',date:'2026-07-03'},
+    {id:'m2',productId:'p4',type:'StockIn',qty:80,ref:'Mekdim Suppliers',date:'2026-07-02'},
+    {id:'m3',productId:'p6',type:'StockOut',qty:32,ref:'Hidase Construction',date:'2026-07-01'},
+  ],
+};
+
+let DB = {};
+let LANG = 'en';
+let ACTIVE_TAB = 'dashboard';
+let FAB_ACTION = null;
+
+function loadDB() {
+  const saved = localStorage.getItem('hisab-erp-db');
+  if (saved) {
+    try { DB = JSON.parse(saved); } catch(e) { DB = JSON.parse(JSON.stringify(SEED)); }
+  } else {
+    DB = JSON.parse(JSON.stringify(SEED));
+    saveDB();
+  }
+}
+function saveDB() { localStorage.setItem('hisab-erp-db', JSON.stringify(DB)); }
+function genId() { return 'id' + Date.now() + Math.random().toString(36).slice(2,7); }
+
+// ============================================================
+// I18N — Bilingual Amharic + English
+// ============================================================
+const I18N = {
+  en: {
+    home:'Home',finance:'Finance',inventory:'Stock',sales:'Sales',more:'More',
+    dashboard:'Dashboard',overview:'Business Overview',welcome:'Welcome back',
+    revenue:'Total Revenue',netProfit:'Net Profit',vat:'VAT Collected',employees:'Active Employees',
+    quickActions:'Quick Actions',newTxn:'New Transaction',addProduct:'Add Product',newSale:'New Sale',runPayroll:'Run Payroll',
+    recentTxns:'Recent Transactions',lowStock:'Low Stock Alerts',taxDeadlines:'Tax Deadlines',fiscalHealth:'Fiscal Health',
+    transactions:'Transactions',accounts:'Chart of Accounts',bankAccounts:'Bank Accounts',taxVat:'Tax & VAT',
+    received:'Received',sent:'Sent',completed:'Completed',pending:'Pending',overdue:'Overdue',filed:'Filed',
+    products:'Products',warehouses:'Warehouses',suppliers:'Suppliers',movements:'Stock Movements',
+    inStock:'In Stock',outOfStock:'Out of Stock',reorderLevel:'Reorder Level',
+    customers:'Customers',quotations:'Quotations',pipeline:'Sales Pipeline',
+    employees2:'Employees',attendance:'Attendance',payroll:'Payroll',leave:'Leave Requests',
+    compliance:'Compliance',auditLog:'Audit Trail',taxRules:'Tax Rules',reports:'Reports',
+    admin:'Admin Panel',users:'Users',settings:'Settings',deployment:'Deployment',
+    add:'Add',edit:'Edit',delete:'Delete',save:'Save',cancel:'Cancel',confirm:'Confirm',
+    search:'Search...',amount:'Amount',date:'Date',status:'Status',action:'Action',
+    email:'Email Address',password:'Password',role:'Select Role',admin2:'Administrator',manager:'Manager',staff:'Staff',
+    signIn:'Sign In →',biometric:'Biometric Login',demoAccount:'Use Demo Account →',
+    orgName:'Hisab Trading Enterprise',tagline:'Ethiopian Business Intelligence',
+  },
+  am: {
+    home:'መነሻ',finance:'ፋይናንስ',inventory:'እቃ',sales:'ሽያጭ',more:'ተጨማሪ',
+    dashboard:'ዳሽቦርድ',overview:'የንግድ ጠቅላላ እይታ',welcome:'እንኳን ደህና መጡ',
+    revenue:'ጠቅላላ ገቢ',netProfit:'ተጣጣፊ ትርፍ',vat:'የተሰበሰበ ቫት',employees:'ንቁ ሰራተኞች',
+    quickActions:'ፈጣን እርምጃዎች',newTxn:'አዲስ ግብይት',addProduct:'ምርት ያክሉ',newSale:'አዲስ ሽያጭ',runPayroll:'ደመወዝ አስከናውን',
+    recentTxns:'የቅርብ ግብይቶች',lowStock:'ዝቅተኛ ክምችት ማስጠንቀቂያ',taxDeadlines:'የግብር ሰዓቶች',fiscalHealth:'የፋይናንስ ጤና',
+    transactions:'ግብይቶች',accounts:'የሂሳብ ዝርዝር',bankAccounts:'የባንክ ሂሳቦች',taxVat:'ግብር እና ቫት',
+    received:'የተቀበለ',sent:'የተላከ',completed:'ተጠናቅቋል',pending:'በመጠበቅ ላይ',overdue:'ያለፈ ጊዜ',filed:'ተሞልቷል',
+    products:'ምርቶች',warehouses:'መጋዘኖች',suppliers:'አቅራቢዎች',movements:'የእቃ እንቅስቃሴ',
+    inStock:'በክምችት ላይ',outOfStock:'ክምችት የለም',reorderLevel:'የመጀመሪያ ቁጥር',
+    customers:'ደንበኞች',quotations:'ጥቅሶች',pipeline:'የሽያጭ ሂደት',
+    employees2:'ሰራተኞች',attendance:'መገኘት',payroll:'ደመወዝ',leave:'የፍቃድ ጥያቄዎች',
+    compliance:'ቅጣት እና አስተዳደር',auditLog:'የስልጣን ጉዞ',taxRules:'የግብር ደንቦች',reports:'ሪፖርቶች',
+    admin:'የአስተዳደር ፓናል',users:'ተጠቃሚዎች',settings:'ቅንብሮች',deployment:'ስርጭት',
+    add:'ያክሉ',edit:'አርትዕ',delete:'ሰርዝ',save:'አስቀምጥ',cancel:'ሰርዝ',confirm:'አረጋግጥ',
+    search:'ፈልግ...',amount:'መጠን',date:'ቀን',status:'ሁኔታ',action:'ተግባር',
+    email:'የኢሜይል አድራሻ',password:'የይለፍ ቃል',role:'ሚና ይምረጡ',admin2:'አስተዳዳሪ',manager:'ስራ አስካፋይ',staff:'ሰራተኛ',
+    signIn:'ይግቡ →',biometric:'ባዮሜትሪክ መግቢያ',demoAccount:'የሙከራ መለያ ይጠቀሙ →',
+    orgName:'ሂሳብ ንግድ በተመራ',tagline:'የኢትዮጵያ የንግድ ኢንተሌጀንስ',
+  }
+};
+function t(key) { return (I18N[LANG] && I18N[LANG][key]) || I18N.en[key] || key; }
+
+// ============================================================
+// HELPERS
+// ============================================================
+function formatETB(amount, compact) {
+  if (compact) {
+    const abs = Math.abs(amount);
+    if (abs >= 1000000) return 'ETB ' + (amount/1000000).toFixed(2) + 'M';
+    if (abs >= 1000) return 'ETB ' + (amount/1000).toFixed(1) + 'K';
+  }
+  return amount.toLocaleString() + ' ETB';
+}
+function getBadge(status) {
+  const map = {
+    completed:'success',filed:'success',active:'success',inStock:'success',present:'success',won:'success',accepted:'success',
+    pending:'warning',lowStock:'warning',sent:'warning',leave:'warning',negotiation:'warning',proposal:'info',lead:'neutral',
+    overdue:'danger',outOfStock:'danger',expired:'danger',lost:'danger',absent:'danger',
+    vip:'purple',regular:'neutral',
+  };
+  const labels = {
+    completed:'Completed',filed:'Filed',active:'Active',inStock:'In Stock',present:'Present',won:'Won',accepted:'Accepted',
+    pending:'Pending',lowStock:'Low Stock',sent:'Sent',leave:'On Leave',negotiation:'Negotiation',proposal:'Proposal',lead:'Lead',
+    overdue:'Overdue',outOfStock:'Out of Stock',expired:'Expired',lost:'Lost',absent:'Absent',
+    vip:'VIP',regular:'Regular',
+  };
+  const cls = map[status] || 'neutral';
+  const label = labels[status] || status;
+  return '<span class="badge ' + cls + '">' + label + '</span>';
+}
+function initials(name) { return name.split(' ').slice(0,2).map(n=>n[0]).join(''); }
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + (type || '');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+function auditLog(action, entity, details) {
+  DB.auditLogs.unshift({
+    id: genId(), time: new Date().toLocaleString('en-US',{hour12:false}),
+    user: DB.user.name, action, entity, details: details||'', ip:'196.188.44.22',
+  });
+  saveDB();
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+function selectRole(btn) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function login() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'flex';
+  renderAll();
+}
+function biometricLogin() {
+  showToast('Scanning fingerprint... 🟢', 'success');
+  setTimeout(login, 1200);
+}
+function logout() {
+  localStorage.removeItem('hisab-erp-auth');
+  location.reload();
+}
+
+// ============================================================
+// LANGUAGE TOGGLE
+// ============================================================
+function toggleLang() {
+  LANG = LANG === 'en' ? 'am' : 'en';
+  localStorage.setItem('hisab-lang', LANG);
+  document.getElementById('langBadge').textContent = LANG.toUpperCase();
+  document.documentElement.lang = LANG;
+  updateNavLabels();
+  renderAll();
+}
+function updateNavLabels() {
+  document.getElementById('navHome').textContent = t('home');
+  document.getElementById('navFinance').textContent = t('finance');
+  document.getElementById('navInventory').textContent = t('inventory');
+  document.getElementById('navSales').textContent = t('sales');
+  document.getElementById('navMore').textContent = t('more');
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function switchTab(tab, btn) {
+  ACTIVE_TAB = tab;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + tab).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  // Show/hide FAB
+  const fab = document.getElementById('fab');
+  const fabActions = {
+    finance: () => openTxnForm(),
+    inventory: () => openProductForm(),
+    sales: () => openSaleForm(),
+  };
+  if (fabActions[tab]) {
+    fab.classList.remove('hidden');
+    FAB_ACTION = fabActions[tab];
+  } else {
+    fab.classList.add('hidden');
+    FAB_ACTION = null;
+  }
+  renderScreen(tab);
+}
+function fabAction() { if (FAB_ACTION) FAB_ACTION(); }
+function renderScreen(tab) {
+  const renderers = { dashboard:renderDashboard, finance:renderFinance, inventory:renderInventory, sales:renderSales, more:renderMore };
+  if (renderers[tab]) renderers[tab]();
+}
+function renderAll() { Object.values({dashboard:1,finance:1,inventory:1,sales:1,more:1}).forEach(()=>{}); renderScreen(ACTIVE_TAB); }
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(html) {
+  document.getElementById('sheetContent').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('active');
+  setTimeout(() => document.getElementById('bottomSheet').classList.add('active'), 10);
+}
+function closeModal() {
+  document.getElementById('bottomSheet').classList.remove('active');
+  setTimeout(() => document.getElementById('modalOverlay').classList.remove('active'), 300);
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const totalRev = DB.transactions.filter(t=>t.type==='received').reduce((s,t)=>s+t.amount,0);
+  const totalExp = DB.transactions.filter(t=>t.type==='sent').reduce((s,t)=>s+t.amount,0);
+  const netProfit = totalRev - totalExp;
+  const lowStockItems = DB.products.filter(p => p.status !== 'inStock');
+
+  document.getElementById('screen-dashboard').innerHTML = `
+    <div class="page-title-bar">
+      <div class="page-subtitle">${t('welcome')}, ${DB.user.name.split(' ')[0]} 👋</div>
+      <div class="page-title">${t('overview')}</div>
+    </div>
+
+    <div class="kpi-scroll">
+      <div class="kpi-card">
+        <div class="kpi-icon cyan">📈</div>
+        <div class="kpi-label">${t('revenue')}</div>
+        <div class="kpi-value">${formatETB(totalRev,true)}</div>
+        <div class="kpi-change up">↑ 12.4%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon green">💰</div>
+        <div class="kpi-label">${t('netProfit')}</div>
+        <div class="kpi-value">${formatETB(netProfit,true)}</div>
+        <div class="kpi-change up">↑ 8.7%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon amber">🧾</div>
+        <div class="kpi-label">${t('vat')}</div>
+        <div class="kpi-value">${formatETB(totalRev*0.15,true)}</div>
+        <div class="kpi-change up">↑ 15.2%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon cyan">👥</div>
+        <div class="kpi-label">${t('employees')}</div>
+        <div class="kpi-value">${DB.employees.length}</div>
+        <div class="kpi-change up">↑ 5.0%</div>
+      </div>
+    </div>
+
+    <div class="quick-grid">
+      <button class="quick-btn" onclick="openTxnForm()">
+        <div class="quick-icon">💸</div>
+        <div class="quick-label">${t('newTxn')}</div>
+      </button>
+      <button class="quick-btn" onclick="switchTab('inventory',document.getElementById('nav-inventory'));openProductForm()">
+        <div class="quick-icon">📦</div>
+        <div class="quick-label">${t('addProduct')}</div>
+      </button>
+      <button class="quick-btn" onclick="openSaleForm()">
+        <div class="quick-icon">🛒</div>
+        <div class="quick-label">${t('newSale')}</div>
+      </button>
+      <button class="quick-btn" onclick="openScanner()">
+        <div class="quick-icon">📷</div>
+        <div class="quick-label">Scan</div>
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${t('recentTxns')}</div>
+          <div class="card-subtitle">Latest financial activity</div>
+        </div>
+        <button class="card-link" onclick="switchTab('finance',document.getElementById('nav-finance'))">View all →</button>
+      </div>
+      ${DB.transactions.slice(0,5).map(txn => `
+        <div class="list-item">
+          <div class="list-avatar ${txn.type==='received'?'':'red'}">${txn.type==='received'?'↓':'↑'}</div>
+          <div class="list-content">
+            <div class="list-title">${txn.party}</div>
+            <div class="list-sub">${txn.txnId} • ${txn.method}</div>
+          </div>
+          <div class="list-right">
+            <div class="list-amount ${txn.type==='received'?'positive':'negative'}">${txn.type==='received'?'+':'-'}${formatETB(txn.amount,true)}</div>
+            <div class="list-time">${txn.date}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${t('lowStock')}</div>
+          <div class="card-subtitle">${lowStockItems.length} items need attention</div>
+        </div>
+      </div>
+      ${lowStockItems.length === 0 ? '<div class="empty"><div class="empty-icon">✓</div><div class="empty-title">All stocked up!</div></div>' :
+        lowStockItems.map(p => `
+        <div class="list-item">
+          <div class="list-avatar ${p.status==='outOfStock'?'red':'amber'}">⚠</div>
+          <div class="list-content">
+            <div class="list-title">${p.name}</div>
+            <div class="list-sub">${p.warehouse} • ${p.qty} / ${p.reorder} units</div>
+          </div>
+          ${getBadge(p.status)}
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${t('taxDeadlines')}</div>
+          <div class="card-subtitle">ERCA filing schedule</div>
+        </div>
+        <button class="card-link" onclick="renderMore();switchTab('more',document.getElementById('nav-more'))">View all →</button>
+      </div>
+      ${DB.taxFilings.slice(0,4).map(tf => `
+        <div class="list-item">
+          <div class="list-avatar amber">📅</div>
+          <div class="list-content">
+            <div class="list-title">${tf.type}</div>
+            <div class="list-sub">Due: ${tf.dueDate}</div>
+          </div>
+          <div class="list-right">
+            <div class="list-amount">${formatETB(tf.amount,true)}</div>
+            ${getBadge(tf.status)}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${t('fiscalHealth')}</div>
+          <div class="card-subtitle">ERCA Compliance Score</div>
+        </div>
+      </div>
+      <div style="text-align:center;padding:12px 0">
+        <div style="font-size:48px;font-weight:800;color:var(--accent-bright)">87</div>
+        <div class="text-muted" style="font-size:12px">out of 100</div>
+        <div class="progress" style="margin-top:12px"><div class="progress-fill" style="width:87%"></div></div>
+        <div style="margin-top:8px;font-size:12px;color:var(--success)">✓ Excellent standing</div>
+      </div>
+    </div>
+    <div style="height:20px"></div>
+  `;
+}
+
+// ============================================================
+// FINANCE MODULE
+// ============================================================
+let financeTab = 'transactions';
+function renderFinance() {
+  const totalBal = DB.banks.reduce((s,b)=>s+b.balance,0);
+  const income = DB.transactions.filter(t=>t.type==='received').reduce((s,t)=>s+t.amount,0);
+  const expense = DB.transactions.filter(t=>t.type==='sent').reduce((s,t)=>s+t.amount,0);
+
+  document.getElementById('screen-finance').innerHTML = `
+    <div class="page-title-bar">
+      <div class="page-title">${t('finance')}</div>
+      <div class="page-subtitle">ETB & VAT compliant accounting</div>
+    </div>
+
+    <div class="kpi-scroll">
+      <div class="kpi-card"><div class="kpi-icon cyan">💳</div><div class="kpi-label">Balance</div><div class="kpi-value">${formatETB(totalBal,true)}</div></div>
+      <div class="kpi-card"><div class="kpi-icon green">📈</div><div class="kpi-label">Income</div><div class="kpi-value">${formatETB(income,true)}</div></div>
+      <div class="kpi-card"><div class="kpi-icon red">📉</div><div class="kpi-label">Expenses</div><div class="kpi-value">${formatETB(expense,true)}</div></div>
+      <div class="kpi-card"><div class="kpi-icon amber">💰</div><div class="kpi-label">Net</div><div class="kpi-value">${formatETB(income-expense,true)}</div></div>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab-btn ${financeTab==='transactions'?'active':''}" onclick="financeTab='transactions';renderFinance()">${t('transactions')}</button>
+      <button class="tab-btn ${financeTab==='accounts'?'active':''}" onclick="financeTab='accounts';renderFinance()">${t('accounts')}</button>
+      <button class="tab-btn ${financeTab==='banks'?'active':''}" onclick="financeTab='banks';renderFinance()">${t('bankAccounts')}</button>
+      <button class="tab-btn ${financeTab==='tax'?'active':''}" onclick="financeTab='tax';renderFinance()">${t('taxVat')}</button>
+    </div>
+
+    <div id="financeContent">${renderFinanceTab()}</div>
+    <div style="height:20px"></div>
+  `;
+}
+function renderFinanceTab() {
+  if (financeTab === 'transactions') {
+    if (DB.transactions.length === 0) return '<div class="empty"><div class="empty-icon">💸</div><div class="empty-title">No transactions yet</div><div class="empty-sub">Tap + to add one</div></div>';
+    return DB.transactions.map(txn => `
+      <div class="data-row" onclick="viewTxn('${txn.id}')">
+        <div class="list-avatar ${txn.type==='received'?'':'red'}">${txn.type==='received'?'↓':'↑'}</div>
+        <div class="list-content">
+          <div class="list-title">${txn.party}</div>
+          <div class="list-sub">${txn.txnId} • ${txn.method} • ${txn.date}</div>
+        </div>
+        <div class="list-right">
+          <div class="list-amount ${txn.type==='received'?'positive':'negative'}">${txn.type==='received'?'+':'-'}${formatETB(txn.amount,true)}</div>
+          ${getBadge(txn.status)}
+        </div>
+      </div>
+    `).join('');
+  }
+  if (financeTab === 'accounts') {
+    return `<div class="card"><table style="width:100%"><thead><tr><th style="text-align:left;padding:8px;font-size:11px;color:var(--text-tertiary);text-transform:uppercase">Code</th><th style="text-align:left;padding:8px;font-size:11px;color:var(--text-tertiary);text-transform:uppercase">Name</th><th style="text-align:right;padding:8px;font-size:11px;color:var(--text-tertiary);text-transform:uppercase">Balance</th></tr></thead><tbody>
+      ${DB.accounts.map(a => `<tr><td style="padding:10px 8px;border-bottom:1px solid var(--border);font-family:monospace;font-size:12px">${a.code}</td><td style="padding:10px 8px;border-bottom:1px solid var(--border);font-size:13px">${a.name}<br><span class="badge neutral" style="margin-top:2px">${a.type}</span></td><td style="padding:10px 8px;border-bottom:1px solid var(--border);text-align:right;font-weight:700;font-size:13px">${formatETB(a.balance)}</td></tr>`).join('')}
+    </tbody></table></div>`;
+  }
+  if (financeTab === 'banks') {
+    return DB.banks.map(b => `
+      <div class="data-row" style="align-items:flex-start;flex-direction:column;gap:8px">
+        <div style="display:flex;width:100%;align-items:center;gap:12px">
+          <div class="list-avatar" style="background:${b.color}">${b.icon}</div>
+          <div class="list-content">
+            <div class="list-title">${b.name}</div>
+            <div class="list-sub font-mono">${b.account}</div>
+          </div>
+        </div>
+        <div style="width:100%;padding-top:8px;border-top:1px solid var(--border)">
+          <div class="text-muted" style="font-size:11px">Available Balance</div>
+          <div style="font-size:20px;font-weight:800;margin-top:2px">${formatETB(b.balance)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  if (financeTab === 'tax') {
+    const income = DB.transactions.filter(t=>t.type==='received').reduce((s,t)=>s+t.amount,0);
+    const expense = DB.transactions.filter(t=>t.type==='sent').reduce((s,t)=>s+t.amount,0);
+    return `
+      <div class="card">
+        <div class="card-title mb-16">VAT Compliance (15%)</div>
+        <div style="background:rgba(0,168,225,.05);border:1px solid rgba(0,168,225,.2);border-radius:12px;padding:16px;margin-bottom:12px">
+          <div class="text-muted" style="font-size:11px;text-transform:uppercase">VAT Collected</div>
+          <div style="font-size:24px;font-weight:800;color:var(--accent-bright);margin-top:4px">${formatETB(income*0.15)}</div>
+        </div>
+        <div class="form-grid-2">
+          <div style="background:var(--bg-tertiary);padding:12px;border-radius:8px">
+            <div class="text-muted" style="font-size:11px">Withholding (2%)</div>
+            <div class="font-bold" style="margin-top:4px">${formatETB(expense*0.02)}</div>
+          </div>
+          <div style="background:var(--bg-tertiary);padding:12px;border-radius:8px">
+            <div class="text-muted" style="font-size:11px">Income Tax (30%)</div>
+            <div class="font-bold" style="margin-top:4px">${formatETB((income-expense)*0.30,true)}</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title mb-16">Tax Deadlines</div>
+        ${DB.taxFilings.map(tf => `
+          <div class="list-item">
+            <div class="list-avatar amber">📅</div>
+            <div class="list-content">
+              <div class="list-title">${tf.type}</div>
+              <div class="list-sub">${tf.period} • Due ${tf.dueDate}</div>
+            </div>
+            <div class="list-right">
+              <div class="list-amount">${formatETB(tf.amount,true)}</div>
+              ${getBadge(tf.status)}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+}
+function openTxnForm() {
+  openModal(`
+    <div class="sheet-title">${t('newTxn')}</div>
+    <div class="sheet-subtitle">Record a payment received or sent</div>
+    <div class="form-row">
+      <label>Type</label>
+      <select id="txnType" onchange="document.getElementById('partyLabel').textContent = this.value === 'received' ? 'Customer (Received From)' : 'Supplier/Payee (Sent To)'">
+        <option value="received">Payment Received</option>
+        <option value="sent">Payment Sent</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label id="partyLabel">Customer (Received From)</label>
+      <input id="txnParty" placeholder="e.g. Selam Trading PLC">
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row">
+        <label>Amount (ETB)</label>
+        <input id="txnAmount" type="number" placeholder="0.00">
+      </div>
+      <div class="form-row">
+        <label>Method</label>
+        <select id="txnMethod">
+          <option>Dashen Bank</option>
+          <option>Commercial Bank of Ethiopia</option>
+          <option>Awash Bank</option>
+          <option>Telebirr</option>
+          <option>Amole</option>
+          <option>Cash</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Description (Optional)</label>
+      <textarea id="txnDesc" rows="2" placeholder="Notes..."></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="closeModal()">${t('cancel')}</button>
+      <button class="btn-submit" onclick="saveTxn()">${t('save')}</button>
+    </div>
+  `);
+}
+function saveTxn() {
+  const type = document.getElementById('txnType').value;
+  const party = document.getElementById('txnParty').value.trim();
+  const amount = parseFloat(document.getElementById('txnAmount').value);
+  const method = document.getElementById('txnMethod').value;
+  const desc = document.getElementById('txnDesc').value.trim();
+  if (!party || !amount || amount <= 0) { showToast('Please fill all required fields', 'error'); return; }
+
+  const count = DB.transactions.length + 2842;
+  const txn = {
+    id: genId(), txnId: 'TXN-' + count, type, party, amount, method,
+    date: new Date().toISOString().split('T')[0], status: 'completed', desc,
+  };
+  DB.transactions.unshift(txn);
+  // Update bank balance
+  const bank = DB.banks.find(b => b.name === method);
+  if (bank) bank.balance += type === 'received' ? amount : -amount;
+  auditLog('Created transaction ' + txn.txnId, 'Finance', type + ' ' + amount + ' ETB ' + party);
+  saveDB();
+  closeModal();
+  showToast('Transaction created successfully', 'success');
+  renderFinance();
+}
+function viewTxn(id) {
+  const txn = DB.transactions.find(t => t.id === id);
+  if (!txn) return;
+  openModal(`
+    <div class="sheet-title">${txn.txnId}</div>
+    <div class="sheet-subtitle">${txn.desc || 'Transaction details'}</div>
+    <div class="card" style="margin:0 0 16px">
+      <div class="list-item">
+        <div class="list-avatar ${txn.type==='received'?'':'red'}">${txn.type==='received'?'↓':'↑'}</div>
+        <div class="list-content"><div class="list-title">${txn.party}</div><div class="list-sub">${txn.method}</div></div>
+        <div class="list-right"><div class="list-amount ${txn.type==='received'?'positive':'negative'}">${txn.type==='received'?'+':'-'}${formatETB(txn.amount)}</div></div>
+      </div>
+      <div style="padding:12px 0;border-top:1px solid var(--border);font-size:13px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-muted">Date</span><span>${txn.date}</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-muted">Method</span><span>${txn.method}</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-muted">Status</span>${getBadge(txn.status)}</div>
+        <div style="display:flex;justify-content:space-between"><span class="text-muted">VAT (15%)</span><span>${formatETB(txn.amount*0.15)}</span></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="deleteTxn('${txn.id}')">🗑️ ${t('delete')}</button>
+      <button class="btn-submit" onclick="closeModal()">${t('close')||'Close'}</button>
+    </div>
+  `);
+}
+function deleteTxn(id) {
+  const txn = DB.transactions.find(t => t.id === id);
+  if (!txn) return;
+  // Reverse bank balance
+  const bank = DB.banks.find(b => b.name === txn.method);
+  if (bank) bank.balance += txn.type === 'received' ? -txn.amount : txn.amount;
+  DB.transactions = DB.transactions.filter(t => t.id !== id);
+  auditLog('Deleted transaction ' + txn.txnId, 'Finance');
+  saveDB();
+  closeModal();
+  showToast('Transaction deleted', 'success');
+  renderFinance();
+}
+
+// ============================================================
+// INVENTORY MODULE
+// ============================================================
+let invTab = 'products';
+let invSearch = '';
+function renderInventory() {
+  const totalVal = DB.products.reduce((s,p)=>s+p.qty*p.price,0);
+  const lowCount = DB.products.filter(p=>p.status!=='inStock').length;
+
+  document.getElementById('screen-inventory').innerHTML = `
+    <div class="page-title-bar">
+      <div class="page-title">${t('inventory')}</div>
+      <div class="page-subtitle">${DB.products.length} products across 4 warehouses</div>
+    </div>
+
+    <div class="kpi-scroll">
+      <div class="kpi-card"><div class="kpi-icon cyan">📦</div><div class="kpi-label">Products</div><div class="kpi-value">${DB.products.length}</div></div>
+      <div class="kpi-card"><div class="kpi-icon amber">⚠</div><div class="kpi-label">Low Stock</div><div class="kpi-value">${lowCount}</div></div>
+      <div class="kpi-card"><div class="kpi-icon green">💰</div><div class="kpi-label">Stock Value</div><div class="kpi-value">${formatETB(totalVal,true)}</div></div>
+      <div class="kpi-card"><div class="kpi-icon cyan">🏭</div><div class="kpi-label">Warehouses</div><div class="kpi-value">4</div></div>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-wrap">
+        <span class="icon">🔍</span>
+        <input class="search-input" placeholder="${t('search')} products, SKU..." value="${invSearch}" oninput="invSearch=this.value;renderInventory()">
+      </div>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab-btn ${invTab==='products'?'active':''}" onclick="invTab='products';renderInventory()">${t('products')}</button>
+      <button class="tab-btn ${invTab==='warehouses'?'active':''}" onclick="invTab='warehouses';renderInventory()">${t('warehouses')}</button>
+      <button class="tab-btn ${invTab==='suppliers'?'active':''}" onclick="invTab='suppliers';renderInventory()">${t('suppliers')}</button>
+      <button class="tab-btn ${invTab==='movements'?'active':''}" onclick="invTab='movements';renderInventory()">${t('movements')}</button>
+    </div>
+
+    <div id="invContent">${renderInvTab()}</div>
+    <div style="height:20px"></div>
+  `;
+}
+function renderInvTab() {
+  if (invTab === 'products') {
+    let items = DB.products;
+    if (invSearch) {
+      const q = invSearch.toLowerCase();
+      items = items.filter(p => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+    }
+    if (items.length === 0) return '<div class="empty"><div class="empty-icon">📦</div><div class="empty-title">No products found</div></div>';
+    return items.map(p => `
+      <div class="data-row" onclick="viewProduct('${p.id}')">
+        <div class="list-avatar cyan">${p.name[0]}</div>
+        <div class="list-content">
+          <div class="list-title">${p.name}</div>
+          <div class="list-sub">${p.sku} • ${p.qty} units • ${formatETB(p.price)}</div>
+        </div>
+        <div class="list-right">
+          ${getBadge(p.status)}
+        </div>
+      </div>
+    `).join('');
+  }
+  if (invTab === 'warehouses') {
+    const whs = [
+      {name:'Addis Ababa Warehouse',location:'Akaki Kality',cap:85,products:1248,value:3280000},
+      {name:'Dire Dawa Warehouse',location:'Keble 09',cap:62,products:842,value:1840000},
+      {name:'Bahir Dar Warehouse',location:'Amhara Region',cap:74,products:684,value:920000},
+      {name:'Hawassa Warehouse',location:'SNNPR',cap:48,products:420,value:580000},
+    ];
+    return whs.map(w => `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div><div class="font-bold" style="font-size:15px">🏭 ${w.name}</div><div class="text-muted" style="font-size:12px">📍 ${w.location}</div></div>
+          ${getBadge('active')}
+        </div>
+        <div class="form-grid-2" style="margin-bottom:12px">
+          <div><div class="text-muted" style="font-size:11px">Products</div><div class="font-bold">${w.products}</div></div>
+          <div><div class="text-muted" style="font-size:11px">Value</div><div class="font-bold">${formatETB(w.value,true)}</div></div>
+        </div>
+        <div class="progress"><div class="progress-fill" style="width:${w.cap}%;background:${w.cap>80?'var(--danger)':'var(--accent-gradient)'}"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:11px" class="text-muted"><span>Capacity</span><span>${w.cap}%</span></div>
+      </div>
+    `).join('');
+  }
+  if (invTab === 'suppliers') {
+    return DB.suppliers.map(s => `
+      <div class="data-row">
+        <div class="list-avatar amber">🚚</div>
+        <div class="list-content">
+          <div class="list-title">${s.name}</div>
+          <div class="list-sub">${s.contact} • ${s.leadTime} days lead</div>
+        </div>
+        <div class="list-right">
+          <div class="list-amount text-primary">★ ${s.rating}</div>
+          <div class="list-time">${s.products} products</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  if (invTab === 'movements') {
+    if (DB.movements.length === 0) return '<div class="empty"><div class="empty-icon">📊</div><div class="empty-title">No movements yet</div></div>';
+    return DB.movements.map(m => {
+      const p = DB.products.find(pr => pr.id === m.productId);
+      return `
+        <div class="data-row">
+          <div class="list-avatar ${m.type==='StockIn'?'green':'red'}">${m.type==='StockIn'?'↓':'↑'}</div>
+          <div class="list-content">
+            <div class="list-title">${p?p.name:'Unknown'}</div>
+            <div class="list-sub">${m.type} • ${m.ref} • ${m.date}</div>
+          </div>
+          <div class="list-right">
+            <div class="list-amount ${m.type==='StockIn'?'positive':'negative'}">${m.type==='StockIn'?'+':'-'}${m.qty}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+function openProductForm() {
+  const warehouses = ['Addis Ababa','Dire Dawa','Bahir Dar','Hawassa'];
+  openModal(`
+    <div class="sheet-title">${t('addProduct')}</div>
+    <div class="sheet-subtitle">Add a new inventory item</div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>SKU</label><input id="pSku" placeholder="e.g. BS-500"></div>
+      <div class="form-row"><label>Category</label><select id="pCat"><option>Spices</option><option>Coffee</option><option>Grains</option><option>Textiles</option><option>Natural</option><option>Snacks</option><option>Beverages</option><option>Seeds</option></select></div>
+    </div>
+    <div class="form-row"><label>Product Name</label><input id="pName" placeholder="e.g. Berbere Spice 500g"></div>
+    <div class="form-row"><label>Warehouse</label><select id="pWh">${warehouses.map(w=>`<option>${w}</option>`).join('')}</select></div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Quantity</label><input id="pQty" type="number" value="0"></div>
+      <div class="form-row"><label>Reorder Level</label><input id="pReorder" type="number" value="10"></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Unit Price (ETB)</label><input id="pPrice" type="number" placeholder="0.00"></div>
+      <div class="form-row"><label>Cost Price (ETB)</label><input id="pCost" type="number" placeholder="0.00"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="closeModal()">${t('cancel')}</button>
+      <button class="btn-submit" onclick="saveProduct()">${t('save')}</button>
+    </div>
+  `);
+}
+function saveProduct() {
+  const sku = document.getElementById('pSku').value.trim().toUpperCase();
+  const name = document.getElementById('pName').value.trim();
+  const category = document.getElementById('pCat').value;
+  const warehouse = document.getElementById('pWh').value;
+  const qty = parseInt(document.getElementById('pQty').value) || 0;
+  const reorder = parseInt(document.getElementById('pReorder').value) || 10;
+  const price = parseFloat(document.getElementById('pPrice').value) || 0;
+  const cost = parseFloat(document.getElementById('pCost').value) || 0;
+  if (!sku || !name || !price) { showToast('Please fill required fields', 'error'); return; }
+  if (DB.products.find(p => p.sku === sku)) { showToast('SKU already exists', 'error'); return; }
+
+  const status = qty === 0 ? 'outOfStock' : qty <= reorder ? 'lowStock' : 'inStock';
+  const product = { id: genId(), sku, name, category, qty, price, cost, reorder, warehouse, status };
+  DB.products.push(product);
+  if (qty > 0) {
+    DB.movements.unshift({ id: genId(), productId: product.id, type: 'StockIn', qty, ref: 'Initial stock', date: new Date().toISOString().split('T')[0] });
+  }
+  auditLog('Added product ' + sku, 'Inventory', name);
+  saveDB();
+  closeModal();
+  showToast('Product added successfully', 'success');
+  renderInventory();
+}
+function viewProduct(id) {
+  const p = DB.products.find(pr => pr.id === id);
+  if (!p) return;
+  openModal(`
+    <div class="sheet-title">${p.name}</div>
+    <div class="sheet-subtitle">${p.sku} • ${p.category}</div>
+    <div class="card" style="margin:0 0 16px">
+      <div class="form-grid-2" style="margin-bottom:12px">
+        <div><div class="text-muted" style="font-size:11px">Quantity</div><div class="font-bold" style="font-size:18px">${p.qty} units</div></div>
+        <div><div class="text-muted" style="font-size:11px">Unit Price</div><div class="font-bold" style="font-size:18px">${formatETB(p.price)}</div></div>
+      </div>
+      <div class="form-grid-2" style="margin-bottom:12px">
+        <div><div class="text-muted" style="font-size:11px">Stock Value</div><div class="font-bold">${formatETB(p.qty*p.price)}</div></div>
+        <div><div class="text-muted" style="font-size:11px">Reorder Level</div><div class="font-bold">${p.reorder} units</div></div>
+      </div>
+      <div style="padding-top:12px;border-top:1px solid var(--border)">
+        <div class="text-muted" style="font-size:11px;margin-bottom:4px">Warehouse</div>
+        <div class="font-bold">${p.warehouse}</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="adjustStock('${p.id}')">📦 Adjust Stock</button>
+      <button class="btn-submit" onclick="closeModal()">Close</button>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn-cancel" style="width:100%;color:var(--danger)" onclick="deleteProduct('${p.id}')">🗑️ Delete Product</button>
+    </div>
+  `);
+}
+function adjustStock(id) {
+  const p = DB.products.find(pr => pr.id === id);
+  closeModal();
+  setTimeout(() => {
+    openModal(`
+      <div class="sheet-title">Adjust Stock</div>
+      <div class="sheet-subtitle">${p.name} (Current: ${p.qty} units)</div>
+      <div class="form-row"><label>Movement Type</label><select id="adjType"><option value="StockIn">Stock In (Receive)</option><option value="StockOut">Stock Out (Issue)</option></select></div>
+      <div class="form-row"><label>Quantity</label><input id="adjQty" type="number" placeholder="0"></div>
+      <div class="form-row"><label>Reference (From/To)</label><input id="adjRef" placeholder="e.g. Mekdim Suppliers"></div>
+      <div class="btn-row">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-submit" onclick="saveAdjust('${id}')">Save</button>
+      </div>
+    `);
+  }, 300);
+}
+function saveAdjust(id) {
+  const p = DB.products.find(pr => pr.id === id);
+  const type = document.getElementById('adjType').value;
+  const qty = parseInt(document.getElementById('adjQty').value);
+  const ref = document.getElementById('adjRef').value.trim() || 'Manual adjustment';
+  if (!qty || qty <= 0) { showToast('Enter valid quantity', 'error'); return; }
+
+  if (type === 'StockIn') p.qty += qty;
+  else p.qty = Math.max(0, p.qty - qty);
+  p.status = p.qty === 0 ? 'outOfStock' : p.qty <= p.reorder ? 'lowStock' : 'inStock';
+  DB.movements.unshift({ id: genId(), productId: id, type, qty, ref, date: new Date().toISOString().split('T')[0] });
+  auditLog(type + ' for ' + p.sku, 'Inventory', qty + ' units. ' + ref);
+  saveDB();
+  closeModal();
+  showToast('Stock adjusted successfully', 'success');
+  renderInventory();
+}
+function deleteProduct(id) {
+  const p = DB.products.find(pr => pr.id === id);
+  DB.movements = DB.movements.filter(m => m.productId !== id);
+  DB.products = DB.products.filter(pr => pr.id !== id);
+  auditLog('Deleted product ' + p.sku, 'Inventory');
+  saveDB();
+  closeModal();
+  showToast('Product deleted', 'success');
+  renderInventory();
+}
+
+// ============================================================
+// SALES MODULE (POS)
+// ============================================================
+let salesTab = 'pos';
+let cart = [];
+function renderSales() {
+  document.getElementById('screen-sales').innerHTML = `
+    <div class="page-title-bar">
+      <div class="page-title">${t('sales')}</div>
+      <div class="page-subtitle">POS, customers & quotations</div>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab-btn ${salesTab==='pos'?'active':''}" onclick="salesTab='pos';cart=[];renderSales()">🛒 POS</button>
+      <button class="tab-btn ${salesTab==='customers'?'active':''}" onclick="salesTab='customers';renderSales()">${t('customers')}</button>
+      <button class="tab-btn ${salesTab==='quotations'?'active':''}" onclick="salesTab='quotations';renderSales()">${t('quotations')}</button>
+      <button class="tab-btn ${salesTab==='pipeline'?'active':''}" onclick="salesTab='pipeline';renderSales()">${t('pipeline')}</button>
+    </div>
+
+    <div id="salesContent">${renderSalesTab()}</div>
+    <div style="height:20px"></div>
+  `;
+}
+function renderSalesTab() {
+  if (salesTab === 'pos') {
+    const cartTotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const cartVat = Math.round(cartTotal * 0.15);
+    return `
+      <div class="card">
+        <div class="card-title mb-16">🛒 Quick Sale — Scan or Select Products</div>
+        <div class="search-bar" style="padding:0 0 12px">
+          <div class="search-wrap">
+            <span class="icon">🔍</span>
+            <input class="search-input" placeholder="Search products to add..." oninput="filterPOS(this.value)">
+          </div>
+        </div>
+        <div id="posProducts" style="max-height:200px;overflow-y:auto">
+          ${DB.products.slice(0,4).map(p => `
+            <div class="list-item" onclick="addToCart('${p.id}')" style="cursor:pointer">
+              <div class="list-avatar cyan">${p.name[0]}</div>
+              <div class="list-content"><div class="list-title">${p.name}</div><div class="list-sub">${p.sku} • ${p.qty} in stock</div></div>
+              <div class="list-right"><div class="list-amount">${formatETB(p.price)}</div></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title mb-16">🛍️ Cart (${cart.length} items)</div>
+        ${cart.length === 0 ? '<div class="empty"><div class="empty-icon">🛍️</div><div class="empty-title">Cart is empty</div><div class="empty-sub">Tap products above to add</div></div>' :
+          cart.map((item,idx) => `
+            <div class="list-item">
+              <div class="list-content">
+                <div class="list-title">${item.name}</div>
+                <div class="list-sub">${formatETB(item.price)} × ${item.qty}</div>
+              </div>
+              <div class="list-right">
+                <div class="list-amount">${formatETB(item.price*item.qty)}</div>
+                <button onclick="removeFromCart(${idx})" style="color:var(--danger);font-size:12px;margin-top:4px">Remove</button>
+              </div>
+            </div>
+          `).join('')
+        }
+        ${cart.length > 0 ? `
+          <div style="padding-top:12px;border-top:1px solid var(--border);margin-top:8px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span class="text-muted">Subtotal</span><span>${formatETB(cartTotal)}</span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span class="text-muted">VAT (15%)</span><span>${formatETB(cartVat)}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:800;color:var(--accent-bright);padding-top:8px;border-top:1px solid var(--border)"><span>Total</span><span>${formatETB(cartTotal+cartVat)}</span></div>
+          </div>
+          <button class="btn-primary" style="margin-top:16px" onclick="checkout()">💳 Checkout</button>
+        ` : ''}
+      </div>
+    `;
+  }
+  if (salesTab === 'customers') {
+    return DB.customers.map(c => `
+      <div class="data-row" onclick="viewCustomer('${c.id}')">
+        <div class="list-avatar ${c.status==='vip'?'purple':''}">${initials(c.name)}</div>
+        <div class="list-content">
+          <div class="list-title">${c.name}</div>
+          <div class="list-sub">${c.contact} • ${c.orders} orders</div>
+        </div>
+        <div class="list-right">
+          <div class="list-amount text-primary">${formatETB(c.ltv,true)}</div>
+          ${getBadge(c.status)}
+        </div>
+      </div>
+    `).join('');
+  }
+  if (salesTab === 'quotations') {
+    return DB.quotations.map(q => {
+      const cust = DB.customers.find(c => c.id === q.customerId);
+      return `
+        <div class="data-row" onclick="viewQuote('${q.id}')">
+          <div class="list-avatar cyan">📄</div>
+          <div class="list-content">
+            <div class="list-title">${q.quoteNo}</div>
+            <div class="list-sub">${cust?cust.name:'—'} • ${q.date}</div>
+          </div>
+          <div class="list-right">
+            <div class="list-amount">${formatETB(q.total,true)}</div>
+            ${getBadge(q.status)}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  if (salesTab === 'pipeline') {
+    const stages = ['lead','qualified','proposal','negotiation','won'];
+    const stageColors = {lead:'amber',qualified:'info',proposal:'info',negotiation:'warning',won:'success'};
+    return stages.map(stage => {
+      const deals = DB.pipeline.filter(d => d.stage === stage);
+      if (deals.length === 0) return '';
+      const total = deals.reduce((s,d)=>s+d.value,0);
+      return `
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">${stage.charAt(0).toUpperCase()+stage.slice(1)}</div><div class="card-subtitle">${deals.length} deals • ${formatETB(total,true)}</div></div>
+          </div>
+          ${deals.map(d => {
+            const cust = DB.customers.find(c => c.id === d.customerId);
+            return `<div class="list-item"><div class="list-avatar ${stageColors[stage]}">🤝</div><div class="list-content"><div class="list-title">${d.title}</div><div class="list-sub">${cust?cust.name:'—'}</div></div><div class="list-right"><div class="list-amount">${formatETB(d.value,true)}</div></div></div>`;
+          }).join('')}
+        </div>
+      `;
+    }).join('');
+  }
+}
+function filterPOS(query) {
+  const q = query.toLowerCase();
+  let items = DB.products;
+  if (q) items = DB.products.filter(p => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q));
+  const el = document.getElementById('posProducts');
+  if (!el) return;
+  if (items.length === 0) { el.innerHTML = '<div class="empty"><div class="empty-title">No products found</div></div>'; return; }
+  el.innerHTML = items.slice(0,6).map(p => `
+    <div class="list-item" onclick="addToCart('${p.id}')" style="cursor:pointer">
+      <div class="list-avatar cyan">${p.name[0]}</div>
+      <div class="list-content"><div class="list-title">${p.name}</div><div class="list-sub">${p.sku} • ${p.qty} in stock</div></div>
+      <div class="list-right"><div class="list-amount">${formatETB(p.price)}</div></div>
+    </div>
+  `).join('');
+}
+function addToCart(id) {
+  const p = DB.products.find(pr => pr.id === id);
+  if (!p || p.qty === 0) { showToast('Product out of stock', 'error'); return; }
+  const existing = cart.find(i => i.id === id);
+  if (existing) { existing.qty++; } else { cart.push({id, name:p.name, price:p.price, qty:1}); }
+  const content = document.getElementById('salesContent');
+  if (content) content.innerHTML = renderSalesTab();
+  showToast(p.name + ' added to cart', 'success');
+}
+function removeFromCart(idx) {
+  cart.splice(idx, 1);
+  const content = document.getElementById('salesContent');
+  if (content) content.innerHTML = renderSalesTab();
+}
+function checkout() {
+  if (cart.length === 0) return;
+  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const vat = Math.round(total * 0.15);
+  openModal(`
+    <div class="sheet-title">💳 Checkout</div>
+    <div class="sheet-subtitle">${cart.length} items • Total: ${formatETB(total+vat)}</div>
+    <div class="form-row"><label>Customer</label><select id="coCustomer">${DB.customers.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select></div>
+    <div class="form-row"><label>Payment Method</label><select id="coMethod"><option>Dashen Bank</option><option>Commercial Bank of Ethiopia</option><option>Awash Bank</option><option>Telebirr</option><option>Amole</option><option>Cash</option></select></div>
+    <div class="card" style="margin:0 0 16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">Subtotal</span><span>${formatETB(total)}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">VAT (15%)</span><span>${formatETB(vat)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:800;font-size:18px;color:var(--accent-bright);padding-top:8px;border-top:1px solid var(--border)"><span>Total</span><span>${formatETB(total+vat)}</span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-submit" onclick="completeSale()">Complete Sale</button>
+    </div>
+  `);
+}
+function completeSale() {
+  const custId = document.getElementById('coCustomer').value;
+  const method = document.getElementById('coMethod').value;
+  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const vat = Math.round(total * 0.15);
+
+  // Create transaction
+  const cust = DB.customers.find(c => c.id === custId);
+  const count = DB.transactions.length + 2842;
+  DB.transactions.unshift({
+    id: genId(), txnId: 'TXN-' + count, type: 'received', party: cust.name,
+    amount: total + vat, method, date: new Date().toISOString().split('T')[0],
+    status: 'completed', desc: 'POS Sale',
+  });
+  // Update bank
+  const bank = DB.banks.find(b => b.name === method);
+  if (bank) bank.balance += total + vat;
+  // Update product quantities
+  cart.forEach(item => {
+    const p = DB.products.find(pr => pr.id === item.id);
+    if (p) {
+      p.qty = Math.max(0, p.qty - item.qty);
+      p.status = p.qty === 0 ? 'outOfStock' : p.qty <= p.reorder ? 'lowStock' : 'inStock';
+      DB.movements.unshift({ id: genId(), productId: p.id, type: 'StockOut', qty: item.qty, ref: cust.name, date: new Date().toISOString().split('T')[0] });
+    }
+  });
+  // Update customer
+  cust.orders++;
+  cust.ltv += total + vat;
+
+  auditLog('POS sale to ' + cust.name, 'Sales', formatETB(total+vat));
+  cart = [];
+  saveDB();
+  closeModal();
+  showToast('Sale completed! ' + formatETB(total+vat), 'success');
+  renderSales();
+}
+function viewCustomer(id) {
+  const c = DB.customers.find(cu => cu.id === id);
+  openModal(`
+    <div class="sheet-title">${c.name}</div>
+    <div class="sheet-subtitle">${c.email}</div>
+    <div class="card" style="margin:0 0 16px">
+      <div class="form-grid-2" style="margin-bottom:12px">
+        <div><div class="text-muted" style="font-size:11px">Total Orders</div><div class="font-bold" style="font-size:18px">${c.orders}</div></div>
+        <div><div class="text-muted" style="font-size:11px">Lifetime Value</div><div class="font-bold" style="font-size:18px;color:var(--accent-bright)">${formatETB(c.ltv,true)}</div></div>
+      </div>
+      <div style="padding-top:12px;border-top:1px solid var(--border)">
+        <div class="text-muted" style="font-size:11px;margin-bottom:4px">Contact</div>
+        <div class="font-bold">${c.contact}</div>
+      </div>
+    </div>
+    <button class="btn-submit" onclick="closeModal()">Close</button>
+  `);
+}
+function viewQuote(id) {
+  const q = DB.quotations.find(qu => qu.id === id);
+  const cust = DB.customers.find(c => c.id === q.customerId);
+  openModal(`
+    <div class="sheet-title">${q.quoteNo}</div>
+    <div class="sheet-subtitle">${cust?cust.name:'—'}</div>
+    <div class="card" style="margin:0 0 16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">Date</span><span>${q.date}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">Valid Until</span><span>${q.validUntil}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">Subtotal</span><span>${formatETB(q.amount)}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">VAT (15%)</span><span>${formatETB(q.vat)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:800;font-size:18px;color:var(--accent-bright);padding-top:8px;border-top:1px solid var(--border)"><span>Total</span><span>${formatETB(q.total)}</span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="closeModal()">Close</button>
+      <button class="btn-submit" onclick="updateQuoteStatus('${q.id}')">Mark Accepted</button>
+    </div>
+  `);
+}
+function updateQuoteStatus(id) {
+  const q = DB.quotations.find(qu => qu.id === id);
+  q.status = 'accepted';
+  auditLog('Updated quotation ' + q.quoteNo + ' to accepted', 'Sales');
+  saveDB();
+  closeModal();
+  showToast('Quotation marked as accepted', 'success');
+  renderSales();
+}
+function openSaleForm() { salesTab = 'pos'; cart = []; renderSales(); }
+
+// ============================================================
+// MORE MODULE (HR, Compliance, Reports, Settings)
+// ============================================================
+let moreTab = 'hr';
+function renderMore() {
+  document.getElementById('screen-more').innerHTML = `
+    <div class="page-title-bar">
+      <div class="page-title">More</div>
+      <div class="page-subtitle">HR, Compliance, Reports & Settings</div>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab-btn ${moreTab==='hr'?'active':''}" onclick="moreTab='hr';renderMore()">👥 ${t('employees2')}</button>
+      <button class="tab-btn ${moreTab==='compliance'?'active':''}" onclick="moreTab='compliance';renderMore()">🛡️ ${t('compliance')}</button>
+      <button class="tab-btn ${moreTab==='reports'?'active':''}" onclick="moreTab='reports';renderMore()">📊 ${t('reports')}</button>
+      <button class="tab-btn ${moreTab==='settings'?'active':''}" onclick="moreTab='settings';renderMore()">⚙️ ${t('settings')}</button>
+    </div>
+
+    <div id="moreContent">${renderMoreTab()}</div>
+    <div style="height:20px"></div>
+  `;
+}
+function renderMoreTab() {
+  if (moreTab === 'hr') {
+    const totalPayroll = DB.employees.reduce((s,e)=>s+e.salary,0);
+    function calcNet(gross) {
+      const pension = gross * 0.07;
+      const taxable = gross - pension;
+      let tax = 0;
+      if (taxable > 7800) tax = 1385 + (taxable-7800)*0.30;
+      else if (taxable > 5250) tax = 747.5 + (taxable-5250)*0.25;
+      else if (taxable > 3200) tax = 337.5 + (taxable-3200)*0.20;
+      else if (taxable > 1650) tax = 105 + (taxable-1650)*0.15;
+      else if (taxable > 600) tax = (taxable-600)*0.10;
+      return Math.round(gross - pension - tax);
+    }
+    return `
+      <div class="kpi-scroll">
+        <div class="kpi-card"><div class="kpi-icon cyan">👥</div><div class="kpi-label">Employees</div><div class="kpi-value">${DB.employees.length}</div></div>
+        <div class="kpi-card"><div class="kpi-icon green">✓</div><div class="kpi-label">Present</div><div class="kpi-value">${DB.employees.filter(e=>e.status==='active').length}</div></div>
+        <div class="kpi-card"><div class="kpi-icon amber">💰</div><div class="kpi-label">Payroll</div><div class="kpi-value">${formatETB(totalPayroll,true)}</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">${t('attendance')} — Today</div></div></div>
+        <div style="display:flex;gap:8px">
+          <div style="flex:1;background:rgba(76,175,80,.1);padding:12px;border-radius:10px;text-align:center"><div style="font-size:24px;font-weight:800;color:var(--success)">${DB.employees.filter(e=>e.status==='active').length}</div><div class="text-muted" style="font-size:11px">Present</div></div>
+          <div style="flex:1;background:rgba(255,183,77,.1);padding:12px;border-radius:10px;text-align:center"><div style="font-size:24px;font-weight:800;color:var(--warning)">${DB.employees.filter(e=>e.status==='leave').length}</div><div class="text-muted" style="font-size:11px">On Leave</div></div>
+          <div style="flex:1;background:rgba(255,82,82,.1);padding:12px;border-radius:10px;text-align:center"><div style="font-size:24px;font-weight:800;color:var(--danger)">0</div><div class="text-muted" style="font-size:11px">Absent</div></div>
+        </div>
+        <button class="btn-primary" style="margin-top:12px" onclick="checkIn()">📍 Check In Now</button>
+      </div>
+      ${DB.employees.map(e => {
+        const net = calcNet(e.salary);
+        const depts = {finance:'Finance',operations:'Operations',sales:'Sales',hr:'HR',it:'IT',admin:'Admin'};
+        return `
+          <div class="data-row" onclick="viewEmployee('${e.id}')">
+            <div class="list-avatar round">${initials(e.name)}</div>
+            <div class="list-content">
+              <div class="list-title">${e.name}</div>
+              <div class="list-sub">${e.position} • ${depts[e.dept]}</div>
+            </div>
+            <div class="list-right">
+              <div class="list-amount">${formatETB(net,true)}</div>
+              <div class="list-time">Net/month</div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    `;
+  }
+  if (moreTab === 'compliance') {
+    const filed = DB.taxFilings.filter(t=>t.status==='filed').length;
+    const score = Math.round((filed/DB.taxFilings.length)*100);
+    return `
+      <div class="card" style="text-align:center">
+        <div class="text-muted" style="font-size:11px;text-transform:uppercase">Compliance Score</div>
+        <div style="font-size:48px;font-weight:800;color:${score>=70?'var(--success)':'var(--danger)'}">${score}</div>
+        <div class="text-muted" style="font-size:12px">out of 100</div>
+        <div class="progress" style="margin-top:12px"><div class="progress-fill" style="width:${score}%;background:${score>=70?'var(--success)':'var(--danger)'}"></div></div>
+        <div style="margin-top:8px;font-size:12px;color:${score>=70?'var(--success)':'var(--danger)'}">${score>=70?'✓ Good standing':'⚠ Needs attention'}</div>
+      </div>
+      <div class="card">
+        <div class="card-title mb-16">📋 Tax Deadlines</div>
+        ${DB.taxFilings.map(tf => `
+          <div class="list-item">
+            <div class="list-avatar ${tf.status==='overdue'?'red':tf.status==='filed'?'green':'amber'}">📅</div>
+            <div class="list-content">
+              <div class="list-title">${tf.type}</div>
+              <div class="list-sub">${tf.period} • Due ${tf.dueDate}</div>
+            </div>
+            <div class="list-right">
+              <div class="list-amount">${formatETB(tf.amount,true)}</div>
+              ${getBadge(tf.status)}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="card">
+        <div class="card-title mb-16">📜 Ethiopian Tax Rules</div>
+        ${[
+          {name:'VAT',rate:'15%',desc:'Standard rate'},
+          {name:'Turnover Tax',rate:'2%',desc:'Non-VAT businesses'},
+          {name:'Withholding Tax',rate:'2%',desc:'Supplier payments'},
+          {name:'Business Income Tax',rate:'30%',desc:'Corporate rate'},
+          {name:'Pension (Employee)',rate:'7%',desc:'Social security'},
+          {name:'Pension (Employer)',rate:'11%',desc:'Social security'},
+        ].map(r => `
+          <div class="list-item">
+            <div class="list-content"><div class="list-title">${r.name}</div><div class="list-sub">${r.desc}</div></div>
+            <div style="font-size:20px;font-weight:800;color:var(--accent-bright)">${r.rate}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="card">
+        <div class="card-title mb-16">🔍 ${t('auditLog')}</div>
+        ${DB.auditLogs.slice(0,10).map(log => `
+          <div class="list-item">
+            <div class="list-avatar round" style="background:var(--bg-tertiary);color:var(--text-secondary)">${initials(log.user)}</div>
+            <div class="list-content">
+              <div class="list-title">${log.action}</div>
+              <div class="list-sub">${log.user} • ${log.time}</div>
+            </div>
+            <div class="list-right">${getBadge('info')}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  if (moreTab === 'reports') {
+    const income = DB.transactions.filter(t=>t.type==='received').reduce((s,t)=>s+t.amount,0);
+    const expense = DB.transactions.filter(t=>t.type==='sent').reduce((s,t)=>s+t.amount,0);
+    const revenue = DB.accounts.find(a=>a.code==='4000').balance;
+    const cogs = DB.accounts.find(a=>a.code==='5000').balance;
+    const opex = DB.accounts.find(a=>a.code==='6000').balance;
+    const assets = DB.accounts.filter(a=>a.type==='Asset').reduce((s,a)=>s+a.balance,0);
+    const liabilities = DB.accounts.filter(a=>a.type==='Liability').reduce((s,a)=>s+a.balance,0);
+    const equity = DB.accounts.filter(a=>a.type==='Equity').reduce((s,a)=>s+a.balance,0);
+
+    // Monthly chart data
+    const months = ['Jan','Feb','Mar','Apr','May','Jun'];
+    const sales = [1720,1840,1680,1920,2050,2180];
+
+    return `
+      <div class="card">
+        <div class="card-title mb-16">📈 Profit & Loss (FY 2025-26)</div>
+        <div style="padding:8px 0">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Revenue</span><span style="color:var(--success);font-weight:700">${formatETB(revenue)}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Cost of Goods Sold</span><span style="color:var(--danger);font-weight:700">(${formatETB(cogs)})</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Gross Profit</span><span style="font-weight:700">${formatETB(revenue-cogs)}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Operating Expenses</span><span style="color:var(--danger);font-weight:700">(${formatETB(opex)})</span></div>
+          <div style="display:flex;justify-content:space-between;padding:12px 0;font-size:18px;font-weight:800;color:var(--accent-bright)"><span>Net Profit</span><span>${formatETB(revenue-cogs-opex)}</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title mb-16">📊 Monthly Sales Trend</div>
+        <div class="chart-box">
+          <div class="bar-chart">
+            ${sales.map((v,i) => {
+              const max = Math.max(...sales);
+              const h = (v/max)*100;
+              return `<div class="bar-col"><div class="bar" style="height:${h}%"></div><div class="bar-label">${months[i]}</div></div>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title mb-16">⚖️ Balance Sheet</div>
+        <div style="padding:8px 0">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Total Assets</span><span style="font-weight:700;color:var(--accent-bright)">${formatETB(assets,true)}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Total Liabilities</span><span style="font-weight:700;color:var(--danger)">${formatETB(liabilities,true)}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Total Equity</span><span style="font-weight:700">${formatETB(equity,true)}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:12px 0;font-weight:700"><span>Liab + Equity</span><span>${formatETB(liabilities+equity,true)}</span></div>
+          <div style="text-align:center;padding:8px;background:${assets===liabilities+equity?'rgba(76,175,80,.1)':'rgba(255,82,82,.1)'};border-radius:8px;color:${assets===liabilities+equity?'var(--success)':'var(--danger)'};font-weight:600">
+            ${assets===liabilities+equity?'✓ Balanced':'✗ Not balanced'}
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title mb-16">📄 Export Reports</div>
+        <button class="btn-secondary" onclick="exportReport('pnl')">📊 Profit & Loss (HTML)</button>
+        <button class="btn-secondary" onclick="exportReport('balance')">⚖️ Balance Sheet (HTML)</button>
+        <button class="btn-secondary" onclick="exportReport('tax')">🧾 Tax Report (HTML)</button>
+      </div>
+    `;
+  }
+  if (moreTab === 'settings') {
+    return `
+      <div class="card" style="text-align:center">
+        <div class="list-avatar round" style="width:72px;height:72px;font-size:24px;margin:0 auto 12px">${DB.user.avatar}</div>
+        <div style="font-size:18px;font-weight:700">${DB.user.name}</div>
+        <div class="text-muted" style="font-size:13px">${DB.user.email}</div>
+        <div style="margin-top:8px">${getBadge('active')}</div>
+      </div>
+      <div class="card">
+        <div class="card-title mb-16">🏢 Organization</div>
+        <div class="list-item"><div class="list-content"><div class="list-sub">Company Name</div><div class="list-title">${DB.org.name}</div></div></div>
+        <div class="list-item"><div class="list-content"><div class="list-sub">TIN</div><div class="list-title font-mono">${DB.org.tin}</div></div></div>
+        <div class="list-item"><div class="list-content"><div class="list-sub">VAT Number</div><div class="list-title font-mono">${DB.org.vat}</div></div></div>
+        <div class="list-item"><div class="list-content"><div class="list-sub">Address</div><div class="list-title" style="font-size:13px">${DB.org.address}</div></div></div>
+        <div class="list-item"><div class="list-content"><div class="list-sub">Phone</div><div class="list-title">${DB.org.phone}</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title mb-16">🌐 Language & Theme</div>
+        <div class="list-item" onclick="toggleLang()" style="cursor:pointer">
+          <div class="list-avatar cyan">🌐</div>
+          <div class="list-content"><div class="list-title">Language</div><div class="list-sub">${LANG==='en'?'English':'አማርኛ'}</div></div>
+          <div class="text-primary">Tap to switch →</div>
+        </div>
+        <div class="list-item">
+          <div class="list-avatar purple">🎨</div>
+          <div class="list-content"><div class="list-title">Theme</div><div class="list-sub">Prime Video Dark</div></div>
+          ${getBadge('info')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title mb-16">🔐 Security</div>
+        <div class="list-item"><div class="list-avatar green">🔒</div><div class="list-content"><div class="list-title">2FA Authentication</div><div class="list-sub">Enabled</div></div>${getBadge('success')}</div>
+        <div class="list-item"><div class="list-avatar cyan">🔑</div><div class="list-content"><div class="list-title">Biometric Login</div><div class="list-sub">Fingerprint & Face</div></div>${getBadge('success')}</div>
+        <div class="list-item"><div class="list-avatar amber">📡</div><div class="list-content"><div class="list-title">Offline Mode</div><div class="list-sub">Available</div></div>${getBadge('success')}</div>
+      </div>
+      <div class="card">
+        <button class="btn-cancel" style="width:100%;color:var(--danger)" onclick="resetData()">🗑️ Reset All Data</button>
+        <button class="btn-cancel" style="width:100%;margin-top:8px;color:var(--danger)" onclick="logout()">⏏ Logout</button>
+      </div>
+    `;
+  }
+}
+function checkIn() {
+  showToast('✓ Checked in at ' + new Date().toLocaleTimeString(), 'success');
+  auditLog('Employee check-in', 'HR', DB.user.name);
+  saveDB();
+}
+function viewEmployee(id) {
+  const e = DB.employees.find(em => em.id === id);
+  function calcNet(gross) {
+    const pension = gross * 0.07;
+    const taxable = gross - pension;
+    let tax = 0;
+    if (taxable > 7800) tax = 1385 + (taxable-7800)*0.30;
+    else if (taxable > 5250) tax = 747.5 + (taxable-5250)*0.25;
+    else if (taxable > 3200) tax = 337.5 + (taxable-3200)*0.20;
+    else if (taxable > 1650) tax = 105 + (taxable-1650)*0.15;
+    else if (taxable > 600) tax = (taxable-600)*0.10;
+    return Math.round(gross - pension - tax);
+  }
+  const net = calcNet(e.salary);
+  const pension = Math.round(e.salary * 0.07);
+  const tax = e.salary - pension - net;
+  openModal(`
+    <div class="sheet-title">${e.name}</div>
+    <div class="sheet-subtitle">${e.empId} • ${e.position}</div>
+    <div class="card" style="margin:0 0 16px">
+      <div class="list-item"><div class="list-content"><div class="list-sub">Department</div><div class="list-title">${e.dept}</div></div></div>
+      <div class="list-item"><div class="list-content"><div class="list-sub">Email</div><div class="list-title">${e.email}</div></div></div>
+      <div class="list-item"><div class="list-content"><div class="list-sub">Phone</div><div class="list-title">${e.phone}</div></div></div>
+      <div class="list-item"><div class="list-content"><div class="list-sub">Join Date</div><div class="list-title">${e.joinDate}</div></div></div>
+    </div>
+    <div class="card" style="margin:0 0 16px">
+      <div class="card-title mb-16" style="font-size:14px">💰 Payroll Breakdown (ERCA)</div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>Gross Salary</span><span class="font-bold">${formatETB(e.salary)}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>Pension (7%)</span><span class="font-bold text-danger">-${formatETB(pension)}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>Income Tax (PAYE)</span><span class="font-bold text-danger">-${formatETB(tax)}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;font-size:18px;font-weight:800;color:var(--accent-bright)"><span>Net Pay</span><span>${formatETB(net)}</span></div>
+    </div>
+    <button class="btn-submit" onclick="closeModal()">Close</button>
+  `);
+}
+function exportReport(type) {
+  const html = generateReportHTML(type);
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function generateReportHTML(type) {
+  const income = DB.transactions.filter(t=>t.type==='received').reduce((s,t)=>s+t.amount,0);
+  const expense = DB.transactions.filter(t=>t.type==='sent').reduce((s,t)=>s+t.amount,0);
+  let title = '', body = '';
+  if (type === 'pnl') {
+    title = 'Profit & Loss Statement';
+    const revenue = DB.accounts.find(a=>a.code==='4000').balance;
+    const cogs = DB.accounts.find(a=>a.code==='5000').balance;
+    const opex = DB.accounts.find(a=>a.code==='6000').balance;
+    body = `<h2>Revenue</h2><table><tr><td>Sales Revenue</td><td style="text-align:right">${formatETB(revenue)}</td></tr></table>
+    <h2>Expenses</h2><table><tr><td>Cost of Goods Sold</td><td style="text-align:right;color:red">(${formatETB(cogs)})</td></tr><tr><td>Operating Expenses</td><td style="text-align:right;color:red">(${formatETB(opex)})</td></tr></table>
+    <h2 style="color:#00A8E1">Net Profit: ${formatETB(revenue-cogs-opex)}</h2>`;
+  } else if (type === 'balance') {
+    title = 'Balance Sheet';
+    const assets = DB.accounts.filter(a=>a.type==='Asset').reduce((s,a)=>s+a.balance,0);
+    const liabilities = DB.accounts.filter(a=>a.type==='Liability').reduce((s,a)=>s+a.balance,0);
+    const equity = DB.accounts.filter(a=>a.type==='Equity').reduce((s,a)=>s+a.balance,0);
+    body = `<h2>Assets</h2><p style="font-size:24px;color:#00A8E1">${formatETB(assets)}</p>
+    <h2>Liabilities</h2><p style="font-size:24px;color:#FF5252">${formatETB(liabilities)}</p>
+    <h2>Equity</h2><p style="font-size:24px">${formatETB(equity)}</p>`;
+  } else if (type === 'tax') {
+    title = 'Tax Compliance Report';
+    body = '<h2>Tax Filings</h2><table><tr><th>Type</th><th>Period</th><th>Amount</th><th>Status</th></tr>' +
+      DB.taxFilings.map(tf => `<tr><td>${tf.type}</td><td>${tf.period}</td><td>${formatETB(tf.amount)}</td><td>${tf.status}</td></tr>`).join('') + '</table>';
+  }
+  return `<!DOCTYPE html><html><head><title>${title}</title><style>body{font-family:Arial;max-width:800px;margin:40px auto;padding:20px;color:#333}h1{color:#00A8E1;border-bottom:3px solid #00A8E1;padding-bottom:10px}h2{color:#00A8E1;margin-top:30px}table{width:100%;border-collapse:collapse;margin:10px 0}td,th{padding:10px;border:1px solid #ddd;text-align:left}.footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;font-size:12px;color:#999}</style></head><body><h1>Hisab ERP — ${title}</h1><p>Generated: ${new Date().toLocaleString()}</p><p>Organization: ${DB.org.name} | TIN: ${DB.org.tin}</p>${body}<div class="footer">Generated by Hisab ERP — Ethiopian Business Intelligence</div></body></html>`;
+}
+function resetData() {
+  if (confirm('Reset all data to seed? This cannot be undone.')) {
+    DB = JSON.parse(JSON.stringify(SEED));
+    saveDB();
+    showToast('Data reset to defaults', 'success');
+    renderAll();
+  }
+}
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+function showNotifications() {
+  const lowStock = DB.products.filter(p => p.status !== 'inStock');
+  const overdue = DB.taxFilings.filter(t => t.status === 'overdue');
+  const notifs = [];
+  lowStock.forEach(p => notifs.push({ icon: '⚠', color: p.status==='outOfStock'?'red':'amber', title: p.status==='outOfStock'?'Out of Stock':'Low Stock', msg: p.name + ' — ' + p.qty + ' units at ' + p.warehouse }));
+  overdue.forEach(t => notifs.push({ icon: '📅', color: 'red', title: 'Tax Overdue', msg: t.type + ' for ' + t.period }));
+  notifs.push({ icon: '💰', color: 'cyan', title: 'Payment Received', msg: 'ETB 184,000 from Selam Trading' });
+  openModal(`
+    <div class="sheet-title">🔔 Notifications</div>
+    <div class="sheet-subtitle">${notifs.length} alerts</div>
+    ${notifs.map(n => `
+      <div class="list-item">
+        <div class="list-avatar ${n.color}">${n.icon}</div>
+        <div class="list-content"><div class="list-title">${n.title}</div><div class="list-sub">${n.msg}</div></div>
+      </div>
+    `).join('')}
+    <button class="btn-submit" style="margin-top:16px" onclick="closeModal()">Close</button>
+  `);
+}
+
+// ============================================================
+// SCANNER
+// ============================================================
+function openScanner() {
+  document.getElementById('scanOverlay').classList.add('active');
+}
+function closeScanner() {
+  document.getElementById('scanOverlay').classList.remove('active');
+}
+function simulateScan() {
+  if (DB.products.length === 0) { showToast('No products to scan', 'error'); return; }
+  const p = DB.products[Math.floor(Math.random() * DB.products.length)];
+  closeScanner();
+  setTimeout(() => {
+    viewProduct(p.id);
+    showToast('Scanned: ' + p.sku, 'success');
+  }, 300);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadDB();
+const savedLang = localStorage.getItem('hisab-lang');
+if (savedLang) { LANG = savedLang; document.documentElement.lang = LANG; }
+document.getElementById('langBadge').textContent = LANG.toUpperCase();
+updateNavLabels();
+</script>
+</body>
+</html>
