@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0B141A">
+<meta name="description" content="Hisab ERP — Premium Ethiopian Business Intelligence Suite">
+<title>Hisab ERP — Enterprise</title>
+<style>
+/* ═══════════════════════════════════════════════════════════
+   HISAB ERP — MATERIAL DESIGN 3 ENTERPRISE SYSTEM
+   Design tokens, typography, elevation, motion
+   ═══════════════════════════════════════════════════════════ */
+
+/* ===== DESIGN TOKENS (Material 3) ===== */
+:root {
+  /* Primary — Prime Cyan */
+  --md-primary:#00A8E1;--md-on-primary:#001F2A;--md-primary-container:#004E6B;--md-on-primary-container:#C6E7FF;
+  --md-secondary:#4DD0E1;--md-on-secondary:#003740;--md-secondary-container:#004F5A;--md-on-secondary-container:#9CF1FF;
+  --md-tertiary:#BB86FC;--md-on-tertiary:#311B6B;--md-tertiary-container:#48488C;--md-on-tertiary-container:#E5DEFF;
+  --md-error:#FFB4AB;--md-on-error:#690005;--md-error-container:#93000A;--md-on-error-container:#FFDAD6;
+  --md-success:#4CAF50;--md-on-success:#002906;--md-success-container:#00390F;--md-on-success-container:#9BF1A0;
+  --md-warning:#FFB74D;--md-on-warning:#402D00;--md-warning-container:#5C4200;--md-on-warning-container:#FFDDB3;
+
+  /* Surface — Deep Enterprise Dark */
+  --md-surface-0:#0B141A;--md-surface-1:#0F1B22;--md-surface-2:#13222A;--md-surface-3:#182832;
+  --md-surface-4:#1D2E38;--md-surface-5:#233540;
+  --md-on-surface:#E3E2E6;--md-on-surface-variant:#BFC9CF;--md-outline:#3A4B54;--md-outline-variant:#283740;
+
+  /* Elevation shadows (Material 3) */
+  --elev-0:none;
+  --elev-1:0 1px 2px rgba(0,0,0,.3),0 1px 3px 1px rgba(0,0,0,.15);
+  --elev-2:0 1px 2px rgba(0,0,0,.3),0 2px 6px 2px rgba(0,0,0,.15);
+  --elev-3:0 1px 3px rgba(0,0,0,.3),0 4px 8px 3px rgba(0,0,0,.15);
+  --elev-4:0 2px 3px rgba(0,0,0,.3),0 6px 10px 4px rgba(0,0,0,.15);
+  --elev-5:0 4px 4px rgba(0,0,0,.3),0 8px 12px 6px rgba(0,0,0,.15);
+
+  /* Gradients */
+  --grad-primary:linear-gradient(135deg,#00A8E1 0%,#2BD5F5 100%);
+  --grad-surface:linear-gradient(180deg,#0F1B22 0%,#0B141A 100%);
+  --grad-glow:radial-gradient(ellipse at 30% 0%,rgba(0,168,225,.12) 0%,transparent 50%);
+
+  /* Motion */
+  --ease-standard:cubic-bezier(.2,0,0,1);
+  --ease-emphasized:cubic-bezier(.3,0,0,1);
+  --ease-decelerate:cubic-bezier(.05,.7,.1,1);
+  --dur-fast:.15s;--dur-medium:.25s;--dur-slow:.4s;
+
+  /* Shape */
+  --shape-xs:8px;--shape-sm:12px;--shape-md:16px;--shape-lg:20px;--shape-xl:28px;--shape-full:9999px;
+
+  /* Typography */
+  --font-display:-apple-system,BlinkMacSystemFont,'Google Sans','Segoe UI',Roboto,sans-serif;
+  --font-body:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-mono:'SF Mono','JetBrains Mono','Courier New',monospace;
+
+  /* Layout */
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --nav-h:64px;
+  --appbar-h:56px;
+}
+
+/* ===== RESET ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px;-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);background:var(--md-surface-0);color:var(--md-on-surface);
+  line-height:1.5;overflow:hidden;height:100vh;height:100dvh;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;font-size:inherit}
+input,select,textarea{font-family:inherit;font-size:16px;color:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--md-primary);outline-offset:2px;border-radius:4px}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:0;height:0}
+
+/* ═══════════════════════════════════════════════════════════
+   TYPOGRAPHY SCALE (Material 3)
+   ═══════════════════════════════════════════════════════════ */
+.display-large{font-size:57px;font-weight:400;line-height:64px;letter-spacing:-.25px}
+.display-medium{font-size:45px;font-weight:400;line-height:52px}
+.display-small{font-size:36px;font-weight:400;line-height:44px}
+.headline-large{font-size:32px;font-weight:600;line-height:40px;letter-spacing:0}
+.headline-medium{font-size:28px;font-weight:600;line-height:36px}
+.headline-small{font-size:24px;font-weight:600;line-height:32px}
+.title-large{font-size:22px;font-weight:500;line-height:28px}
+.title-medium{font-size:16px;font-weight:600;line-height:24px;letter-spacing:.15px}
+.title-small{font-size:14px;font-weight:600;line-height:20px;letter-spacing:.1px}
+.body-large{font-size:16px;font-weight:400;line-height:24px;letter-spacing:.5px}
+.body-medium{font-size:14px;font-weight:400;line-height:20px;letter-spacing:.25px}
+.body-small{font-size:12px;font-weight:400;line-height:16px;letter-spacing:.4px}
+.label-large{font-size:14px;font-weight:600;line-height:20px;letter-spacing:.1px}
+.label-medium{font-size:12px;font-weight:600;line-height:16px;letter-spacing:.5px}
+.label-small{font-size:11px;font-weight:600;line-height:16px;letter-spacing:.5px}
+
+/* ═══════════════════════════════════════════════════════════
+   APP CONTAINER
+   ═══════════════════════════════════════════════════════════ */
+.app-root{
+  max-width:480px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;
+  background:var(--md-surface-0);position:relative;overflow:hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LOGIN / ONBOARDING
+   ═══════════════════════════════════════════════════════════ */
+.login-root{
+  position:absolute;inset:0;background:var(--md-surface-0);z-index:1000;
+  display:flex;flex-direction:column;overflow-y:auto;
+  transition:opacity var(--dur-slow) var(--ease-standard),transform var(--dur-slow) var(--ease-emphasized);
+}
+.login-root.hidden{opacity:0;transform:scale(1.05);pointer-events:none}
+.login-bg{position:absolute;inset:0;background:var(--grad-glow),var(--grad-surface);z-index:0}
+.login-bg::after{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle at 80% 20%,rgba(43,213,245,.08) 0%,transparent 40%),
+                   radial-gradient(circle at 20% 80%,rgba(187,134,252,.06) 0%,transparent 40%);
+}
+.login-content{position:relative;z-index:1;padding:calc(48px + var(--safe-top)) 28px 32px;min-height:100dvh;display:flex;flex-direction:column}
+.login-brand{display:flex;align-items:center;gap:14px;margin-bottom:40px;animation:fadeDown .6s var(--ease-decelerate)}
+.brand-mark{
+  width:52px;height:52px;border-radius:var(--shape-md);background:var(--grad-primary);
+  display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;
+  color:var(--md-on-primary);box-shadow:var(--elev-3),0 0 24px rgba(0,168,225,.3);
+  position:relative;
+}
+.brand-mark::after{
+  content:'';position:absolute;inset:-2px;border-radius:calc(var(--shape-md) + 2px);
+  background:var(--grad-primary);opacity:.3;filter:blur(10px);z-index:-1;
+}
+.brand-name{font-size:24px;font-weight:700;letter-spacing:-.5px}
+.brand-name .accent{color:var(--md-secondary)}
+.login-hero{animation:fadeUp .6s var(--ease-decelerate) .1s both}
+.login-badge{
+  display:inline-flex;align-items:center;gap:8px;padding:6px 14px;
+  background:rgba(0,168,225,.1);border:1px solid rgba(0,168,225,.25);
+  border-radius:var(--shape-full);font-size:11px;font-weight:700;color:var(--md-secondary);
+  text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;
+}
+.login-badge::before{content:'';width:6px;height:6px;background:var(--md-secondary);border-radius:50%;box-shadow:0 0 8px var(--md-secondary);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.login-title{font-size:34px;font-weight:700;line-height:1.1;letter-spacing:-1px;margin-bottom:12px}
+.gradient-text{background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-subtitle{font-size:15px;color:var(--md-on-surface-variant);margin-bottom:32px;line-height:1.6}
+
+/* Form */
+.form-field{margin-bottom:18px;animation:fadeUp .5s var(--ease-decelerate) both}
+.form-field:nth-child(1){animation-delay:.15s}
+.form-field:nth-child(2){animation-delay:.2s}
+.form-field:nth-child(3){animation-delay:.25s}
+.form-field:nth-child(4){animation-delay:.3s}
+.field-label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--md-on-surface-variant);margin-bottom:8px}
+.field-input{
+  width:100%;padding:16px;background:var(--md-surface-2);border:1.5px solid var(--md-outline-variant);
+  border-radius:var(--shape-sm);color:var(--md-on-surface);font-size:16px;transition:all var(--dur-fast) var(--ease-standard);
+}
+.field-input:focus{outline:none;border-color:var(--md-primary);background:var(--md-surface-3);box-shadow:0 0 0 3px rgba(0,168,225,.12)}
+.field-input::placeholder{color:var(--md-on-surface-variant);opacity:.6}
+.field-select{
+  width:100%;padding:16px;background:var(--md-surface-2);border:1.5px solid var(--md-outline-variant);
+  border-radius:var(--shape-sm);color:var(--md-on-surface);font-size:16px;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10' viewBox='0 0 16 10'%3E%3Cpath fill='%23BFC9CF' d='M8 10L0 0h16z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 16px center;
+}
+.field-select:focus{outline:none;border-color:var(--md-primary);box-shadow:0 0 0 3px rgba(0,168,225,.12)}
+
+.role-group{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px}
+.role-chip{
+  padding:12px 8px;background:var(--md-surface-2);border:1.5px solid var(--md-outline-variant);
+  border-radius:var(--shape-sm);color:var(--md-on-surface-variant);font-size:13px;font-weight:600;
+  transition:all var(--dur-fast) var(--ease-standard);text-align:center;
+}
+.role-chip.active{background:rgba(0,168,225,.12);border-color:var(--md-primary);color:var(--md-secondary)}
+.role-chip:active{transform:scale(.96)}
+
+/* Buttons */
+.btn-filled{
+  width:100%;padding:16px;background:var(--grad-primary);color:var(--md-on-primary);
+  border-radius:var(--shape-sm);font-weight:700;font-size:16px;box-shadow:var(--elev-1);
+  transition:all var(--dur-fast) var(--ease-standard);position:relative;overflow:hidden;
+}
+.btn-filled:active{transform:scale(.98);box-shadow:var(--elev-0)}
+.btn-filled::after{
+  content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);
+  opacity:0;transition:opacity var(--dur-fast);
+}
+.btn-filled:active::after{opacity:1}
+.btn-tonal{
+  width:100%;padding:14px;background:rgba(0,168,225,.1);color:var(--md-secondary);
+  border-radius:var(--shape-sm);font-weight:600;font-size:14px;transition:all var(--dur-fast) var(--ease-standard);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-tonal:active{transform:scale(.98);background:rgba(0,168,225,.15)}
+.btn-text{width:100%;padding:12px;background:transparent;color:var(--md-on-surface-variant);font-size:13px;transition:color var(--dur-fast)}
+.btn-text:active{color:var(--md-secondary)}
+
+.divider{text-align:center;margin:20px 0;position:relative;color:var(--md-on-surface-variant);font-size:12px}
+.divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--md-outline-variant)}
+.divider span{background:var(--md-surface-0);padding:0 12px;position:relative}
+
+/* ═══════════════════════════════════════════════════════════
+   APP BAR (Material 3 Top)
+   ═══════════════════════════════════════════════════════════ */
+.app-bar{
+  height:calc(var(--appbar-h) + var(--safe-top));padding-top:var(--safe-top);
+  background:rgba(11,20,26,.85);backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);
+  border-bottom:1px solid var(--md-outline-variant);display:flex;align-items:center;gap:8px;
+  padding-left:16px;padding-right:16px;position:sticky;top:0;z-index:100;
+  transition:all var(--dur-medium) var(--ease-standard);
+}
+.app-bar.scrolled{background:rgba(11,20,26,.95);box-shadow:var(--elev-1)}
+.appbar-brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.appbar-brand .brand-mark{width:32px;height:32px;font-size:17px;border-radius:var(--shape-sm)}
+.appbar-title{font-size:18px;font-weight:700;letter-spacing:-.3px}
+.appbar-title .accent{color:var(--md-secondary)}
+.appbar-actions{display:flex;gap:4px;align-items:center}
+
+/* Icon buttons */
+.icon-btn{
+  width:42px;height:42px;border-radius:var(--shape-full);display:flex;align-items:center;justify-content:center;
+  color:var(--md-on-surface-variant);transition:all var(--dur-fast) var(--ease-standard);position:relative;overflow:hidden;
+}
+.icon-btn:active{background:rgba(0,168,225,.12);transform:scale(.9)}
+.icon-btn svg{width:22px;height:22px}
+.icon-btn .badge-dot{
+  position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--md-error);
+  box-shadow:0 0 6px var(--md-error);
+}
+.icon-btn .badge-count{
+  position:absolute;top:4px;right:4px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;
+  background:var(--md-error);color:var(--md-on-error);font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;border:2px solid var(--md-surface-0);
+}
+
+/* Lang badge */
+.lang-toggle{
+  height:34px;padding:0 12px;border-radius:var(--shape-full);background:rgba(0,168,225,.1);
+  color:var(--md-secondary);font-size:12px;font-weight:700;transition:all var(--dur-fast);
+  display:flex;align-items:center;gap:4px;
+}
+.lang-toggle:active{transform:scale(.95);background:rgba(0,168,225,.15)}
+
+/* Status dot */
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--md-success);box-shadow:0 0 6px var(--md-success)}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREENS
+   ═══════════════════════════════════════════════════════════ */
+.screen-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative}
+.screen{display:none;padding:0 0 calc(var(--nav-h) + var(--safe-bottom) + 16px);animation:screenIn var(--dur-medium) var(--ease-decelerate)}
+.screen.active{display:block}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+
+/* Page header */
+.page-header{padding:24px 20px 16px;animation:fadeDown .4s var(--ease-decelerate)}
+.page-greeting{font-size:13px;color:var(--md-on-surface-variant);font-weight:500}
+.page-title{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-top:4px}
+.page-subtitle{font-size:13px;color:var(--md-on-surface-variant);margin-top:4px}
+
+/* ═══════════════════════════════════════════════════════════
+   KPI CARDS (Material 3)
+   ═══════════════════════════════════════════════════════════ */
+.kpi-scroll{display:flex;gap:12px;padding:0 20px 20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.kpi-scroll::-webkit-scrollbar{display:none}
+.kpi-card{
+  min-width:160px;background:var(--md-surface-1);border:1px solid var(--md-outline-variant);
+  border-radius:var(--shape-md);padding:18px;scroll-snap-align:start;transition:all var(--dur-medium) var(--ease-standard);
+  position:relative;overflow:hidden;
+}
+.kpi-card:active{transform:scale(.97);border-color:var(--md-primary)}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad-primary);opacity:0;transition:opacity var(--dur-medium)}
+.kpi-card:active::before{opacity:1}
+.kpi-icon-wrap{width:36px;height:36px;border-radius:var(--shape-sm);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.kpi-icon-wrap.cyan{background:rgba(0,168,225,.12);color:var(--md-secondary)}
+.kpi-icon-wrap.green{background:rgba(76,175,80,.12);color:var(--md-success)}
+.kpi-icon-wrap.amber{background:rgba(255,183,77,.12);color:var(--md-warning)}
+.kpi-icon-wrap.purple{background:rgba(187,134,252,.12);color:var(--md-tertiary)}
+.kpi-icon-wrap.red{background:rgba(255,82,82,.12);color:var(--md-error)}
+.kpi-icon-wrap svg{width:20px;height:20px}
+.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--md-on-surface-variant);margin-bottom:6px}
+.kpi-value{font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+.kpi-trend{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;margin-top:8px;padding:2px 7px;border-radius:var(--shape-full)}
+.kpi-trend.up{background:rgba(76,175,80,.15);color:var(--md-success)}
+.kpi-trend.down{background:rgba(255,82,82,.15);color:var(--md-error)}
+
+/* ═══════════════════════════════════════════════════════════
+   CARDS (Material 3)
+   ═══════════════════════════════════════════════════════════ */
+.m3-card{
+  background:var(--md-surface-1);border:1px solid var(--md-outline-variant);
+  border-radius:var(--shape-md);padding:18px;margin:0 20px 14px;
+  transition:all var(--dur-medium) var(--ease-standard);
+}
+.m3-card:active{transform:scale(.99)}
+.m3-card.elevated{box-shadow:var(--elev-2);border-color:transparent}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.card-title{font-size:16px;font-weight:700;letter-spacing:-.2px}
+.card-subtitle{font-size:12px;color:var(--md-on-surface-variant);margin-top:2px}
+.card-link{font-size:12px;color:var(--md-secondary);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+
+/* ═══════════════════════════════════════════════════════════
+   LISTS (Material 3)
+   ═══════════════════════════════════════════════════════════ */
+.list-item{
+  display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--md-outline-variant);
+  transition:all var(--dur-fast);position:relative;overflow:hidden;
+}
+.list-item:last-child{border-bottom:none}
+.list-item:active{background:rgba(255,255,255,.03)}
+.list-avatar{
+  width:44px;height:44px;border-radius:var(--shape-sm);background:var(--grad-primary);
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;
+  color:var(--md-on-primary);flex-shrink:0;box-shadow:var(--elev-1);
+}
+.list-avatar.round{border-radius:50%}
+.list-avatar.cyan{background:rgba(0,168,225,.15);color:var(--md-secondary);box-shadow:none}
+.list-avatar.green{background:rgba(76,175,80,.15);color:var(--md-success);box-shadow:none}
+.list-avatar.amber{background:rgba(255,183,77,.15);color:var(--md-warning);box-shadow:none}
+.list-avatar.red{background:rgba(255,82,82,.15);color:var(--md-error);box-shadow:none}
+.list-avatar.purple{background:rgba(187,134,252,.15);color:var(--md-tertiary);box-shadow:none}
+.list-avatar svg{width:20px;height:20px}
+.list-content{flex:1;min-width:0}
+.list-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-sub{font-size:12px;color:var(--md-on-surface-variant);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-trail{text-align:right;flex-shrink:0}
+.list-amount{font-size:14px;font-weight:700}
+.list-amount.pos{color:var(--md-success)}
+.list-amount.neg{color:var(--md-error)}
+.list-meta{font-size:11px;color:var(--md-on-surface-variant);margin-top:2px}
+
+/* ═══════════════════════════════════════════════════════════
+   BADGES / CHIPS (Material 3)
+   ═══════════════════════════════════════════════════════════ */
+.badge{
+  display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--shape-full);
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.8}
+.badge.success{background:rgba(76,175,80,.15);color:var(--md-success)}
+.badge.warning{background:rgba(255,183,77,.15);color:var(--md-warning)}
+.badge.danger{background:rgba(255,82,82,.15);color:var(--md-error)}
+.badge.info{background:rgba(0,168,225,.15);color:var(--md-secondary)}
+.badge.neutral{background:rgba(255,255,255,.08);color:var(--md-on-surface-variant)}
+.badge.purple{background:rgba(187,134,252,.15);color:var(--md-tertiary)}
+
+/* Filter chips */
+.chip-row{display:flex;gap:8px;padding:0 20px 16px;overflow-x:auto;scrollbar-width:none}
+.chip-row::-webkit-scrollbar{display:none}
+.chip{
+  padding:8px 16px;border-radius:var(--shape-full);background:var(--md-surface-2);
+  border:1px solid var(--md-outline-variant);color:var(--md-on-surface-variant);
+  font-size:13px;font-weight:600;white-space:nowrap;transition:all var(--dur-fast) var(--ease-standard);scroll-snap-align:start;
+}
+.chip.active{background:var(--grad-primary);color:var(--md-on-primary);border-color:transparent;font-weight:700}
+.chip:active{transform:scale(.95)}
+
+/* ═══════════════════════════════════════════════════════════
+   SEARCH BAR (Material 3)
+   ═══════════════════════════════════════════════════════════ */
+.search-wrap{padding:0 20px 16px;position:relative}
+.search-field{
+  width:100%;padding:14px 16px 14px 48px;background:var(--md-surface-2);
+  border:1px solid var(--md-outline-variant);border-radius:var(--shape-full);
+  color:var(--md-on-surface);font-size:14px;transition:all var(--dur-fast);
+}
+.search-field:focus{outline:none;border-color:var(--md-primary);box-shadow:0 0 0 3px rgba(0,168,225,.12)}
+.search-icon{position:absolute;left:36px;top:50%;transform:translateY(-50%);color:var(--md-on-surface-variant);pointer-events:none}
+.search-icon svg{width:18px;height:18px}
+
+/* ═══════════════════════════════════════════════════════════
+   FAB (Floating Action Button)
+   ═══════════════════════════════════════════════════════════ */
+.fab{
+  position:absolute;bottom:calc(var(--nav-h) + var(--safe-bottom) + 16px);right:20px;
+  width:56px;height:56px;border-radius:var(--shape-md);background:var(--grad-primary);
+  color:var(--md-on-primary);display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--elev-3);z-index:50;transition:all var(--dur-medium) var(--ease-emphasized);
+}
+.fab:active{transform:scale(.9);box-shadow:var(--elev-1)}
+.fab svg{width:24px;height:24px}
+.fab.hidden{transform:scale(0) rotate(-90deg);opacity:0;pointer-events:none}
+
+/* ═══════════════════════════════════════════════════════════
+   BOTTOM NAVIGATION (Material 3)
+   ═══════════════════════════════════════════════════════════ */
+.bottom-nav{
+  height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);
+  background:rgba(11,20,26,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--md-outline-variant);display:flex;align-items:stretch;
+  position:relative;z-index:100;
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  color:var(--md-on-surface-variant);transition:all var(--dur-medium) var(--ease-standard);position:relative;padding-top:8px;
+}
+.nav-item.active{color:var(--md-secondary)}
+.nav-icon-wrap{
+  width:56px;height:32px;border-radius:var(--shape-full);display:flex;align-items:center;justify-content:center;
+  transition:all var(--dur-medium) var(--ease-emphasized);
+}
+.nav-item.active .nav-icon-wrap{background:rgba(0,168,225,.15)}
+.nav-icon{width:24px;height:24px;transition:transform var(--dur-medium) var(--ease-emphasized)}
+.nav-item.active .nav-icon{transform:scale(1.15)}
+.nav-label{font-size:11px;font-weight:600}
+.nav-item.active .nav-label{font-weight:700}
+.nav-item:active .nav-icon{transform:scale(.85)}
+
+/* ═══════════════════════════════════════════════════════════
+   BOTTOM SHEET MODAL (Material 3)
+   ═══════════════════════════════════════════════════════════ */
+.scrim{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;opacity:0;pointer-events:none;
+  transition:opacity var(--dur-medium) var(--ease-standard);backdrop-filter:blur(4px);
+}
+.scrim.active{opacity:1;pointer-events:auto}
+.bottom-sheet{
+  position:fixed;bottom:0;left:50%;transform:translate(-50%,100%);width:100%;max-width:480px;
+  background:var(--md-surface-2);border-radius:var(--shape-xl) var(--shape-xl) 0 0;
+  padding:8px 24px calc(32px + var(--safe-bottom));z-index:201;max-height:90vh;overflow-y:auto;
+  transition:transform var(--dur-medium) var(--ease-emphasized);
+  box-shadow:var(--elev-5);
+}
+.bottom-sheet.active{transform:translate(-50%,0)}
+.sheet-grab{width:36px;height:4px;background:var(--md-outline);border-radius:2px;margin:8px auto 20px;opacity:.5}
+.sheet-title{font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px}
+.sheet-subtitle{font-size:13px;color:var(--md-on-surface-variant);margin-bottom:24px}
+
+/* ═══════════════════════════════════════════════════════════
+   FORMS (Material 3)
+   ═══════════════════════════════════════════════════════════ */
+.field-group{margin-bottom:18px}
+.field-group label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--md-on-surface-variant);margin-bottom:8px}
+.field-group input,.field-group select,.field-group textarea{
+  width:100%;padding:14px 16px;background:var(--md-surface-3);border:1.5px solid var(--md-outline-variant);
+  border-radius:var(--shape-sm);color:var(--md-on-surface);font-size:16px;transition:all var(--dur-fast);
+}
+.field-group input:focus,.field-group select:focus,.field-group textarea:focus{outline:none;border-color:var(--md-primary);box-shadow:0 0 0 3px rgba(0,168,225,.12)}
+.field-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10' viewBox='0 0 16 10'%3E%3Cpath fill='%23BFC9CF' d='M8 10L0 0h16z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+.field-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-row{display:flex;gap:10px;margin-top:8px}
+.btn-row .btn-text{flex:1;padding:14px;background:var(--md-surface-3);border:1px solid var(--md-outline-variant);border-radius:var(--shape-sm);color:var(--md-on-surface);font-weight:600;font-size:14px}
+.btn-row .btn-filled-sm{flex:2;padding:14px;background:var(--grad-primary);color:var(--md-on-primary);border-radius:var(--shape-sm);font-weight:700;font-size:14px}
+
+/* ═══════════════════════════════════════════════════════════
+   SNACKBAR (Material 3)
+   ═══════════════════════════════════════════════════════════ */
+.snackbar{
+  position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 16px);left:50%;
+  transform:translateX(-50%) translateY(100px);background:var(--md-surface-4);color:var(--md-on-surface);
+  padding:14px 20px;border-radius:var(--shape-sm);font-size:14px;font-weight:500;z-index:300;
+  box-shadow:var(--elev-3);max-width:90%;transition:transform var(--dur-medium) var(--ease-emphasized);
+  display:flex;align-items:center;gap:10px;border:1px solid var(--md-outline-variant);
+}
+.snackbar.show{transform:translateX(-50%) translateY(0)}
+.snackbar.success{border-color:var(--md-success)}
+.snackbar.error{border-color:var(--md-error)}
+.snackbar svg{width:18px;height:18px;flex-shrink:0}
+.snackbar.success svg{color:var(--md-success)}
+.snackbar.error svg{color:var(--md-error)}
+
+/* ═══════════════════════════════════════════════════════════
+   PROGRESS (Material 3)
+   ═══════════════════════════════════════════════════════════ */
+.progress-track{height:8px;background:var(--md-surface-3);border-radius:var(--shape-full);overflow:hidden}
+.progress-fill{height:100%;background:var(--grad-primary);border-radius:var(--shape-full);transition:width var(--dur-slow) var(--ease-decelerate)}
+
+/* ═══════════════════════════════════════════════════════════
+   EMPTY STATE
+   ═══════════════════════════════════════════════════════════ */
+.empty-state{text-align:center;padding:48px 24px;color:var(--md-on-surface-variant)}
+.empty-icon{width:64px;height:64px;margin:0 auto 16px;opacity:.3}
+.empty-title{font-size:16px;font-weight:600;color:var(--md-on-surface);margin-bottom:4px}
+.empty-sub{font-size:13px}
+
+/* ═══════════════════════════════════════════════════════════
+   QUICK ACTIONS
+   ═══════════════════════════════════════════════════════════ */
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 20px 20px}
+.quick-action{
+  background:var(--md-surface-1);border:1px solid var(--md-outline-variant);border-radius:var(--shape-md);
+  padding:16px 8px;display:flex;flex-direction:column;align-items:center;gap:10px;
+  transition:all var(--dur-fast) var(--ease-standard);
+}
+.quick-action:active{transform:scale(.95);border-color:var(--md-primary);background:var(--md-surface-2)}
+.quick-icon{width:40px;height:40px;border-radius:var(--shape-sm);display:flex;align-items:center;justify-content:center;background:rgba(0,168,225,.1)}
+.quick-icon svg{width:20px;height:20px;color:var(--md-secondary)}
+.quick-label{font-size:11px;color:var(--md-on-surface-variant);text-align:center;font-weight:600}
+
+/* ═══════════════════════════════════════════════════════════
+   CHARTS (SVG)
+   ═══════════════════════════════════════════════════════════ */
+.chart-box{width:100%;overflow:hidden}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:180px;padding:16px 0}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+.bar{width:100%;background:var(--grad-primary);border-radius:var(--shape-xs) var(--shape-xs) 0 0;min-height:4px;transition:height var(--dur-slow) var(--ease-decelerate);position:relative}
+.bar-label{font-size:10px;color:var(--md-on-surface-variant);font-weight:600}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════════ */
+.text-right{text-align:right}.text-center{text-align:center}
+.text-muted{color:var(--md-on-surface-variant)}.text-primary{color:var(--md-secondary)}
+.text-danger{color:var(--md-error)}.text-success{color:var(--md-success)}
+.font-bold{font-weight:700}.font-mono{font-family:var(--font-mono);font-size:12px}
+.hidden{display:none!important}.mb-16{margin-bottom:16px}.mt-8{margin-top:8px}.mt-16{margin-top:16px}
+.flex{display:flex}.gap-8{gap:8px}.gap-12{gap:12px}
+
+/* Amharic */
+[lang="am"]{font-family:'Noto Sans Ethiopic',var(--font-body)}
+
+/* Ripple effect */
+.ripple{position:relative;overflow:hidden}
+.ripple-effect{
+  position:absolute;border-radius:50%;background:rgba(255,255,255,.3);
+  transform:scale(0);animation:rippleAnim .6s var(--ease-standard);pointer-events:none;
+}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+/* ═══════════════════════════════════════════════════════════
+   SCANNER
+   ═══════════════════════════════════════════════════════════ */
+.scan-overlay{position:fixed;inset:0;background:#000;z-index:500;display:none;flex-direction:column;animation:fadeIn .3s}
+.scan-overlay.active{display:flex}
+.scan-header{padding:calc(20px + var(--safe-top)) 20px 20px;display:flex;justify-content:space-between;align-items:center;color:#fff}
+.scan-view{flex:1;position:relative;overflow:hidden;margin:0 20px;border-radius:var(--shape-lg);background:var(--md-surface-0)}
+.scan-corners{position:absolute;inset:15%;pointer-events:none}
+.scan-corners::before,.scan-corners::after{content:'';position:absolute;width:40px;height:40px;border:3px solid var(--md-secondary);border-radius:4px}
+.scan-corners::before{top:0;left:0;border-right:none;border-bottom:none}
+.scan-corners::after{bottom:0;right:0;border-left:none;border-top:none}
+.scan-line{position:absolute;left:10%;right:10%;height:3px;background:var(--md-secondary);box-shadow:0 0 12px var(--md-secondary);animation:scan 2s ease-in-out infinite}
+@keyframes scan{0%,100%{top:15%}50%{top:85%}}
+.scan-footer{padding:24px 20px calc(24px + var(--safe-bottom));text-align:center;color:#fff}
+
+/* ═══════════════════════════════════════════════════════════
+   DRAWER (Navigation)
+   ═══════════════════════════════════════════════════════════ */
+.drawer-scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;opacity:0;pointer-events:none;transition:opacity var(--dur-medium)}
+.drawer-scrim.active{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;left:0;bottom:0;width:280px;max-width:85vw;background:var(--md-surface-1);
+  z-index:151;transform:translateX(-100%);transition:transform var(--dur-medium) var(--ease-emphasized);
+  display:flex;flex-direction:column;padding-top:var(--safe-top);box-shadow:var(--elev-4);
+}
+.drawer.active{transform:translateX(0)}
+.drawer-header{padding:20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--md-outline-variant)}
+.drawer-header .brand-mark{width:44px;height:44px;font-size:22px}
+.drawer-nav{flex:1;padding:12px;overflow-y:auto}
+.drawer-item{
+  display:flex;align-items:center;gap:16px;padding:14px 16px;border-radius:var(--shape-full);
+  color:var(--md-on-surface-variant);font-size:14px;font-weight:600;transition:all var(--dur-fast);margin-bottom:4px;
+}
+.drawer-item:active,.drawer-item.active{background:rgba(0,168,225,.12);color:var(--md-secondary)}
+.drawer-item svg{width:22px;height:22px}
+.drawer-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--md-on-surface-variant);padding:16px 16px 8px}
+.drawer-footer{padding:16px;border-top:1px solid var(--md-outline-variant)}
+
+/* ═══════════════════════════════════════════════════════════
+   ACTIVITY TIMELINE
+   ═══════════════════════════════════════════════════════════ */
+.timeline{position:relative;padding-left:24px}
+.timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--md-outline-variant)}
+.timeline-item{position:relative;padding-bottom:20px}
+.timeline-item:last-child{padding-bottom:0}
+.timeline-dot{
+  position:absolute;left:-24px;top:4px;width:16px;height:16px;border-radius:50%;
+  background:var(--md-surface-1);border:3px solid var(--md-secondary);z-index:1;
+}
+.timeline-dot.green{border-color:var(--md-success)}
+.timeline-dot.amber{border-color:var(--md-warning)}
+.timeline-dot.red{border-color:var(--md-error)}
+.timeline-content{font-size:13px}
+.timeline-title{font-weight:600}
+.timeline-time{font-size:11px;color:var(--md-on-surface-variant);margin-top:2px}
+</style>
+</head>
+<body>
+<div class="app-root">
+
+<!-- ═══ LOGIN ═══ -->
+<div class="login-root" id="loginRoot">
+  <div class="login-bg"></div>
+  <div class="login-content">
+    <div class="login-brand">
+      <div class="brand-mark">H</div>
+      <div class="brand-name">Hisab<span class="accent">ERP</span></div>
+    </div>
+    <div class="login-hero">
+      <div class="login-badge" id="loginBadge">ERCA Compliant</div>
+      <h1 class="login-title" id="loginTitle">Run your <span class="gradient-text">Ethiopian business</span> with confidence.</h1>
+      <p class="login-subtitle" id="loginSubtitle">Finance, inventory, HR, sales & compliance — built for ETB and local tax regulations.</p>
+    </div>
+
+    <div class="form-field">
+      <label class="field-label" id="lblEmail">Email Address</label>
+      <input type="email" class="field-input" id="emailInput" value="abebe.b@hisaberp.et" placeholder="you@business.et" autocomplete="email">
+    </div>
+    <div class="form-field">
+      <label class="field-label" id="lblPassword">Password</label>
+      <input type="password" class="field-input" id="passInput" value="••••••••" placeholder="Enter password" autocomplete="current-password">
+    </div>
+    <div class="form-field">
+      <label class="field-label" id="lblRole">Select Role</label>
+      <div class="role-group">
+        <button class="role-chip active ripple" onclick="selectRole(this)" data-role="admin" id="roleAdmin">Administrator</button>
+        <button class="role-chip ripple" onclick="selectRole(this)" data-role="manager" id="roleManager">Manager</button>
+        <button class="role-chip ripple" onclick="selectRole(this)" data-role="staff" id="roleStaff">Staff</button>
+      </div>
+    </div>
+
+    <button class="btn-filled ripple" onclick="login()" id="btnSignIn" style="margin-top:8px">Sign In →</button>
+    <div class="divider"><span id="orText">OR</span></div>
+    <button class="btn-tonal ripple" onclick="biometricLogin()" id="btnBiometric">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 11a2 2 0 100-4 2 2 0 000 4zm0 2c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4z"/></svg>
+      Biometric Login
+    </button>
+    <button class="btn-text" onclick="login()" id="btnDemo">Use Demo Account →</button>
+  </div>
+</div>
+
+<!-- ═══ MAIN APP ═══ -->
+<div id="mainApp" style="display:none;flex-direction:column;height:100%">
+
+  <!-- App Bar -->
+  <header class="app-bar" id="appBar">
+    <button class="icon-btn ripple" onclick="toggleDrawer()" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    </button>
+    <div class="appbar-brand">
+      <div class="brand-mark">H</div>
+      <div class="appbar-title">Hisab<span class="accent">ERP</span></div>
+    </div>
+    <div class="appbar-actions">
+      <div class="status-dot" id="onlineDot" title="Online"></div>
+      <button class="lang-toggle ripple" onclick="toggleLang()" id="langBadge">EN</button>
+      <button class="icon-btn ripple" onclick="showNotifications()" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        <span class="badge-count" id="bellCount">3</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Screens -->
+  <div class="screen-wrap" id="screenWrap">
+    <div class="screen active" id="screen-dashboard"></div>
+    <div class="screen" id="screen-finance"></div>
+    <div class="screen" id="screen-inventory"></div>
+    <div class="screen" id="screen-sales"></div>
+    <div class="screen" id="screen-more"></div>
+  </div>
+
+  <!-- FAB -->
+  <button class="fab hidden ripple" id="fab" onclick="fabAction()" aria-label="Add">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+  </button>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav" role="navigation">
+    <button class="nav-item active" onclick="switchTab('dashboard',this)" id="nav-dashboard" aria-label="Dashboard">
+      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div>
+      <span class="nav-label" id="navHome">Home</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('finance',this)" id="nav-finance" aria-label="Finance">
+      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+      <span class="nav-label" id="navFinance">Finance</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('inventory',this)" id="nav-inventory" aria-label="Inventory">
+      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4h16v3z"/></svg></div>
+      <span class="nav-label" id="navInventory">Stock</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('sales',this)" id="nav-sales" aria-label="Sales">
+      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
+      <span class="nav-label" id="navSales">Sales</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('more',this)" id="nav-more" aria-label="More">
+      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
+      <span class="nav-label" id="navMore">More</span>
+    </button>
+  </nav>
+</div>
+
+<!-- Drawer -->
+<div class="drawer-scrim" id="drawerScrim" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="brand-mark">H</div>
+    <div>
+      <div style="font-size:16px;font-weight:700">Hisab<span class="accent">ERP</span></div>
+      <div style="font-size:12px;color:var(--md-on-surface-variant)">Ethiopian Business Intelligence</div>
+    </div>
+  </div>
+  <nav class="drawer-nav" id="drawerNav">
+    <div class="drawer-section-label">Modules</div>
+    <button class="drawer-item active" onclick="switchTab('dashboard',document.getElementById('nav-dashboard'));closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      Dashboard
+    </button>
+    <button class="drawer-item" onclick="switchTab('finance',document.getElementById('nav-finance'));closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+      Finance
+    </button>
+    <button class="drawer-item" onclick="switchTab('inventory',document.getElementById('nav-inventory'));closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4h16v3z"/></svg>
+      Inventory
+    </button>
+    <button class="drawer-item" onclick="switchTab('sales',document.getElementById('nav-sales'));closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      Sales & CRM
+    </button>
+    <button class="drawer-item" onclick="switchTab('more',document.getElementById('nav-more'));closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      More
+    </button>
+    <div class="drawer-section-label">Quick Access</div>
+    <button class="drawer-item" onclick="openTxnForm();closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+      New Transaction
+    </button>
+    <button class="drawer-item" onclick="openProductForm();closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      Add Product
+    </button>
+    <button class="drawer-item" onclick="openScanner();closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 7V2h5v2H4v3H2z"/></svg>
+      Scan Barcode
+    </button>
+  </nav>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="logout()" style="color:var(--md-error)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+      Logout
+    </button>
+  </div>
+</aside>
+
+<!-- Scrim + Sheet -->
+<div class="scrim" id="scrim" onclick="closeModal()"></div>
+<div class="bottom-sheet" id="bottomSheet" role="dialog" aria-modal="true">
+  <div class="sheet-grab"></div>
+  <div id="sheetContent"></div>
+</div>
+
+<!-- Scanner -->
+<div class="scan-overlay" id="scanOverlay">
+  <div class="scan-header">
+    <button class="icon-btn ripple" onclick="closeScanner()" style="color:#fff">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+    <span style="font-weight:600" id="scanTitle">Scan Barcode</span>
+    <div style="width:42px"></div>
+  </div>
+  <div class="scan-view">
+    <div class="scan-corners"></div>
+    <div class="scan-line"></div>
+  </div>
+  <div class="scan-footer">
+    <p id="scanHint" style="margin-bottom:16px;color:var(--md-on-surface-variant)">Point your camera at a barcode</p>
+    <button class="btn-filled ripple" onclick="simulateScan()" style="max-width:200px;margin:0 auto">Simulate Scan</button>
+  </div>
+</div>
+
+<!-- Snackbar -->
+<div class="snackbar" id="snackbar">
+  <svg id="snackbarIcon" viewBox="0 0 24 24" fill="currentColor"></svg>
+  <span id="snackbarText"></span>
+</div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA LAYER — localStorage + Seed
+// ═══════════════════════════════════════════════════════════
+const SEED = {
+  org:{name:'Hisab Trading Enterprise',tin:'0009847263',vat:'0009847263',address:'Bole Road, Friendship Building, Addis Ababa',phone:'+251 11 663 0000',email:'info@hisaberp.et',vatRate:15},
+  user:{name:'Abebe Bekele',email:'abebe.b@hisaberp.et',role:'admin',avatar:'AB'},
+  transactions:[
+    {id:'t1',txnId:'TXN-2841',type:'received',party:'Selam Trading PLC',amount:184000,method:'Dashen Bank',date:'2026-07-03',status:'completed',desc:'Payment for Invoice INV-1024'},
+    {id:'t2',txnId:'TXN-2840',type:'sent',party:'Mekdim Suppliers',amount:92000,method:'CBE',date:'2026-07-03',status:'completed',desc:'Raw materials purchase'},
+    {id:'t3',txnId:'TXN-2839',type:'received',party:'Bekele Retail Store',amount:47200,method:'Telebirr',date:'2026-07-02',status:'completed',desc:'Coffee order payment'},
+    {id:'t4',txnId:'TXN-2838',type:'received',party:'Hidase Construction',amount:312000,method:'Awash Bank',date:'2026-07-02',status:'completed',desc:'Bulk supply contract'},
+    {id:'t5',txnId:'TXN-2837',type:'sent',party:'Ethio Telecom',amount:18400,method:'Amole',date:'2026-07-01',status:'completed',desc:'Monthly internet bill'},
+    {id:'t6',txnId:'TXN-2836',type:'received',party:'Yenus Market',amount:68500,method:'Telebirr',date:'2026-07-01',status:'completed',desc:'Weekly restock'},
+  ],
+  banks:[
+    {id:'b1',name:'Dashen Bank',account:'DASH-5021-8842',balance:4840000,color:'#00A8E1',icon:'bank'},
+    {id:'b2',name:'Commercial Bank of Ethiopia',account:'CBE-3329-1174',balance:6280000,color:'#2BD5F5',icon:'bank'},
+    {id:'b3',name:'Awash Bank',account:'AWASH-7741-2208',balance:2920000,color:'#FFB74D',icon:'bank'},
+    {id:'b4',name:'Telebirr',account:'+251911442880',balance:184000,color:'#4CAF50',icon:'mobile'},
+    {id:'b5',name:'Amole',account:'AMO-882194',balance:92000,color:'#BB86FC',icon:'mobile'},
+  ],
+  accounts:[
+    {id:'a1',code:'1000',name:'Cash & Equivalents',type:'Asset',balance:14280000},
+    {id:'a2',code:'1200',name:'Accounts Receivable',type:'Asset',balance:3840000},
+    {id:'a3',code:'1500',name:'Inventory',type:'Asset',balance:5920000},
+    {id:'a4',code:'1700',name:'Fixed Assets',type:'Asset',balance:12400000},
+    {id:'a5',code:'2000',name:'Accounts Payable',type:'Liability',balance:2780000},
+    {id:'a6',code:'2200',name:'VAT Payable',type:'Liability',balance:276750},
+    {id:'a7',code:'2300',name:'Pension Payable',type:'Liability',balance:476000},
+    {id:'a8',code:'3000',name:"Owner's Equity",type:'Equity',balance:28000000},
+    {id:'a9',code:'4000',name:'Sales Revenue',type:'Revenue',balance:18450000},
+    {id:'a10',code:'5000',name:'Cost of Goods Sold',type:'Expense',balance:9200000},
+    {id:'a11',code:'6000',name:'Operating Expenses',type:'Expense',balance:4930000},
+  ],
+  products:[
+    {id:'p1',sku:'BS-500',name:'Berbere Spice 500g',category:'Spices',qty:248,price:300,cost:180,reorder:50,warehouse:'Addis Ababa',status:'inStock'},
+    {id:'p2',sku:'YC-1KG',name:'Yirgacheffe Coffee 1kg',category:'Coffee',qty:18,price:600,cost:380,reorder:30,warehouse:'Addis Ababa',status:'lowStock'},
+    {id:'p3',sku:'IF-5KG',name:'Injera Flour 5kg',category:'Grains',qty:8,price:300,cost:210,reorder:25,warehouse:'Bahir Dar',status:'outOfStock'},
+    {id:'p4',sku:'TG-25KG',name:'Teff Grain 25kg',category:'Grains',qty:120,price:1800,cost:1400,reorder:100,warehouse:'Hawassa',status:'inStock'},
+    {id:'p5',sku:'HW-GABI',name:'Hand-woven Gabi',category:'Textiles',qty:24,price:1500,cost:900,reorder:30,warehouse:'Dire Dawa',status:'lowStock'},
+    {id:'p6',sku:'EH-1KG',name:'Ethiopian Honey 1kg',category:'Natural',qty:84,price:450,cost:280,reorder:40,warehouse:'Addis Ababa',status:'inStock'},
+    {id:'p7',sku:'KS-500',name:'Kolo Mixed Snack 500g',category:'Snacks',qty:320,price:180,cost:110,reorder:100,warehouse:'Addis Ababa',status:'inStock'},
+    {id:'p8',sku:'TB-1L',name:'Tella Traditional Brew 1L',category:'Beverages',qty:980,price:200,cost:120,reorder:200,warehouse:'Bahir Dar',status:'inStock'},
+  ],
+  suppliers:[
+    {id:'s1',name:'Mekdim Suppliers PLC',contact:'+251 911 234 567',email:'info@mekdim.et',products:24,leadTime:5,rating:4.7},
+    {id:'s2',name:'Selam Trading Enterprise',contact:'+251 911 345 678',email:'sales@selam.et',products:18,leadTime:7,rating:4.5},
+    {id:'s3',name:'Yenus Agricultural Coop',contact:'+251 911 456 789',email:'contact@yenus.et',products:32,leadTime:4,rating:4.8},
+    {id:'s4',name:'Bekele Textiles',contact:'+251 911 567 890',email:'info@bekele.et',products:12,leadTime:10,rating:4.3},
+    {id:'s5',name:'Hidase Logistics',contact:'+251 911 678 901',email:'ops@hidase.et',products:8,leadTime:3,rating:4.6},
+  ],
+  employees:[
+    {id:'e1',empId:'E-001',name:'Abebe Bekele',email:'abebe.b@hisaberp.et',phone:'+251911234567',position:'Finance Manager',dept:'finance',salary:42000,joinDate:'2021-03-15',status:'active'},
+    {id:'e2',empId:'E-002',name:'Sara Tadesse',email:'sara.t@hisaberp.et',phone:'+251911345678',position:'HR Specialist',dept:'hr',salary:28000,joinDate:'2022-07-01',status:'active'},
+    {id:'e3',empId:'E-003',name:'Yohannes Girma',email:'yohannes.g@hisaberp.et',phone:'+251911456789',position:'Inventory Supervisor',dept:'operations',salary:32000,joinDate:'2020-11-20',status:'active'},
+    {id:'e4',empId:'E-004',name:'Hanna Mengistu',email:'hanna.m@hisaberp.et',phone:'+251911567890',position:'Sales Representative',dept:'sales',salary:24000,joinDate:'2023-02-10',status:'active'},
+    {id:'e5',empId:'E-005',name:'Daniel Kebede',email:'daniel.k@hisaberp.et',phone:'+251911678901',position:'IT Support',dept:'it',salary:30000,joinDate:'2022-09-05',status:'active'},
+    {id:'e6',empId:'E-006',name:'Meseret Lemma',email:'meseret.l@hisaberp.et',phone:'+251911789012',position:'Accountant',dept:'finance',salary:26000,joinDate:'2021-12-01',status:'leave'},
+    {id:'e7',empId:'E-007',name:'Rahel Alemu',email:'rahel.a@hisaberp.et',phone:'+251911890123',position:'Sales Lead',dept:'sales',salary:36000,joinDate:'2020-05-18',status:'active'},
+    {id:'e8',empId:'E-008',name:'Tewodros Assefa',email:'tewodros.a@hisaberp.et',phone:'+251911901234',position:'Operations Manager',dept:'operations',salary:48000,joinDate:'2019-08-22',status:'active'},
+  ],
+  customers:[
+    {id:'c1',name:'Selam Trading PLC',contact:'+251 911 234 567',email:'purchase@selamtrading.et',orders:184,ltv:2840000,status:'vip'},
+    {id:'c2',name:'Bekele Retail Store',contact:'+251 911 345 678',email:'bekele.retail@gmail.com',orders:142,ltv:980000,status:'active'},
+    {id:'c3',name:'Hidase Construction',contact:'+251 911 456 789',email:'procurement@hidase.et',orders:96,ltv:4200000,status:'vip'},
+    {id:'c4',name:'Yenus Market',contact:'+251 911 567 890',email:'yenus.market@gmail.com',orders:78,ltv:412000,status:'active'},
+    {id:'c5',name:'Merkato Distributors',contact:'+251 911 678 901',email:'info@merkato.et',orders:64,ltv:1840000,status:'active'},
+    {id:'c6',name:'Bole Mini Market',contact:'+251 911 890 123',email:'bole.mini@gmail.com',orders:42,ltv:198000,status:'regular'},
+  ],
+  quotations:[
+    {id:'q1',quoteNo:'Q-2026-090',customerId:'c1',date:'2026-07-03',validUntil:'2026-07-17',amount:60000,vat:9000,total:69000,status:'sent',items:[{productId:'p1',qty:200,price:300,total:60000}]},
+    {id:'q2',quoteNo:'Q-2026-083',customerId:'c3',date:'2026-07-01',validUntil:'2026-07-15',amount:276000,vat:41400,total:317400,status:'accepted',items:[]},
+    {id:'q3',quoteNo:'Q-2026-080',customerId:'c2',date:'2026-06-28',validUntil:'2026-07-12',amount:60000,vat:9000,total:69000,status:'accepted',items:[]},
+  ],
+  pipeline:[
+    {id:'d1',customerId:'c1',title:'Annual Supply Contract',value:1840000,stage:'negotiation'},
+    {id:'d2',customerId:'c2',title:'Retail Partnership',value:480000,stage:'proposal'},
+    {id:'d3',customerId:'c3',title:'Construction Materials',value:4200000,stage:'won'},
+    {id:'d4',customerId:'c5',title:'Distribution Deal',value:920000,stage:'lead'},
+  ],
+  taxFilings:[
+    {id:'tf1',type:'Monthly VAT Return',period:'June 2026',amount:276750,dueDate:'2026-07-25',status:'pending'},
+    {id:'tf2',type:'Withholding Tax',period:'June 2026',amount:92400,dueDate:'2026-07-15',status:'filed'},
+    {id:'tf3',type:'Pension Contribution',period:'June 2026',amount:476000,dueDate:'2026-07-10',status:'pending'},
+    {id:'tf4',type:'Business Income Tax',period:'FY 2025-26',amount:1296000,dueDate:'2026-07-15',status:'overdue'},
+  ],
+  auditLogs:[
+    {id:'al1',time:'2026-07-04 08:42',user:'Abebe Bekele',action:'Created transaction TXN-2841',entity:'Finance',ip:'196.188.44.22'},
+    {id:'al2',time:'2026-07-03 17:12',user:'Yohannes Girma',action:'Adjusted stock for Berbere Spice',entity:'Inventory',ip:'196.188.44.30'},
+    {id:'al3',time:'2026-07-03 14:32',user:'Sara Tadesse',action:'Updated employee E-004',entity:'HR',ip:'196.188.44.22'},
+    {id:'al4',time:'2026-07-03 09:48',user:'Rahel Alemu',action:'Generated VAT return',entity:'Compliance',ip:'196.188.44.22'},
+    {id:'al5',time:'2026-07-02 15:42',user:'Hanna Mengistu',action:'Created quotation Q-2026-090',entity:'Sales',ip:'196.188.44.18'},
+  ],
+  movements:[
+    {id:'m1',productId:'p1',type:'StockOut',qty:24,ref:'Selam Trading PLC',date:'2026-07-03'},
+    {id:'m2',productId:'p4',type:'StockIn',qty:80,ref:'Mekdim Suppliers',date:'2026-07-02'},
+    {id:'m3',productId:'p6',type:'StockOut',qty:32,ref:'Hidase Construction',date:'2026-07-01'},
+  ],
+};
+
+let DB={},LANG='en',ACTIVE_TAB='dashboard',FAB_ACTION=null;
+let financeTab='transactions',invTab='products',invSearch='',salesTab='pos',cart=[],moreTab='hr';
+
+function loadDB(){const s=localStorage.getItem('hisab-erp-v2');if(s){try{DB=JSON.parse(s)}catch(e){DB=JSON.parse(JSON.stringify(SEED))}}else{DB=JSON.parse(JSON.stringify(SEED));saveDB()}}
+function saveDB(){localStorage.setItem('hisab-erp-v2',JSON.stringify(DB))}
+function genId(){return 'id'+Date.now()+Math.random().toString(36).slice(2,7)}
+
+// ═══════════════════════════════════════════════════════════
+// I18N
+// ═══════════════════════════════════════════════════════════
+const I18N={
+  en:{home:'Home',finance:'Finance',inventory:'Stock',sales:'Sales',more:'More',overview:'Business Overview',welcome:'Welcome back'},
+  am:{home:'መነሻ',finance:'ፋይናንስ',inventory:'እቃ',sales:'ሽያጭ',more:'ተጨማሪ',overview:'የንግድ ጠቅላላ እይታ',welcome:'እንኳን ደህና መጡ'},
+};
+function t(k){return(I18N[LANG]&&I18N[LANG][key])||I18N.en[key]||key}
+// Fix t() function
+function tr(key){return(I18N[LANG]&&I18N[LANG][key])||I18N.en[key]||key}
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function formatETB(a,c){if(c){const ab=Math.abs(a);if(ab>=1e6)return'ETB '+(a/1e6).toFixed(2)+'M';if(ab>=1e3)return'ETB '+(a/1e3).toFixed(1)+'K'}return a.toLocaleString()+' ETB'}
+function getBadge(s){const m={completed:'success',filed:'success',active:'success',inStock:'success',present:'success',won:'success',accepted:'success',pending:'warning',lowStock:'warning',sent:'warning',leave:'warning',negotiation:'warning',proposal:'info',lead:'neutral',overdue:'danger',outOfStock:'danger',expired:'danger',lost:'danger',absent:'danger',vip:'purple',regular:'neutral'};const l={completed:'Completed',filed:'Filed',active:'Active',inStock:'In Stock',present:'Present',won:'Won',accepted:'Accepted',pending:'Pending',lowStock:'Low Stock',sent:'Sent',leave:'On Leave',negotiation:'Negotiation',proposal:'Proposal',lead:'Lead',overdue:'Overdue',outOfStock:'Out of Stock',expired:'Expired',lost:'Lost',absent:'Absent',vip:'VIP',regular:'Regular'};return'<span class="badge '+(m[s]||'neutral')+'">'+(l[s]||s)+'</span>'}
+function initials(n){return n.split(' ').slice(0,2).map(x=>x[0]).join('')}
+function showSnack(msg,type){
+  const el=document.getElementById('snackbar'),icon=document.getElementById('snackbarIcon'),txt=document.getElementById('snackbarText');
+  txt.textContent=msg;
+  el.className='snackbar show'+(type?' '+type:'');
+  if(type==='success')icon.innerHTML='<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+  else if(type==='error')icon.innerHTML='<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>';
+  else icon.innerHTML='';
+  setTimeout(()=>el.classList.remove('show'),2800);
+}
+function auditLog(action,entity,details){DB.auditLogs.unshift({id:genId(),time:new Date().toLocaleString('en-US',{hour12:false}),user:DB.user.name,action,entity,details:details||'',ip:'196.188.44.22'});saveDB()}
+
+// Ripple effect
+function addRipple(e){const btn=e.currentTarget;const ripple=document.createElement('span');ripple.className='ripple-effect';const rect=btn.getBoundingClientRect();const size=Math.max(rect.width,rect.height);ripple.style.width=ripple.style.height=size+'px';ripple.style.left=(e.clientX-rect.left-size/2)+'px';ripple.style.top=(e.clientY-rect.top-size/2)+'px';btn.appendChild(ripple);setTimeout(()=>ripple.remove(),600)}
+document.addEventListener('click',e=>{const btn=e.target.closest('.ripple');if(btn)addRipple({currentTarget:btn,clientX:e.clientX,clientY:e.clientY})});
+
+// ═══════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════
+function selectRole(btn){document.querySelectorAll('.role-chip').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+function login(){
+  document.getElementById('loginRoot').classList.add('hidden');
+  document.getElementById('mainApp').style.display='flex';
+  setTimeout(()=>{document.getElementById('loginRoot').style.display='none'},400);
+  renderAll();
+}
+function biometricLogin(){showSnack('Scanning fingerprint...','success');setTimeout(login,1200)}
+function logout(){localStorage.removeItem('hisab-erp-auth');location.reload()}
+
+// ═══════════════════════════════════════════════════════════
+// LANGUAGE
+// ═══════════════════════════════════════════════════════════
+function toggleLang(){LANG=LANG==='en'?'am':'en';localStorage.setItem('hisab-lang',LANG);document.getElementById('langBadge').textContent=LANG.toUpperCase();document.documentElement.lang=LANG;updateNavLabels();renderScreen(ACTIVE_TAB)}
+function updateNavLabels(){document.getElementById('navHome').textContent=tr('home');document.getElementById('navFinance').textContent=tr('finance');document.getElementById('navInventory').textContent=tr('inventory');document.getElementById('navSales').textContent=tr('sales');document.getElementById('navMore').textContent=tr('more')}
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function switchTab(tab,btn){
+  ACTIVE_TAB=tab;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+tab).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.querySelectorAll('.drawer-item').forEach(d=>d.classList.remove('active'));
+  const drawerItems=document.querySelectorAll('.drawer-item');
+  const tabMap={dashboard:0,finance:1,inventory:2,sales:3,more:4};
+  if(drawerItems[tabMap[tab]])drawerItems[tabMap[tab]].classList.add('active');
+  const fab=document.getElementById('fab');
+  const fabActions={finance:openTxnForm,inventory:openProductForm,sales:openSaleForm};
+  if(fabActions[tab]){fab.classList.remove('hidden');FAB_ACTION=fabActions[tab]}else{fab.classList.add('hidden');FAB_ACTION=null}
+  renderScreen(tab);
+  document.getElementById('screenWrap').scrollTop=0;
+}
+function fabAction(){if(FAB_ACTION)FAB_ACTION()}
+function renderScreen(tab){const r={dashboard:renderDashboard,finance:renderFinance,inventory:renderInventory,sales:renderSales,more:renderMore};if(r[tab])r[tab]()}
+function renderAll(){renderScreen(ACTIVE_TAB)}
+
+// Drawer
+function toggleDrawer(){document.getElementById('drawer').classList.add('active');document.getElementById('drawerScrim').classList.add('active')}
+function closeDrawer(){document.getElementById('drawer').classList.remove('active');document.getElementById('drawerScrim').classList.remove('active')}
+
+// Modal
+function openModal(html){document.getElementById('sheetContent').innerHTML=html;document.getElementById('scrim').classList.add('active');setTimeout(()=>document.getElementById('bottomSheet').classList.add('active'),10)}
+function closeModal(){document.getElementById('bottomSheet').classList.remove('active');setTimeout(()=>document.getElementById('scrim').classList.remove('active'),300)}
+
+// Scanner
+function openScanner(){document.getElementById('scanOverlay').classList.add('active')}
+function closeScanner(){document.getElementById('scanOverlay').classList.remove('active')}
+function simulateScan(){if(DB.products.length===0){showSnack('No products to scan','error');return}const p=DB.products[Math.floor(Math.random()*DB.products.length)];closeScanner();setTimeout(()=>{viewProduct(p.id);showSnack('Scanned: '+p.sku,'success')},300)}
+
+// ═══════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════
+function renderDashboard(){
+  const totalRev=DB.transactions.filter(t=>t.type==='received').reduce((s,t)=>s+t.amount,0);
+  const totalExp=DB.transactions.filter(t=>t.type==='sent').reduce((s,t)=>s+t.amount,0);
+  const netProfit=totalRev-totalExp;
+  const lowStock=DB.products.filter(p=>p.status!=='inStock');
+  const hour=new Date().getHours();
+  const greeting=hour<12?'Good morning':hour<18?'Good afternoon':'Good evening';
+
+  document.getElementById('screen-dashboard').innerHTML=`
+    <div class="page-header">
+      <div class="page-greeting">${greeting}, ${DB.user.name.split(' ')[0]} 👋</div>
+      <div class="page-title">${tr('overview')}</div>
+    </div>
+
+    <div class="kpi-scroll">
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap cyan"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></div>
+        <div class="kpi-label">Revenue</div>
+        <div class="kpi-value">${formatETB(totalRev,true)}</div>
+        <div class="kpi-trend up">↑ 12.4%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap green"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+        <div class="kpi-label">Net Profit</div>
+        <div class="kpi-value">${formatETB(netProfit,true)}</div>
+        <div class="kpi-trend up">↑ 8.7%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap amber"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
+        <div class="kpi-label">VAT Collected</div>
+        <div class="kpi-value">${formatETB(totalRev*0.15,true)}</div>
+        <div class="kpi-trend up">↑ 15.2%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap purple"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+        <div class="kpi-label">Employees</div>
+        <div class="kpi-value">${DB.employees.length}</div>
+        <div class="kpi-trend up">↑ 5.0%</div>
+      </div>
+    </div>
+
+    <div class="quick-grid">
+      <button class="quick-action ripple" onclick="openTxnForm()">
+        <div class="quick-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+        <div class="quick-label">New Txn</div>
+      </button>
+      <button class="quick-action ripple" onclick="openProductForm()">
+        <div class="quick-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+        <div class="quick-label">Add Product</div>
+      </button>
+      <button class="quick-action ripple" onclick="switchTab('sales',document.getElementById('nav-sales'));openSaleForm()">
+        <div class="quick-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
+        <div class="quick-label">New Sale</div>
+      </button>
+      <button class="quick-action ripple" onclick="openScanner()">
+        <div class="quick-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 7V2h5v2H4v3H2z"/></svg></div>
+        <div class="quick-label">Scan</div>
+      </button>
+    </div>
+
+    <div class="m3-card">
+      <div class="card-header">
+        <div><div class="card-title">Activity Timeline</div><div class="card-subtitle">Recent business activity</div></div>
+      </div>
+      <div class="timeline">
+        ${DB.auditLogs.slice(0,5).map((log,i)=>{
+          const dotClass = log.entity==='Finance'?'green':log.entity==='Inventory'?'amber':log.entity==='Compliance'?'red':'';
+          return `<div class="timeline-item">
+            <div class="timeline-dot ${dotClass}"></div>
+            <div class="timeline-content">
+              <div class="timeline-title">${log.action}</div>
+              <div class="timeline-time">${log.user} • ${log.time}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="m3-card">
+      <div class="card-header">
+        <div><div class="card-title">Recent Transactions</div><div class="card-subtitle">Latest financial activity</div></div>
+        <button class="card-link" onclick="switchTab('finance',document.getElementById('nav-finance'))">View all</button>
+      </div>
+      ${DB.transactions.slice(0,4).map(txn=>`
+        <div class="list-item" onclick="viewTxn('${txn.id}')">
+          <div class="list-avatar ${txn.type==='received'?'':'red'}">${txn.type==='received'?'↓':'↑'}</div>
+          <div class="list-content">
+            <div class="list-title">${txn.party}</div>
+            <div class="list-sub">${txn.txnId} • ${txn.method}</div>
+          </div>
+          <div class="list-trail">
+            <div class="list-amount ${txn.type==='received'?'pos':'neg'}">${txn.type==='received'?'+':'-'}${formatETB(txn.amount,true)}</div>
+            <div class="list-meta">${txn.date}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="m3-card">
+      <div class="card-header">
+        <div><div class="card-title">Low Stock Alerts</div><div class="card-subtitle">${lowStock.length} items need attention</div></div>
+      </div>
+      ${lowStock.length===0?'<div class="empty-state"><div class="empty-title">All stocked up! ✓</div></div>':
+        lowStock.map(p=>`
+        <div class="list-item" onclick="switchTab('inventory',document.getElementById('nav-inventory'));viewProduct('${p.id}')">
+          <div class="list-avatar ${p.status==='outOfStock'?'red':'amber'}">⚠</div>
+          <div class="list-content">
+            <div class="list-title">${p.name}</div>
+            <div class="list-sub">${p.warehouse} • ${p.qty}/${p.reorder} units</div>
+          </div>
+          ${getBadge(p.status)}
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="m3-card">
+      <div class="card-header">
+        <div><div class="card-title">Tax Deadlines</div><div class="card-subtitle">ERCA filing schedule</div></div>
+      </div>
+      ${DB.taxFilings.slice(0,4).map(tf=>`
+        <div class="list-item">
+          <div class="list-avatar amber">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+          </div>
+          <div class="list-content">
+            <div class="list-title">${tf.type}</div>
+            <div class="list-sub">Due: ${tf.dueDate}</div>
+          </div>
+          <div class="list-trail">
+            <div class="list-amount">${formatETB(tf.amount,true)}</div>
+            ${getBadge(tf.status)}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="m3-card" style="text-align:center">
+      <div class="card-title mb-16">Fiscal Health Score</div>
+      <div style="font-size:56px;font-weight:800;color:var(--md-secondary);line-height:1">87</div>
+      <div class="text-muted" style="font-size:12px">out of 100</div>
+      <div class="progress-track" style="margin-top:12px"><div class="progress-fill" style="width:87%"></div></div>
+      <div style="margin-top:8px;font-size:12px;color:var(--md-success);font-weight:600">✓ Excellent standing</div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+// FINANCE
+// ═══════════════════════════════════════════════════════════
+function renderFinance(){
+  const totalBal=DB.banks.reduce((s,b)=>s+b.balance,0);
+  const income=DB.transactions.filter(t=>t.type==='received').reduce((s,t)=>s+t.amount,0);
+  const expense=DB.transactions.filter(t=>t.type==='sent').reduce((s,t)=>s+t.amount,0);
+
+  document.getElementById('screen-finance').innerHTML=`
+    <div class="page-header">
+      <div class="page-title">Finance</div>
+      <div class="page-subtitle">ETB & VAT compliant accounting</div>
+    </div>
+    <div class="kpi-scroll">
+      <div class="kpi-card"><div class="kpi-icon-wrap cyan"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><div class="kpi-label">Balance</div><div class="kpi-value">${formatETB(totalBal,true)}</div></div>
+      <div class="kpi-card"><div class="kpi-icon-wrap green"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></div><div class="kpi-label">Income</div><div class="kpi-value">${formatETB(income,true)}</div></div>
+      <div class="kpi-card"><div class="kpi-icon-wrap red"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" transform="scale(1,-1) translate(0,-24)"/></svg></div><div class="kpi-label">Expenses</div><div class="kpi-value">${formatETB(expense,true)}</div></div>
+      <div class="kpi-card"><div class="kpi-icon-wrap amber"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><div class="kpi-label">Net</div><div class="kpi-value">${formatETB(income-expense,true)}</div></div>
+    </div>
+    <div class="chip-row">
+      <button class="chip ${financeTab==='transactions'?'active':''} ripple" onclick="financeTab='transactions';renderFinance()">Transactions</button>
+      <button class="chip ${financeTab==='accounts'?'active':''} ripple" onclick="financeTab='accounts';renderFinance()">Accounts</button>
+      <button class="chip ${financeTab==='banks'?'active':''} ripple" onclick="financeTab='banks';renderFinance()">Bank Accounts</button>
+      <button class="chip ${financeTab==='tax'?'active':''} ripple" onclick="financeTab='tax';renderFinance()">Tax & VAT</button>
+    </div>
+    <div id="financeContent">${renderFinanceTab()}</div>
+  `;
+}
+function renderFinanceTab(){
+  if(financeTab==='transactions'){
+    if(DB.transactions.length===0)return'<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="64" height="64"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><div class="empty-title">No transactions yet</div><div class="empty-sub">Tap + to add one</div></div>';
+    return DB.transactions.map(txn=>`
+      <div class="m3-card" onclick="viewTxn('${txn.id}')" style="margin-bottom:10px;cursor:pointer">
+        <div class="list-item" style="border:none;padding:0">
+          <div class="list-avatar ${txn.type==='received'?'':'red'}">${txn.type==='received'?'↓':'↑'}</div>
+          <div class="list-content">
+            <div class="list-title">${txn.party}</div>
+            <div class="list-sub">${txn.txnId} • ${txn.method} • ${txn.date}</div>
+          </div>
+          <div class="list-trail">
+            <div class="list-amount ${txn.type==='received'?'pos':'neg'}">${txn.type==='received'?'+':'-'}${formatETB(txn.amount,true)}</div>
+            ${getBadge(txn.status)}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  if(financeTab==='accounts'){
+    return `<div class="m3-card"><table style="width:100%"><thead><tr><th style="text-align:left;padding:8px;font-size:11px;color:var(--md-on-surface-variant);text-transform:uppercase">Code</th><th style="text-align:left;padding:8px;font-size:11px;color:var(--md-on-surface-variant);text-transform:uppercase">Name</th><th style="text-align:right;padding:8px;font-size:11px;color:var(--md-on-surface-variant);text-transform:uppercase">Balance</th></tr></thead><tbody>
+      ${DB.accounts.map(a=>`<tr><td style="padding:12px 8px;border-bottom:1px solid var(--md-outline-variant);font-family:var(--font-mono);font-size:12px">${a.code}</td><td style="padding:12px 8px;border-bottom:1px solid var(--md-outline-variant);font-size:13px">${a.name}<br><span class="badge neutral" style="margin-top:2px">${a.type}</span></td><td style="padding:12px 8px;border-bottom:1px solid var(--md-outline-variant);text-align:right;font-weight:700;font-size:13px">${formatETB(a.balance)}</td></tr>`).join('')}
+    </tbody></table></div>`;
+  }
+  if(financeTab==='banks'){
+    return DB.banks.map(b=>`
+      <div class="m3-card">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+          <div class="list-avatar" style="background:${b.color}">${b.icon==='bank'?'🏦':'📱'}</div>
+          <div style="flex:1">
+            <div class="list-title">${b.name}</div>
+            <div class="list-sub font-mono">${b.account}</div>
+          </div>
+          ${getBadge('active')}
+        </div>
+        <div style="padding-top:14px;border-top:1px solid var(--md-outline-variant)">
+          <div class="text-muted" style="font-size:11px;text-transform:uppercase;letter-spacing:1px">Available Balance</div>
+          <div style="font-size:24px;font-weight:800;margin-top:4px">${formatETB(b.balance)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  if(financeTab==='tax'){
+    const income=DB.transactions.filter(t=>t.type==='received').reduce((s,t)=>s+t.amount,0);
+    const expense=DB.transactions.filter(t=>t.type==='sent').reduce((s,t)=>s+t.amount,0);
+    return`
+      <div class="m3-card">
+        <div class="card-title mb-16">VAT Compliance (15%)</div>
+        <div style="background:rgba(0,168,225,.05);border:1px solid rgba(0,168,225,.2);border-radius:var(--shape-md);padding:18px;margin-bottom:12px">
+          <div class="text-muted" style="font-size:11px;text-transform:uppercase;letter-spacing:1px">VAT Collected</div>
+          <div style="font-size:28px;font-weight:800;color:var(--md-secondary);margin-top:6px">${formatETB(income*0.15)}</div>
+        </div>
+        <div class="field-grid-2">
+          <div style="background:var(--md-surface-3);padding:14px;border-radius:var(--shape-sm)">
+            <div class="text-muted" style="font-size:11px">Withholding (2%)</div>
+            <div class="font-bold" style="margin-top:4px">${formatETB(expense*0.02)}</div>
+          </div>
+          <div style="background:var(--md-surface-3);padding:14px;border-radius:var(--shape-sm)">
+            <div class="text-muted" style="font-size:11px">Income Tax (30%)</div>
+            <div class="font-bold" style="margin-top:4px">${formatETB((income-expense)*0.30,true)}</div>
+          </div>
+        </div>
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Tax Deadlines</div>
+        ${DB.taxFilings.map(tf=>`
+          <div class="list-item">
+            <div class="list-avatar ${tf.status==='overdue'?'red':tf.status==='filed'?'green':'amber'}">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+            </div>
+            <div class="list-content">
+              <div class="list-title">${tf.type}</div>
+              <div class="list-sub">${tf.period} • Due ${tf.dueDate}</div>
+            </div>
+            <div class="list-trail">
+              <div class="list-amount">${formatETB(tf.amount,true)}</div>
+              ${getBadge(tf.status)}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+}
+function openTxnForm(){
+  openModal(`
+    <div class="sheet-title">New Transaction</div>
+    <div class="sheet-subtitle">Record a payment received or sent</div>
+    <div class="field-group">
+      <label>Type</label>
+      <select id="txnType" onchange="document.getElementById('partyLabel').textContent=this.value==='received'?'Customer (Received From)':'Supplier/Payee (Sent To)'">
+        <option value="received">Payment Received</option>
+        <option value="sent">Payment Sent</option>
+      </select>
+    </div>
+    <div class="field-group"><label id="partyLabel">Customer (Received From)</label><input id="txnParty" placeholder="e.g. Selam Trading PLC"></div>
+    <div class="field-grid-2">
+      <div class="field-group"><label>Amount (ETB)</label><input id="txnAmount" type="number" placeholder="0.00"></div>
+      <div class="field-group"><label>Method</label><select id="txnMethod"><option>Dashen Bank</option><option>Commercial Bank of Ethiopia</option><option>Awash Bank</option><option>Telebirr</option><option>Amole</option><option>Cash</option></select></div>
+    </div>
+    <div class="field-group"><label>Description</label><textarea id="txnDesc" rows="2" placeholder="Notes..."></textarea></div>
+    <div class="btn-row">
+      <button class="btn-text ripple" onclick="closeModal()">Cancel</button>
+      <button class="btn-filled-sm ripple" onclick="saveTxn()">Save</button>
+    </div>
+  `);
+}
+function saveTxn(){
+  const type=document.getElementById('txnType').value,party=document.getElementById('txnParty').value.trim(),amount=parseFloat(document.getElementById('txnAmount').value),method=document.getElementById('txnMethod').value,desc=document.getElementById('txnDesc').value.trim();
+  if(!party||!amount||amount<=0){showSnack('Please fill all required fields','error');return}
+  const count=DB.transactions.length+2842;
+  const txn={id:genId(),txnId:'TXN-'+count,type,party,amount,method,date:new Date().toISOString().split('T')[0],status:'completed',desc};
+  DB.transactions.unshift(txn);
+  const bank=DB.banks.find(b=>b.name===method);if(bank)bank.balance+=type==='received'?amount:-amount;
+  auditLog('Created transaction '+txn.txnId,'Finance',type+' '+amount+' ETB '+party);
+  saveDB();closeModal();showSnack('Transaction created','success');renderFinance();
+}
+function viewTxn(id){
+  const txn=DB.transactions.find(t=>t.id===id);if(!txn)return;
+  openModal(`
+    <div class="sheet-title">${txn.txnId}</div>
+    <div class="sheet-subtitle">${txn.desc||'Transaction details'}</div>
+    <div class="m3-card" style="margin:0 0 16px">
+      <div class="list-item" style="border:none;padding:0">
+        <div class="list-avatar ${txn.type==='received'?'':'red'}">${txn.type==='received'?'↓':'↑'}</div>
+        <div class="list-content"><div class="list-title">${txn.party}</div><div class="list-sub">${txn.method}</div></div>
+        <div class="list-trail"><div class="list-amount ${txn.type==='received'?'pos':'neg'}">${txn.type==='received'?'+':'-'}${formatETB(txn.amount)}</div></div>
+      </div>
+      <div style="padding:14px 0 0;border-top:1px solid var(--md-outline-variant);font-size:13px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-muted">Date</span><span>${txn.date}</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-muted">Method</span><span>${txn.method}</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-muted">Status</span>${getBadge(txn.status)}</div>
+        <div style="display:flex;justify-content:space-between"><span class="text-muted">VAT (15%)</span><span>${formatETB(txn.amount*0.15)}</span></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-text ripple" style="color:var(--md-error)" onclick="deleteTxn('${txn.id}')">Delete</button>
+      <button class="btn-filled-sm ripple" onclick="closeModal()">Close</button>
+    </div>
+  `);
+}
+function deleteTxn(id){
+  const txn=DB.transactions.find(t=>t.id===id);if(!txn)return;
+  const bank=DB.banks.find(b=>b.name===txn.method);if(bank)bank.balance+=txn.type==='received'?-txn.amount:txn.amount;
+  DB.transactions=DB.transactions.filter(t=>t.id!==id);
+  auditLog('Deleted transaction '+txn.txnId,'Finance');saveDB();closeModal();showSnack('Transaction deleted','success');renderFinance();
+}
+
+// ═══════════════════════════════════════════════════════════
+// INVENTORY
+// ═══════════════════════════════════════════════════════════
+function renderInventory(){
+  const totalVal=DB.products.reduce((s,p)=>s+p.qty*p.price,0);
+  const lowCount=DB.products.filter(p=>p.status!=='inStock').length;
+  document.getElementById('screen-inventory').innerHTML=`
+    <div class="page-header"><div class="page-title">Inventory</div><div class="page-subtitle">${DB.products.length} products across 4 warehouses</div></div>
+    <div class="kpi-scroll">
+      <div class="kpi-card"><div class="kpi-icon-wrap cyan"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4h16v3z"/></svg></div><div class="kpi-label">Products</div><div class="kpi-value">${DB.products.length}</div></div>
+      <div class="kpi-card"><div class="kpi-icon-wrap amber"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div><div class="kpi-label">Low Stock</div><div class="kpi-value">${lowCount}</div></div>
+      <div class="kpi-card"><div class="kpi-icon-wrap green"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><div class="kpi-label">Stock Value</div><div class="kpi-value">${formatETB(totalVal,true)}</div></div>
+      <div class="kpi-card"><div class="kpi-icon-wrap purple"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg></div><div class="kpi-label">Warehouses</div><div class="kpi-value">4</div></div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
+      <input class="search-field" placeholder="Search products, SKU..." value="${invSearch}" oninput="invSearch=this.value;refreshInvList()">
+    </div>
+    <div class="chip-row">
+      <button class="chip ${invTab==='products'?'active':''} ripple" onclick="invTab='products';renderInventory()">Products</button>
+      <button class="chip ${invTab==='warehouses'?'active':''} ripple" onclick="invTab='warehouses';renderInventory()">Warehouses</button>
+      <button class="chip ${invTab==='suppliers'?'active':''} ripple" onclick="invTab='suppliers';renderInventory()">Suppliers</button>
+      <button class="chip ${invTab==='movements'?'active':''} ripple" onclick="invTab='movements';renderInventory()">Movements</button>
+    </div>
+    <div id="invContent">${renderInvTab()}</div>
+  `;
+}
+function refreshInvList(){
+  const el=document.getElementById('invContent');if(el)el.innerHTML=renderInvTab();
+}
+function renderInvTab(){
+  if(invTab==='products'){
+    let items=DB.products;
+    if(invSearch){const q=invSearch.toLowerCase();items=items.filter(p=>p.name.toLowerCase().includes(q)||p.sku.toLowerCase().includes(q)||p.category.toLowerCase().includes(q))}
+    if(items.length===0)return'<div class="empty-state"><div class="empty-title">No products found</div></div>';
+    return items.map(p=>`
+      <div class="m3-card" onclick="viewProduct('${p.id}')" style="margin-bottom:10px;cursor:pointer">
+        <div class="list-item" style="border:none;padding:0">
+          <div class="list-avatar cyan">${p.name[0]}</div>
+          <div class="list-content">
+            <div class="list-title">${p.name}</div>
+            <div class="list-sub">${p.sku} • ${p.qty} units • ${formatETB(p.price)}</div>
+          </div>
+          ${getBadge(p.status)}
+        </div>
+      </div>
+    `).join('');
+  }
+  if(invTab==='warehouses'){
+    const whs=[{name:'Addis Ababa Warehouse',location:'Akaki Kality',cap:85,products:1248,value:3280000},{name:'Dire Dawa Warehouse',location:'Keble 09',cap:62,products:842,value:1840000},{name:'Bahir Dar Warehouse',location:'Amhara Region',cap:74,products:684,value:920000},{name:'Hawassa Warehouse',location:'SNNPR',cap:48,products:420,value:580000}];
+    return whs.map(w=>`
+      <div class="m3-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div><div class="list-title">🏭 ${w.name}</div><div class="list-sub">📍 ${w.location}</div></div>
+          ${getBadge('active')}
+        </div>
+        <div class="field-grid-2" style="margin-bottom:14px">
+          <div><div class="text-muted" style="font-size:11px">Products</div><div class="font-bold">${w.products}</div></div>
+          <div><div class="text-muted" style="font-size:11px">Value</div><div class="font-bold">${formatETB(w.value,true)}</div></div>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:${w.cap}%;background:${w.cap>80?'var(--md-error)':'var(--grad-primary)'}"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px" class="text-muted"><span>Capacity</span><span>${w.cap}%</span></div>
+      </div>
+    `).join('');
+  }
+  if(invTab==='suppliers'){
+    return DB.suppliers.map(s=>`
+      <div class="m3-card">
+        <div class="list-item" style="border:none;padding:0">
+          <div class="list-avatar amber">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM19 15h-1V9h1.96l1.04 1.35V15z"/></svg>
+          </div>
+          <div class="list-content">
+            <div class="list-title">${s.name}</div>
+            <div class="list-sub">${s.contact} • ${s.leadTime} days lead</div>
+          </div>
+          <div class="list-trail">
+            <div class="list-amount text-primary">★ ${s.rating}</div>
+            <div class="list-meta">${s.products} products</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  if(invTab==='movements'){
+    if(DB.movements.length===0)return'<div class="empty-state"><div class="empty-title">No movements yet</div></div>';
+    return DB.movements.map(m=>{
+      const p=DB.products.find(pr=>pr.id===m.productId);
+      return`<div class="m3-card"><div class="list-item" style="border:none;padding:0"><div class="list-avatar ${m.type==='StockIn'?'green':'red'}">${m.type==='StockIn'?'↓':'↑'}</div><div class="list-content"><div class="list-title">${p?p.name:'Unknown'}</div><div class="list-sub">${m.type} • ${m.ref} • ${m.date}</div></div><div class="list-trail"><div class="list-amount ${m.type==='StockIn'?'pos':'neg'}">${m.type==='StockIn'?'+':'-'}${m.qty}</div></div></div></div>`;
+    }).join('');
+  }
+}
+function openProductForm(){
+  const warehouses=['Addis Ababa','Dire Dawa','Bahir Dar','Hawassa'];
+  openModal(`
+    <div class="sheet-title">Add Product</div>
+    <div class="sheet-subtitle">Create a new inventory item</div>
+    <div class="field-grid-2">
+      <div class="field-group"><label>SKU</label><input id="pSku" placeholder="e.g. BS-500"></div>
+      <div class="field-group"><label>Category</label><select id="pCat"><option>Spices</option><option>Coffee</option><option>Grains</option><option>Textiles</option><option>Natural</option><option>Snacks</option><option>Beverages</option><option>Seeds</option></select></div>
+    </div>
+    <div class="field-group"><label>Product Name</label><input id="pName" placeholder="e.g. Berbere Spice 500g"></div>
+    <div class="field-group"><label>Warehouse</label><select id="pWh">${warehouses.map(w=>`<option>${w}</option>`).join('')}</select></div>
+    <div class="field-grid-2">
+      <div class="field-group"><label>Quantity</label><input id="pQty" type="number" value="0"></div>
+      <div class="field-group"><label>Reorder Level</label><input id="pReorder" type="number" value="10"></div>
+    </div>
+    <div class="field-grid-2">
+      <div class="field-group"><label>Unit Price (ETB)</label><input id="pPrice" type="number" placeholder="0.00"></div>
+      <div class="field-group"><label>Cost Price (ETB)</label><input id="pCost" type="number" placeholder="0.00"></div>
+    </div>
+    <div class="btn-row"><button class="btn-text ripple" onclick="closeModal()">Cancel</button><button class="btn-filled-sm ripple" onclick="saveProduct()">Save</button></div>
+  `);
+}
+function saveProduct(){
+  const sku=document.getElementById('pSku').value.trim().toUpperCase(),name=document.getElementById('pName').value.trim(),category=document.getElementById('pCat').value,warehouse=document.getElementById('pWh').value,qty=parseInt(document.getElementById('pQty').value)||0,reorder=parseInt(document.getElementById('pReorder').value)||10,price=parseFloat(document.getElementById('pPrice').value)||0,cost=parseFloat(document.getElementById('pCost').value)||0;
+  if(!sku||!name||!price){showSnack('Please fill required fields','error');return}
+  if(DB.products.find(p=>p.sku===sku)){showSnack('SKU already exists','error');return}
+  const status=qty===0?'outOfStock':qty<=reorder?'lowStock':'inStock';
+  const product={id:genId(),sku,name,category,qty,price,cost,reorder,warehouse,status};
+  DB.products.push(product);
+  if(qty>0)DB.movements.unshift({id:genId(),productId:product.id,type:'StockIn',qty,ref:'Initial stock',date:new Date().toISOString().split('T')[0]});
+  auditLog('Added product '+sku,'Inventory',name);saveDB();closeModal();showSnack('Product added','success');renderInventory();
+}
+function viewProduct(id){
+  const p=DB.products.find(pr=>pr.id===id);if(!p)return;
+  openModal(`
+    <div class="sheet-title">${p.name}</div>
+    <div class="sheet-subtitle">${p.sku} • ${p.category}</div>
+    <div class="m3-card" style="margin:0 0 16px">
+      <div class="field-grid-2" style="margin-bottom:14px">
+        <div><div class="text-muted" style="font-size:11px">Quantity</div><div class="font-bold" style="font-size:20px">${p.qty} units</div></div>
+        <div><div class="text-muted" style="font-size:11px">Unit Price</div><div class="font-bold" style="font-size:20px">${formatETB(p.price)}</div></div>
+      </div>
+      <div class="field-grid-2" style="margin-bottom:14px">
+        <div><div class="text-muted" style="font-size:11px">Stock Value</div><div class="font-bold">${formatETB(p.qty*p.price)}</div></div>
+        <div><div class="text-muted" style="font-size:11px">Reorder Level</div><div class="font-bold">${p.reorder} units</div></div>
+      </div>
+      <div style="padding-top:14px;border-top:1px solid var(--md-outline-variant)">
+        <div class="text-muted" style="font-size:11px;margin-bottom:4px">Warehouse</div>
+        <div class="font-bold">${p.warehouse}</div>
+      </div>
+    </div>
+    <div class="btn-row"><button class="btn-text ripple" onclick="adjustStock('${p.id}')">Adjust Stock</button><button class="btn-filled-sm ripple" onclick="closeModal()">Close</button></div>
+    <div style="margin-top:12px"><button class="btn-text ripple" style="width:100%;color:var(--md-error)" onclick="deleteProduct('${p.id}')">Delete Product</button></div>
+  `);
+}
+function adjustStock(id){
+  const p=DB.products.find(pr=>pr.id===id);closeModal();
+  setTimeout(()=>{
+    openModal(`
+      <div class="sheet-title">Adjust Stock</div>
+      <div class="sheet-subtitle">${p.name} (Current: ${p.qty} units)</div>
+      <div class="field-group"><label>Movement Type</label><select id="adjType"><option value="StockIn">Stock In (Receive)</option><option value="StockOut">Stock Out (Issue)</option></select></div>
+      <div class="field-group"><label>Quantity</label><input id="adjQty" type="number" placeholder="0"></div>
+      <div class="field-group"><label>Reference</label><input id="adjRef" placeholder="e.g. Mekdim Suppliers"></div>
+      <div class="btn-row"><button class="btn-text ripple" onclick="closeModal()">Cancel</button><button class="btn-filled-sm ripple" onclick="saveAdjust('${id}')">Save</button></div>
+    `);
+  },300);
+}
+function saveAdjust(id){
+  const p=DB.products.find(pr=>pr.id===id),type=document.getElementById('adjType').value,qty=parseInt(document.getElementById('adjQty').value),ref=document.getElementById('adjRef').value.trim()||'Manual adjustment';
+  if(!qty||qty<=0){showSnack('Enter valid quantity','error');return}
+  if(type==='StockIn')p.qty+=qty;else p.qty=Math.max(0,p.qty-qty);
+  p.status=p.qty===0?'outOfStock':p.qty<=p.reorder?'lowStock':'inStock';
+  DB.movements.unshift({id:genId(),productId:id,type,qty,ref,date:new Date().toISOString().split('T')[0]});
+  auditLog(type+' for '+p.sku,'Inventory',qty+' units. '+ref);saveDB();closeModal();showSnack('Stock adjusted','success');renderInventory();
+}
+function deleteProduct(id){
+  const p=DB.products.find(pr=>pr.id===id);
+  DB.movements=DB.movements.filter(m=>m.productId!==id);
+  DB.products=DB.products.filter(pr=>pr.id!==id);
+  auditLog('Deleted product '+p.sku,'Inventory');saveDB();closeModal();showSnack('Product deleted','success');renderInventory();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SALES (POS)
+// ═══════════════════════════════════════════════════════════
+function renderSales(){
+  document.getElementById('screen-sales').innerHTML=`
+    <div class="page-header"><div class="page-title">Sales & CRM</div><div class="page-subtitle">POS, customers & quotations</div></div>
+    <div class="chip-row">
+      <button class="chip ${salesTab==='pos'?'active':''} ripple" onclick="salesTab='pos';cart=[];renderSales()">POS</button>
+      <button class="chip ${salesTab==='customers'?'active':''} ripple" onclick="salesTab='customers';renderSales()">Customers</button>
+      <button class="chip ${salesTab==='quotations'?'active':''} ripple" onclick="salesTab='quotations';renderSales()">Quotations</button>
+      <button class="chip ${salesTab==='pipeline'?'active':''} ripple" onclick="salesTab='pipeline';renderSales()">Pipeline</button>
+    </div>
+    <div id="salesContent">${renderSalesTab()}</div>
+  `;
+}
+function renderSalesTab(){
+  if(salesTab==='pos'){
+    const cartTotal=cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const cartVat=Math.round(cartTotal*0.15);
+    return`
+      <div class="m3-card">
+        <div class="card-title mb-16">Quick Sale</div>
+        <div class="search-wrap" style="padding:0 0 12px">
+          <div class="search-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
+          <input class="search-field" placeholder="Search products..." oninput="filterPOS(this.value)">
+        </div>
+        <div id="posProducts" style="max-height:240px;overflow-y:auto">
+          ${DB.products.slice(0,5).map(p=>`<div class="list-item" onclick="addToCart('${p.id}')" style="cursor:pointer"><div class="list-avatar cyan">${p.name[0]}</div><div class="list-content"><div class="list-title">${p.name}</div><div class="list-sub">${p.sku} • ${p.qty} in stock</div></div><div class="list-trail"><div class="list-amount">${formatETB(p.price)}</div></div></div>`).join('')}
+        </div>
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Cart (${cart.length} items)</div>
+        ${cart.length===0?'<div class="empty-state"><div class="empty-title">Cart is empty</div><div class="empty-sub">Tap products above to add</div></div>':
+          cart.map((item,idx)=>`<div class="list-item"><div class="list-content"><div class="list-title">${item.name}</div><div class="list-sub">${formatETB(item.price)} × ${item.qty}</div></div><div class="list-trail"><div class="list-amount">${formatETB(item.price*item.qty)}</div><button onclick="removeFromCart(${idx})" style="color:var(--md-error);font-size:12px;margin-top:4px">Remove</button></div></div>`).join('')
+        }
+        ${cart.length>0?`<div style="padding-top:14px;border-top:1px solid var(--md-outline-variant);margin-top:8px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span class="text-muted">Subtotal</span><span>${formatETB(cartTotal)}</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span class="text-muted">VAT (15%)</span><span>${formatETB(cartVat)}</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:800;color:var(--md-secondary);padding-top:8px;border-top:1px solid var(--md-outline-variant)"><span>Total</span><span>${formatETB(cartTotal+cartVat)}</span></div>
+        </div><button class="btn-filled ripple" style="margin-top:16px" onclick="checkout()">Checkout</button>`:''}
+      </div>
+    `;
+  }
+  if(salesTab==='customers'){
+    return DB.customers.map(c=>`
+      <div class="m3-card" onclick="viewCustomer('${c.id}')" style="cursor:pointer">
+        <div class="list-item" style="border:none;padding:0">
+          <div class="list-avatar ${c.status==='vip'?'purple':''}">${initials(c.name)}</div>
+          <div class="list-content"><div class="list-title">${c.name}</div><div class="list-sub">${c.contact} • ${c.orders} orders</div></div>
+          <div class="list-trail"><div class="list-amount text-primary">${formatETB(c.ltv,true)}</div>${getBadge(c.status)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  if(salesTab==='quotations'){
+    return DB.quotations.map(q=>{
+      const cust=DB.customers.find(c=>c.id===q.customerId);
+      return`<div class="m3-card" onclick="viewQuote('${q.id}')" style="cursor:pointer"><div class="list-item" style="border:none;padding:0"><div class="list-avatar cyan">📄</div><div class="list-content"><div class="list-title">${q.quoteNo}</div><div class="list-sub">${cust?cust.name:'—'} • ${q.date}</div></div><div class="list-trail"><div class="list-amount">${formatETB(q.total,true)}</div>${getBadge(q.status)}</div></div></div>`;
+    }).join('');
+  }
+  if(salesTab==='pipeline'){
+    const stages=['lead','qualified','proposal','negotiation','won'];
+    const stageColors={lead:'amber',qualified:'info',proposal:'info',negotiation:'warning',won:'success'};
+    return stages.map(stage=>{
+      const deals=DB.pipeline.filter(d=>d.stage===stage);if(deals.length===0)return'';
+      const total=deals.reduce((s,d)=>s+d.value,0);
+      return`<div class="m3-card"><div class="card-header"><div><div class="card-title">${stage.charAt(0).toUpperCase()+stage.slice(1)}</div><div class="card-subtitle">${deals.length} deals • ${formatETB(total,true)}</div></div></div>${deals.map(d=>{const cust=DB.customers.find(c=>c.id===d.customerId);return`<div class="list-item"><div class="list-avatar ${stageColors[stage]}">🤝</div><div class="list-content"><div class="list-title">${d.title}</div><div class="list-sub">${cust?cust.name:'—'}</div></div><div class="list-trail"><div class="list-amount">${formatETB(d.value,true)}</div></div></div>`}).join('')}</div>`;
+    }).join('');
+  }
+}
+function filterPOS(query){
+  const q=query.toLowerCase();
+  let items=DB.products;
+  if(q)items=DB.products.filter(p=>p.name.toLowerCase().includes(q)||p.sku.toLowerCase().includes(q));
+  const el=document.getElementById('posProducts');if(!el)return;
+  if(items.length===0){el.innerHTML='<div class="empty-state"><div class="empty-title">No products found</div></div>';return}
+  el.innerHTML=items.slice(0,6).map(p=>`<div class="list-item" onclick="addToCart('${p.id}')" style="cursor:pointer"><div class="list-avatar cyan">${p.name[0]}</div><div class="list-content"><div class="list-title">${p.name}</div><div class="list-sub">${p.sku} • ${p.qty} in stock</div></div><div class="list-trail"><div class="list-amount">${formatETB(p.price)}</div></div></div>`).join('');
+}
+function addToCart(id){
+  const p=DB.products.find(pr=>pr.id===id);
+  if(!p||p.qty===0){showSnack('Product out of stock','error');return}
+  const existing=cart.find(i=>i.id===id);
+  if(existing)existing.qty++;else cart.push({id,name:p.name,price:p.price,qty:1});
+  const el=document.getElementById('salesContent');if(el)el.innerHTML=renderSalesTab();
+  showSnack(p.name+' added to cart','success');
+}
+function removeFromCart(idx){cart.splice(idx,1);const el=document.getElementById('salesContent');if(el)el.innerHTML=renderSalesTab()}
+function checkout(){
+  if(cart.length===0)return;
+  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);const vat=Math.round(total*0.15);
+  openModal(`
+    <div class="sheet-title">Checkout</div>
+    <div class="sheet-subtitle">${cart.length} items • Total: ${formatETB(total+vat)}</div>
+    <div class="field-group"><label>Customer</label><select id="coCustomer">${DB.customers.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select></div>
+    <div class="field-group"><label>Payment Method</label><select id="coMethod"><option>Dashen Bank</option><option>Commercial Bank of Ethiopia</option><option>Awash Bank</option><option>Telebirr</option><option>Amole</option><option>Cash</option></select></div>
+    <div class="m3-card" style="margin:0 0 16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">Subtotal</span><span>${formatETB(total)}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">VAT (15%)</span><span>${formatETB(vat)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:800;font-size:20px;color:var(--md-secondary);padding-top:8px;border-top:1px solid var(--md-outline-variant)"><span>Total</span><span>${formatETB(total+vat)}</span></div>
+    </div>
+    <div class="btn-row"><button class="btn-text ripple" onclick="closeModal()">Cancel</button><button class="btn-filled-sm ripple" onclick="completeSale()">Complete Sale</button></div>
+  `);
+}
+function completeSale(){
+  const custId=document.getElementById('coCustomer').value,method=document.getElementById('coMethod').value;
+  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);const vat=Math.round(total*0.15);
+  const cust=DB.customers.find(c=>c.id===custId);const count=DB.transactions.length+2842;
+  DB.transactions.unshift({id:genId(),txnId:'TXN-'+count,type:'received',party:cust.name,amount:total+vat,method,date:new Date().toISOString().split('T')[0],status:'completed',desc:'POS Sale'});
+  const bank=DB.banks.find(b=>b.name===method);if(bank)bank.balance+=total+vat;
+  cart.forEach(item=>{const p=DB.products.find(pr=>pr.id===item.id);if(p){p.qty=Math.max(0,p.qty-item.qty);p.status=p.qty===0?'outOfStock':p.qty<=p.reorder?'lowStock':'inStock';DB.movements.unshift({id:genId(),productId:p.id,type:'StockOut',qty:item.qty,ref:cust.name,date:new Date().toISOString().split('T')[0]})}});
+  cust.orders++;cust.ltv+=total+vat;
+  auditLog('POS sale to '+cust.name,'Sales',formatETB(total+vat));
+  cart=[];saveDB();closeModal();showSnack('Sale completed! '+formatETB(total+vat),'success');renderSales();
+}
+function viewCustomer(id){
+  const c=DB.customers.find(cu=>cu.id===id);
+  openModal(`<div class="sheet-title">${c.name}</div><div class="sheet-subtitle">${c.email}</div><div class="m3-card" style="margin:0 0 16px"><div class="field-grid-2" style="margin-bottom:14px"><div><div class="text-muted" style="font-size:11px">Total Orders</div><div class="font-bold" style="font-size:20px">${c.orders}</div></div><div><div class="text-muted" style="font-size:11px">Lifetime Value</div><div class="font-bold" style="font-size:20px;color:var(--md-secondary)">${formatETB(c.ltv,true)}</div></div></div><div style="padding-top:14px;border-top:1px solid var(--md-outline-variant)"><div class="text-muted" style="font-size:11px;margin-bottom:4px">Contact</div><div class="font-bold">${c.contact}</div></div></div><button class="btn-filled-sm ripple" style="width:100%" onclick="closeModal()">Close</button>`);
+}
+function viewQuote(id){
+  const q=DB.quotations.find(qu=>qu.id===id);const cust=DB.customers.find(c=>c.id===q.customerId);
+  openModal(`<div class="sheet-title">${q.quoteNo}</div><div class="sheet-subtitle">${cust?cust.name:'—'}</div><div class="m3-card" style="margin:0 0 16px"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">Date</span><span>${q.date}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">Valid Until</span><span>${q.validUntil}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">Subtotal</span><span>${formatETB(q.amount)}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-muted">VAT (15%)</span><span>${formatETB(q.vat)}</span></div><div style="display:flex;justify-content:space-between;font-weight:800;font-size:20px;color:var(--md-secondary);padding-top:8px;border-top:1px solid var(--md-outline-variant)"><span>Total</span><span>${formatETB(q.total)}</span></div></div><div class="btn-row"><button class="btn-text ripple" onclick="closeModal()">Close</button><button class="btn-filled-sm ripple" onclick="updateQuoteStatus('${q.id}')">Mark Accepted</button></div>`);
+}
+function updateQuoteStatus(id){const q=DB.quotations.find(qu=>qu.id===id);q.status='accepted';auditLog('Updated quotation '+q.quoteNo,'Sales');saveDB();closeModal();showSnack('Quotation accepted','success');renderSales()}
+function openSaleForm(){salesTab='pos';cart=[];renderSales()}
+
+// ═══════════════════════════════════════════════════════════
+// MORE (HR, Compliance, Reports, Settings)
+// ═══════════════════════════════════════════════════════════
+function renderMore(){
+  document.getElementById('screen-more').innerHTML=`
+    <div class="page-header"><div class="page-title">More</div><div class="page-subtitle">HR, Compliance, Reports & Settings</div></div>
+    <div class="chip-row">
+      <button class="chip ${moreTab==='hr'?'active':''} ripple" onclick="moreTab='hr';renderMore()">HR</button>
+      <button class="chip ${moreTab==='compliance'?'active':''} ripple" onclick="moreTab='compliance';renderMore()">Compliance</button>
+      <button class="chip ${moreTab==='reports'?'active':''} ripple" onclick="moreTab='reports';renderMore()">Reports</button>
+      <button class="chip ${moreTab==='settings'?'active':''} ripple" onclick="moreTab='settings';renderMore()">Settings</button>
+    </div>
+    <div id="moreContent">${renderMoreTab()}</div>
+  `;
+}
+function renderMoreTab(){
+  if(moreTab==='hr'){
+    const totalPayroll=DB.employees.reduce((s,e)=>s+e.salary,0);
+    function calcNet(gross){const pension=gross*0.07;const taxable=gross-pension;let tax=0;if(taxable>7800)tax=1385+(taxable-7800)*0.30;else if(taxable>5250)tax=747.5+(taxable-5250)*0.25;else if(taxable>3200)tax=337.5+(taxable-3200)*0.20;else if(taxable>1650)tax=105+(taxable-1650)*0.15;else if(taxable>600)tax=(taxable-600)*0.10;return Math.round(gross-pension-tax)}
+    return`
+      <div class="kpi-scroll">
+        <div class="kpi-card"><div class="kpi-icon-wrap cyan"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="kpi-label">Employees</div><div class="kpi-value">${DB.employees.length}</div></div>
+        <div class="kpi-card"><div class="kpi-icon-wrap green"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="kpi-label">Present</div><div class="kpi-value">${DB.employees.filter(e=>e.status==='active').length}</div></div>
+        <div class="kpi-card"><div class="kpi-icon-wrap amber"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><div class="kpi-label">Payroll</div><div class="kpi-value">${formatETB(totalPayroll,true)}</div></div>
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Attendance — Today</div>
+        <div style="display:flex;gap:8px">
+          <div style="flex:1;background:rgba(76,175,80,.1);padding:14px;border-radius:var(--shape-md);text-align:center"><div style="font-size:24px;font-weight:800;color:var(--md-success)">${DB.employees.filter(e=>e.status==='active').length}</div><div class="text-muted" style="font-size:11px">Present</div></div>
+          <div style="flex:1;background:rgba(255,183,77,.1);padding:14px;border-radius:var(--shape-md);text-align:center"><div style="font-size:24px;font-weight:800;color:var(--md-warning)">${DB.employees.filter(e=>e.status==='leave').length}</div><div class="text-muted" style="font-size:11px">On Leave</div></div>
+          <div style="flex:1;background:rgba(255,82,82,.1);padding:14px;border-radius:var(--shape-md);text-align:center"><div style="font-size:24px;font-weight:800;color:var(--md-error)">0</div><div class="text-muted" style="font-size:11px">Absent</div></div>
+        </div>
+        <button class="btn-filled ripple" style="margin-top:14px" onclick="checkIn()">Check In Now</button>
+      </div>
+      ${DB.employees.map(e=>{
+        const net=calcNet(e.salary);const depts={finance:'Finance',operations:'Operations',sales:'Sales',hr:'HR',it:'IT',admin:'Admin'};
+        return`<div class="m3-card" onclick="viewEmployee('${e.id}')" style="cursor:pointer"><div class="list-item" style="border:none;padding:0"><div class="list-avatar round">${initials(e.name)}</div><div class="list-content"><div class="list-title">${e.name}</div><div class="list-sub">${e.position} • ${depts[e.dept]}</div></div><div class="list-trail"><div class="list-amount">${formatETB(net,true)}</div><div class="list-meta">Net/month</div></div></div></div>`;
+      }).join('')}
+    `;
+  }
+  if(moreTab==='compliance'){
+    const filed=DB.taxFilings.filter(t=>t.status==='filed').length;
+    const score=Math.round((filed/DB.taxFilings.length)*100);
+    return`
+      <div class="m3-card" style="text-align:center">
+        <div class="text-muted" style="font-size:11px;text-transform:uppercase;letter-spacing:1px">Compliance Score</div>
+        <div style="font-size:56px;font-weight:800;color:${score>=70?'var(--md-success)':'var(--md-error)'};line-height:1">${score}</div>
+        <div class="text-muted" style="font-size:12px">out of 100</div>
+        <div class="progress-track" style="margin-top:12px"><div class="progress-fill" style="width:${score}%;background:${score>=70?'var(--md-success)':'var(--md-error)'}"></div></div>
+        <div style="margin-top:8px;font-size:12px;color:${score>=70?'var(--md-success)':'var(--md-error)'};font-weight:600">${score>=70?'✓ Good standing':'⚠ Needs attention'}</div>
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Tax Deadlines</div>
+        ${DB.taxFilings.map(tf=>`<div class="list-item"><div class="list-avatar ${tf.status==='overdue'?'red':tf.status==='filed'?'green':'amber'}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div><div class="list-content"><div class="list-title">${tf.type}</div><div class="list-sub">${tf.period} • Due ${tf.dueDate}</div></div><div class="list-trail"><div class="list-amount">${formatETB(tf.amount,true)}</div>${getBadge(tf.status)}</div></div>`).join('')}
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Ethiopian Tax Rules</div>
+        ${[{n:'VAT',r:'15%',d:'Standard rate'},{n:'Turnover Tax',r:'2%',d:'Non-VAT businesses'},{n:'Withholding Tax',r:'2%',d:'Supplier payments'},{n:'Business Income Tax',r:'30%',d:'Corporate rate'},{n:'Pension (Employee)',r:'7%',d:'Social security'},{n:'Pension (Employer)',r:'11%',d:'Social security'}].map(r=>`<div class="list-item"><div class="list-content"><div class="list-title">${r.n}</div><div class="list-sub">${r.d}</div></div><div style="font-size:20px;font-weight:800;color:var(--md-secondary)">${r.r}</div></div>`).join('')}
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Audit Trail</div>
+        ${DB.auditLogs.slice(0,8).map(log=>`<div class="list-item"><div class="list-avatar round" style="background:var(--md-surface-3);color:var(--md-on-surface-variant);box-shadow:none">${initials(log.user)}</div><div class="list-content"><div class="list-title">${log.action}</div><div class="list-sub">${log.user} • ${log.time}</div></div><div class="list-trail">${getBadge('info')}</div></div>`).join('')}
+      </div>
+    `;
+  }
+  if(moreTab==='reports'){
+    const revenue=DB.accounts.find(a=>a.code==='4000').balance,cogs=DB.accounts.find(a=>a.code==='5000').balance,opex=DB.accounts.find(a=>a.code==='6000').balance;
+    const assets=DB.accounts.filter(a=>a.type==='Asset').reduce((s,a)=>s+a.balance,0);
+    const liabilities=DB.accounts.filter(a=>a.type==='Liability').reduce((s,a)=>s+a.balance,0);
+    const equity=DB.accounts.filter(a=>a.type==='Equity').reduce((s,a)=>s+a.balance,0);
+    const months=['Jan','Feb','Mar','Apr','May','Jun'];const sales=[1720,1840,1680,1920,2050,2180];
+    return`
+      <div class="m3-card">
+        <div class="card-title mb-16">Profit & Loss (FY 2025-26)</div>
+        <div style="padding:4px 0">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--md-outline-variant)"><span>Revenue</span><span style="color:var(--md-success);font-weight:700">${formatETB(revenue)}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--md-outline-variant)"><span>Cost of Goods Sold</span><span style="color:var(--md-error);font-weight:700">(${formatETB(cogs)})</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--md-outline-variant)"><span>Gross Profit</span><span style="font-weight:700">${formatETB(revenue-cogs)}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--md-outline-variant)"><span>Operating Expenses</span><span style="color:var(--md-error);font-weight:700">(${formatETB(opex)})</span></div>
+          <div style="display:flex;justify-content:space-between;padding:12px 0;font-size:20px;font-weight:800;color:var(--md-secondary)"><span>Net Profit</span><span>${formatETB(revenue-cogs-opex)}</span></div>
+        </div>
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Monthly Sales Trend</div>
+        <div class="chart-box"><div class="bar-chart">${sales.map((v,i)=>{const max=Math.max(...sales);const h=(v/max)*100;return`<div class="bar-col"><div class="bar" style="height:${h}%"></div><div class="bar-label">${months[i]}</div></div>`}).join('')}</div></div>
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Balance Sheet</div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--md-outline-variant)"><span>Total Assets</span><span style="font-weight:700;color:var(--md-secondary)">${formatETB(assets,true)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--md-outline-variant)"><span>Total Liabilities</span><span style="font-weight:700;color:var(--md-error)">${formatETB(liabilities,true)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--md-outline-variant)"><span>Total Equity</span><span style="font-weight:700">${formatETB(equity,true)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:12px 0;font-weight:700"><span>Liab + Equity</span><span>${formatETB(liabilities+equity,true)}</span></div>
+        <div style="text-align:center;padding:10px;background:${assets===liabilities+equity?'rgba(76,175,80,.1)':'rgba(255,82,82,.1)'};border-radius:var(--shape-sm);color:${assets===liabilities+equity?'var(--md-success)':'var(--md-error)'};font-weight:600">${assets===liabilities+equity?'✓ Balanced':'✗ Not balanced'}</div>
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Export Reports</div>
+        <button class="btn-tonal ripple" style="margin-bottom:8px" onclick="exportReport('pnl')">Profit & Loss (HTML)</button>
+        <button class="btn-tonal ripple" style="margin-bottom:8px" onclick="exportReport('balance')">Balance Sheet (HTML)</button>
+        <button class="btn-tonal ripple" onclick="exportReport('tax')">Tax Report (HTML)</button>
+      </div>
+    `;
+  }
+  if(moreTab==='settings'){
+    return`
+      <div class="m3-card" style="text-align:center">
+        <div class="list-avatar round" style="width:80px;height:80px;font-size:28px;margin:0 auto 14px">${DB.user.avatar}</div>
+        <div style="font-size:20px;font-weight:700">${DB.user.name}</div>
+        <div class="text-muted" style="font-size:13px">${DB.user.email}</div>
+        <div style="margin-top:8px">${getBadge('active')}</div>
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Organization</div>
+        <div class="list-item"><div class="list-content"><div class="list-sub">Company Name</div><div class="list-title">${DB.org.name}</div></div></div>
+        <div class="list-item"><div class="list-content"><div class="list-sub">TIN</div><div class="list-title font-mono">${DB.org.tin}</div></div></div>
+        <div class="list-item"><div class="list-content"><div class="list-sub">VAT Number</div><div class="list-title font-mono">${DB.org.vat}</div></div></div>
+        <div class="list-item"><div class="list-content"><div class="list-sub">Address</div><div class="list-title" style="font-size:13px">${DB.org.address}</div></div></div>
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Language & Appearance</div>
+        <div class="list-item" onclick="toggleLang()" style="cursor:pointer"><div class="list-avatar cyan"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56C8.57 18.93 7.04 17.66 5.08 16zm2.95-8H5.08c1.96-1.66 3.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg></div><div class="list-content"><div class="list-title">Language</div><div class="list-sub">${LANG==='en'?'English':'አማርኛ'}</div></div><div class="text-primary">Switch →</div></div>
+        <div class="list-item"><div class="list-avatar purple"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div><div class="list-content"><div class="list-title">Theme</div><div class="list-sub">Prime Video Dark</div></div>${getBadge('info')}</div>
+      </div>
+      <div class="m3-card">
+        <div class="card-title mb-16">Security</div>
+        <div class="list-item"><div class="list-avatar green"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div><div class="list-content"><div class="list-title">2FA Authentication</div><div class="list-sub">Enabled</div></div>${getBadge('success')}</div>
+        <div class="list-item"><div class="list-avatar cyan"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div><div class="list-content"><div class="list-title">Biometric Login</div><div class="list-sub">Fingerprint & Face</div></div>${getBadge('success')}</div>
+      </div>
+      <div class="m3-card">
+        <button class="btn-tonal ripple" style="color:var(--md-error);margin-bottom:8px" onclick="resetData()">Reset All Data</button>
+        <button class="btn-tonal ripple" style="color:var(--md-error)" onclick="logout()">Logout</button>
+      </div>
+    `;
+  }
+}
+function checkIn(){showSnack('Checked in at '+new Date().toLocaleTimeString(),'success');auditLog('Employee check-in','HR',DB.user.name);saveDB()}
+function viewEmployee(id){
+  const e=DB.employees.find(em=>em.id===id);
+  function calcNet(gross){const pension=gross*0.07;const taxable=gross-pension;let tax=0;if(taxable>7800)tax=1385+(taxable-7800)*0.30;else if(taxable>5250)tax=747.5+(taxable-5250)*0.25;else if(taxable>3200)tax=337.5+(taxable-3200)*0.20;else if(taxable>1650)tax=105+(taxable-1650)*0.15;else if(taxable>600)tax=(taxable-600)*0.10;return Math.round(gross-pension-tax)}
+  const net=calcNet(e.salary),pension=Math.round(e.salary*0.07),tax=e.salary-pension-net;
+  openModal(`<div class="sheet-title">${e.name}</div><div class="sheet-subtitle">${e.empId} • ${e.position}</div><div class="m3-card" style="margin:0 0 16px"><div class="list-item" style="border:none;padding:0"><div class="list-content"><div class="list-sub">Department</div><div class="list-title">${e.dept}</div></div></div><div class="list-item" style="border:none;padding:0"><div class="list-content"><div class="list-sub">Email</div><div class="list-title">${e.email}</div></div></div><div class="list-item" style="border:none;padding:0"><div class="list-content"><div class="list-sub">Phone</div><div class="list-title">${e.phone}</div></div></div><div class="list-item" style="border:none;padding:0"><div class="list-content"><div class="list-sub">Join Date</div><div class="list-title">${e.joinDate}</div></div></div></div><div class="m3-card" style="margin:0 0 16px"><div class="card-title mb-16" style="font-size:14px">Payroll Breakdown (ERCA)</div><div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--md-outline-variant)"><span>Gross Salary</span><span class="font-bold">${formatETB(e.salary)}</span></div><div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--md-outline-variant)"><span>Pension (7%)</span><span class="font-bold text-danger">-${formatETB(pension)}</span></div><div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--md-outline-variant)"><span>Income Tax (PAYE)</span><span class="font-bold text-danger">-${formatETB(tax)}</span></div><div style="display:flex;justify-content:space-between;padding:12px 0;font-size:20px;font-weight:800;color:var(--md-secondary)"><span>Net Pay</span><span>${formatETB(net)}</span></div></div><button class="btn-filled-sm ripple" style="width:100%" onclick="closeModal()">Close</button>`);
+}
+function exportReport(type){
+  const html=generateReportHTML(type);const blob=new Blob([html],{type:'text/html'});const url=URL.createObjectURL(blob);window.open(url,'_blank');setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function generateReportHTML(type){
+  let title='',body='';
+  if(type==='pnl'){title='Profit & Loss Statement';const revenue=DB.accounts.find(a=>a.code==='4000').balance,cogs=DB.accounts.find(a=>a.code==='5000').balance,opex=DB.accounts.find(a=>a.code==='6000').balance;body=`<h2>Revenue</h2><table><tr><td>Sales Revenue</td><td style="text-align:right">${formatETB(revenue)}</td></tr></table><h2>Expenses</h2><table><tr><td>Cost of Goods Sold</td><td style="text-align:right;color:red">(${formatETB(cogs)})</td></tr><tr><td>Operating Expenses</td><td style="text-align:right;color:red">(${formatETB(opex)})</td></tr></table><h2 style="color:#00A8E1">Net Profit: ${formatETB(revenue-cogs-opex)}</h2>`}
+  else if(type==='balance'){title='Balance Sheet';const assets=DB.accounts.filter(a=>a.type==='Asset').reduce((s,a)=>s+a.balance,0),liabilities=DB.accounts.filter(a=>a.type==='Liability').reduce((s,a)=>s+a.balance,0),equity=DB.accounts.filter(a=>a.type==='Equity').reduce((s,a)=>s+a.balance,0);body=`<h2>Assets</h2><p style="font-size:24px;color:#00A8E1">${formatETB(assets)}</p><h2>Liabilities</h2><p style="font-size:24px;color:#FF5252">${formatETB(liabilities)}</p><h2>Equity</h2><p style="font-size:24px">${formatETB(equity)}</p>`}
+  else if(type==='tax'){title='Tax Compliance Report';body='<h2>Tax Filings</h2><table><tr><th>Type</th><th>Period</th><th>Amount</th><th>Status</th></tr>'+DB.taxFilings.map(tf=>`<tr><td>${tf.type}</td><td>${tf.period}</td><td>${formatETB(tf.amount)}</td><td>${tf.status}</td></tr>`).join('')+'</table>'}
+  return`<!DOCTYPE html><html><head><title>${title}</title><style>body{font-family:Arial;max-width:800px;margin:40px auto;padding:20px;color:#333}h1{color:#00A8E1;border-bottom:3px solid #00A8E1;padding-bottom:10px}h2{color:#00A8E1;margin-top:30px}table{width:100%;border-collapse:collapse;margin:10px 0}td,th{padding:10px;border:1px solid #ddd;text-align:left}.footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;font-size:12px;color:#999}</style></head><body><h1>Hisab ERP — ${title}</h1><p>Generated: ${new Date().toLocaleString()}</p><p>Organization: ${DB.org.name} | TIN: ${DB.org.tin}</p>${body}<div class="footer">Generated by Hisab ERP — Ethiopian Business Intelligence</div></body></html>`;
+}
+function resetData(){if(confirm('Reset all data to seed? This cannot be undone.')){DB=JSON.parse(JSON.stringify(SEED));saveDB();showSnack('Data reset to defaults','success');renderAll()}}
+
+// ═══════════════════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════
+function showNotifications(){
+  const lowStock=DB.products.filter(p=>p.status!=='inStock');
+  const overdue=DB.taxFilings.filter(t=>t.status==='overdue');
+  const notifs=[];
+  lowStock.forEach(p=>notifs.push({icon:'⚠',color:p.status==='outOfStock'?'red':'amber',title:p.status==='outOfStock'?'Out of Stock':'Low Stock',msg:p.name+' — '+p.qty+' units at '+p.warehouse}));
+  overdue.forEach(t=>notifs.push({icon:'📅',color:'red',title:'Tax Overdue',msg:t.type+' for '+t.period}));
+  notifs.push({icon:'💰',color:'cyan',title:'Payment Received',msg:'ETB 184,000 from Selam Trading'});
+  openModal(`<div class="sheet-title">Notifications</div><div class="sheet-subtitle">${notifs.length} alerts</div>${notifs.map(n=>`<div class="list-item"><div class="list-avatar ${n.color}">${n.icon}</div><div class="list-content"><div class="list-title">${n.title}</div><div class="list-sub">${n.msg}</div></div></div>`).join('')}<button class="btn-filled-sm ripple" style="width:100%;margin-top:16px" onclick="closeModal()">Close</button>`);
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCROLL HANDLER — App bar elevation
+// ═══════════════════════════════════════════════════════════
+document.getElementById('screenWrap').addEventListener('scroll',function(){
+  const bar=document.getElementById('appBar');
+  if(this.scrollTop>10)bar.classList.add('scrolled');else bar.classList.remove('scrolled');
+});
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+loadDB();
+const savedLang=localStorage.getItem('hisab-lang');
+if(savedLang){LANG=savedLang;document.documentElement.lang=LANG}
+document.getElementById('langBadge').textContent=LANG.toUpperCase();
+updateNavLabels();
+</script>
+</body>
+</html>
