@@ -54,7 +54,9 @@ import { calculatePayroll } from "@/lib/tax-engine";
 import { formatETB } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { FileDown, Eye } from "lucide-react";
+import { FileDown, Eye, Trash2 } from "lucide-react";
+import { ConfirmDialog } from "@/components/erp/ui/confirm-dialog";
+import { useDeleteEmployee } from "@/lib/api-hooks";
 
 const tooltipStyle = {
   backgroundColor: "oklch(1 0.005 85)",
@@ -68,6 +70,8 @@ export function HRModule() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("employees");
   const [empModal, setEmpModal] = useState(false);
+  const [deleteEmpId, setDeleteEmpId] = useState<string | null>(null);
+  const deleteEmployee = useDeleteEmployee();
   const [payrollPeriod, setPayrollPeriod] = useState("July 2026");
 
   const { data: employees, isLoading: empLoading } = useEmployees();
@@ -103,6 +107,18 @@ export function HRModule() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <EmployeeForm open={empModal} onClose={() => setEmpModal(false)} />
+      <ConfirmDialog
+        open={!!deleteEmpId}
+        onClose={() => setDeleteEmpId(null)}
+        onConfirm={() => {
+          if (deleteEmpId) {
+            deleteEmployee.mutate(deleteEmpId, { onSuccess: () => setDeleteEmpId(null) });
+          }
+        }}
+        title="Delete Employee?"
+        description="This will permanently delete the employee and all related records (attendance, payroll, leave requests). This action cannot be undone."
+        isPending={deleteEmployee.isPending}
+      />
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -168,6 +184,7 @@ export function HRModule() {
                       <TableHead className="text-xs text-right">{t.hr.netPay}</TableHead>
                       <TableHead className="text-xs hidden lg:table-cell">{t.hr.joinDate}</TableHead>
                       <TableHead className="text-xs">{t.hr.status}</TableHead>
+                      <TableHead className="text-xs text-right">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -199,6 +216,16 @@ export function HRModule() {
                           <TableCell className="text-xs hidden lg:table-cell text-muted-foreground">{new Date(emp.joinDate).toLocaleDateString()}</TableCell>
                           <TableCell>
                             <StatusBadge status={emp.status as "active" | "leave"} />
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="text-xs text-destructive h-7"
+                              onClick={() => setDeleteEmpId(emp.id)}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       );

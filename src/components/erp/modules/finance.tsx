@@ -48,12 +48,15 @@ import {
   useAccounts,
   useBankAccounts,
   useCreateTransaction,
+  useDeleteTransaction,
+  useDeleteBank,
 } from "@/lib/api-hooks";
 import { TransactionForm, AccountForm, BankForm } from "@/components/erp/forms/entity-forms";
 import { exportTransactionsHTML, exportTransactionsCSV, exportFinancialStatementsHTML } from "@/lib/html-export";
 import { formatETB } from "@/lib/currency";
 import { cn } from "@/lib/utils";
-import { FileDown } from "lucide-react";
+import { FileDown, Trash2 } from "lucide-react";
+import { ConfirmDialog } from "@/components/erp/ui/confirm-dialog";
 
 const tooltipStyle = {
   backgroundColor: "oklch(1 0.005 85)",
@@ -77,6 +80,8 @@ export function FinanceModule() {
   const [txnModal, setTxnModal] = useState(false);
   const [acctModal, setAcctModal] = useState(false);
   const [bankModal, setBankModal] = useState(false);
+  const [deleteBankId, setDeleteBankId] = useState<string | null>(null);
+  const deleteBank = useDeleteBank();
 
   const { data: transactions, isLoading: txnLoading } = useTransactions();
   const { data: accounts, isLoading: acctLoading } = useAccounts();
@@ -113,6 +118,18 @@ export function FinanceModule() {
       <TransactionForm open={txnModal} onClose={() => setTxnModal(false)} />
       <AccountForm open={acctModal} onClose={() => setAcctModal(false)} />
       <BankForm open={bankModal} onClose={() => setBankModal(false)} />
+      <ConfirmDialog
+        open={!!deleteBankId}
+        onClose={() => setDeleteBankId(null)}
+        onConfirm={() => {
+          if (deleteBankId) {
+            deleteBank.mutate(deleteBankId, { onSuccess: () => setDeleteBankId(null) });
+          }
+        }}
+        title="Delete Bank Account?"
+        description="This will permanently remove the bank account from the system. Make sure to reconcile any pending transactions first."
+        isPending={deleteBank.isPending}
+      />
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -312,7 +329,14 @@ export function FinanceModule() {
                       <div className="h-11 w-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${bank.color}20` }}>
                         <span style={{ color: bank.color }}>{bankIcons[bank.bankName] || <Landmark className="h-5 w-5" />}</span>
                       </div>
-                      <StatusBadge status="connected" label="Active" />
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-xs text-destructive h-7"
+                        onClick={() => setDeleteBankId(bank.id)}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
                     </div>
                     <p className="text-sm font-semibold text-foreground">{bank.bankName}</p>
                     <p className="text-xs text-muted-foreground font-mono mt-0.5">{bank.accountNo}</p>
@@ -407,58 +431,86 @@ export function FinanceModule() {
 // Reusable Transaction Table
 function TransactionTable({ transactions, loading, showAll = false }: { transactions: Array<{ id: string; txnId: string; type: string; party: string; amount: number; date: string; method: string; status: string }>; loading: boolean; showAll?: boolean }) {
   const { t } = useTranslation();
+  const deleteTxn = useDeleteTransaction();
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
   if (loading) {
     return <div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
   }
   return (
-    <div className="overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-xs">ID</TableHead>
-            <TableHead className="text-xs">Type</TableHead>
-            <TableHead className="text-xs">Party</TableHead>
-            <TableHead className="text-xs hidden sm:table-cell">Method</TableHead>
-            <TableHead className="text-xs hidden md:table-cell">Date</TableHead>
-            <TableHead className="text-xs text-right">Amount</TableHead>
-            <TableHead className="text-xs">Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {transactions.length === 0 ? (
+    <>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
             <TableRow>
-              <TableCell colSpan={7} className="text-center text-sm text-muted-foreground py-8">
-                No transactions yet. Create your first one!
-              </TableCell>
+              <TableHead className="text-xs">ID</TableHead>
+              <TableHead className="text-xs">Type</TableHead>
+              <TableHead className="text-xs">Party</TableHead>
+              <TableHead className="text-xs hidden sm:table-cell">Method</TableHead>
+              <TableHead className="text-xs hidden md:table-cell">Date</TableHead>
+              <TableHead className="text-xs text-right">Amount</TableHead>
+              <TableHead className="text-xs">Status</TableHead>
+              <TableHead className="text-xs text-right">Action</TableHead>
             </TableRow>
-          ) : (
-            transactions.map((txn) => (
-              <TableRow key={txn.id} className="hover:bg-muted/30">
-                <TableCell className="text-xs font-mono">{txn.txnId}</TableCell>
-                <TableCell>
-                  <div className={cn(
-                    "inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-md",
-                    txn.type === "received" ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"
-                  )}>
-                    {txn.type === "received" ? <ArrowDownLeft className="h-3 w-3" /> : <ArrowUpRight className="h-3 w-3" />}
-                    {txn.type === "received" ? t.finance.paymentReceived : t.finance.paymentSent}
-                  </div>
+          </TableHeader>
+          <TableBody>
+            {transactions.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center text-sm text-muted-foreground py-8">
+                  No transactions yet. Create your first one!
                 </TableCell>
-                <TableCell className="text-sm font-medium">{txn.party}</TableCell>
-                <TableCell className="text-xs hidden sm:table-cell text-muted-foreground">{txn.method}</TableCell>
-                <TableCell className="text-xs hidden md:table-cell text-muted-foreground">{new Date(txn.date).toLocaleDateString()}</TableCell>
-                <TableCell className={cn(
-                  "text-sm font-semibold text-right tabular-nums",
-                  txn.type === "received" ? "text-primary" : "text-destructive"
-                )}>
-                  {txn.type === "received" ? "+" : "-"}{formatETB(txn.amount, { compact: !showAll })}
-                </TableCell>
-                <TableCell><StatusBadge status={txn.status as "completed"} /></TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </div>
+            ) : (
+              transactions.map((txn) => (
+                <TableRow key={txn.id} className="hover:bg-muted/30">
+                  <TableCell className="text-xs font-mono">{txn.txnId}</TableCell>
+                  <TableCell>
+                    <div className={cn(
+                      "inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-md",
+                      txn.type === "received" ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"
+                    )}>
+                      {txn.type === "received" ? <ArrowDownLeft className="h-3 w-3" /> : <ArrowUpRight className="h-3 w-3" />}
+                      {txn.type === "received" ? t.finance.paymentReceived : t.finance.paymentSent}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-sm font-medium">{txn.party}</TableCell>
+                  <TableCell className="text-xs hidden sm:table-cell text-muted-foreground">{txn.method}</TableCell>
+                  <TableCell className="text-xs hidden md:table-cell text-muted-foreground">{new Date(txn.date).toLocaleDateString()}</TableCell>
+                  <TableCell className={cn(
+                    "text-sm font-semibold text-right tabular-nums",
+                    txn.type === "received" ? "text-primary" : "text-destructive"
+                  )}>
+                    {txn.type === "received" ? "+" : "-"}{formatETB(txn.amount, { compact: !showAll })}
+                  </TableCell>
+                  <TableCell><StatusBadge status={txn.status as "completed"} /></TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-xs text-destructive h-7"
+                      onClick={() => setDeleteId(txn.id)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <ConfirmDialog
+        open={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={() => {
+          if (deleteId) {
+            deleteTxn.mutate(deleteId, { onSuccess: () => setDeleteId(null) });
+          }
+        }}
+        title="Delete Transaction?"
+        description="This will permanently delete the transaction and reverse any bank balance changes. This action cannot be undone."
+        isPending={deleteTxn.isPending}
+      />
+    </>
   );
 }

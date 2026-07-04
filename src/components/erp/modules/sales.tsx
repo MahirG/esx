@@ -52,7 +52,9 @@ import { CustomerForm, QuotationForm, DealForm } from "@/components/erp/forms/en
 import { exportQuotationHTML, exportCustomersCSV } from "@/lib/html-export";
 import { formatETB } from "@/lib/currency";
 import { cn } from "@/lib/utils";
-import { Eye, FileDown } from "lucide-react";
+import { Eye, FileDown, Trash2 } from "lucide-react";
+import { ConfirmDialog } from "@/components/erp/ui/confirm-dialog";
+import { useDeleteCustomer, useDeleteQuotation, useDeleteDeal } from "@/lib/api-hooks";
 
 const tooltipStyle = {
   backgroundColor: "oklch(1 0.005 85)",
@@ -77,6 +79,12 @@ export function SalesModule() {
   const [custModal, setCustModal] = useState(false);
   const [quoteModal, setQuoteModal] = useState(false);
   const [dealModal, setDealModal] = useState(false);
+  const [deleteCustomerId, setDeleteCustomerId] = useState<string | null>(null);
+  const [deleteQuoteId, setDeleteQuoteId] = useState<string | null>(null);
+  const [deleteDealId, setDeleteDealId] = useState<string | null>(null);
+  const deleteCustomer = useDeleteCustomer();
+  const deleteQuotation = useDeleteQuotation();
+  const deleteDeal = useDeleteDeal();
 
   const { data: customers, isLoading: custLoading } = useCustomers();
   const { data: quotations, isLoading: quoteLoading } = useQuotations();
@@ -106,6 +114,42 @@ export function SalesModule() {
       <CustomerForm open={custModal} onClose={() => setCustModal(false)} />
       <QuotationForm open={quoteModal} onClose={() => setQuoteModal(false)} />
       <DealForm open={dealModal} onClose={() => setDealModal(false)} />
+      <ConfirmDialog
+        open={!!deleteCustomerId}
+        onClose={() => setDeleteCustomerId(null)}
+        onConfirm={() => {
+          if (deleteCustomerId) {
+            deleteCustomer.mutate(deleteCustomerId, { onSuccess: () => setDeleteCustomerId(null) });
+          }
+        }}
+        title="Delete Customer?"
+        description="This will permanently delete the customer and all related quotations and pipeline deals. This action cannot be undone."
+        isPending={deleteCustomer.isPending}
+      />
+      <ConfirmDialog
+        open={!!deleteQuoteId}
+        onClose={() => setDeleteQuoteId(null)}
+        onConfirm={() => {
+          if (deleteQuoteId) {
+            deleteQuotation.mutate(deleteQuoteId, { onSuccess: () => setDeleteQuoteId(null) });
+          }
+        }}
+        title="Delete Quotation?"
+        description="This will permanently delete the quotation and all its line items."
+        isPending={deleteQuotation.isPending}
+      />
+      <ConfirmDialog
+        open={!!deleteDealId}
+        onClose={() => setDeleteDealId(null)}
+        onConfirm={() => {
+          if (deleteDealId) {
+            deleteDeal.mutate(deleteDealId, { onSuccess: () => setDeleteDealId(null) });
+          }
+        }}
+        title="Delete Deal?"
+        description="This will permanently remove the deal from your sales pipeline."
+        isPending={deleteDeal.isPending}
+      />
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -175,6 +219,7 @@ export function SalesModule() {
                       <TableHead className="text-xs text-right">{t.sales.totalOrders}</TableHead>
                       <TableHead className="text-xs text-right">{t.sales.lifetimeValue}</TableHead>
                       <TableHead className="text-xs">{t.sales.status}</TableHead>
+                      <TableHead className="text-xs text-right">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -199,6 +244,16 @@ export function SalesModule() {
                         <TableCell className="text-sm font-semibold text-right tabular-nums">{customer.totalOrders}</TableCell>
                         <TableCell className="text-sm font-semibold text-right tabular-nums text-primary">{formatETB(customer.lifetimeValue, { compact: true })}</TableCell>
                         <TableCell><StatusBadge status={customer.status as "vip" | "active" | "regular"} /></TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-xs text-destructive h-7"
+                            onClick={() => setDeleteCustomerId(customer.id)}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -311,14 +366,24 @@ export function SalesModule() {
                           <TableCell className="text-xs hidden md:table-cell text-muted-foreground">{new Date(quote.validUntil).toLocaleDateString()}</TableCell>
                           <TableCell><StatusBadge status={quote.status} /></TableCell>
                           <TableCell className="text-right">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="text-xs text-primary h-7"
-                              onClick={() => exportQuotationHTML(quote)}
-                            >
-                              <Eye className="h-3 w-3 mr-1" />HTML
-                            </Button>
+                            <div className="flex gap-1 justify-end">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-xs text-primary h-7"
+                                onClick={() => exportQuotationHTML(quote)}
+                              >
+                                <Eye className="h-3 w-3 mr-1" />HTML
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-xs text-destructive h-7"
+                                onClick={() => setDeleteQuoteId(quote.id)}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))

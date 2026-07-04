@@ -45,7 +45,9 @@ import { BarcodeScanner } from "@/components/erp/forms/barcode-scanner";
 import { exportInventoryHTML, exportProductsCSV } from "@/lib/html-export";
 import { formatETB } from "@/lib/currency";
 import { cn } from "@/lib/utils";
-import { FileDown, FileText } from "lucide-react";
+import { FileDown, FileText, Trash2 } from "lucide-react";
+import { ConfirmDialog } from "@/components/erp/ui/confirm-dialog";
+import { useDeleteProduct, useDeleteSupplier } from "@/lib/api-hooks";
 
 const tooltipStyle = {
   backgroundColor: "oklch(1 0.005 85)",
@@ -63,6 +65,10 @@ export function InventoryModule() {
   const [supplierModal, setSupplierModal] = useState(false);
   const [adjustModal, setAdjustModal] = useState(false);
   const [scannerModal, setScannerModal] = useState(false);
+  const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
+  const [deleteSupplierId, setDeleteSupplierId] = useState<string | null>(null);
+  const deleteProduct = useDeleteProduct();
+  const deleteSupplier = useDeleteSupplier();
   const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | undefined>();
 
   const { data: products, isLoading: prodLoading } = useProducts(searchQuery);
@@ -98,6 +104,30 @@ export function InventoryModule() {
         productName={selectedProduct?.name}
       />
       <BarcodeScanner open={scannerModal} onClose={() => setScannerModal(false)} />
+      <ConfirmDialog
+        open={!!deleteProductId}
+        onClose={() => setDeleteProductId(null)}
+        onConfirm={() => {
+          if (deleteProductId) {
+            deleteProduct.mutate(deleteProductId, { onSuccess: () => setDeleteProductId(null) });
+          }
+        }}
+        title="Delete Product?"
+        description="This will permanently delete the product and all its stock movement history. This action cannot be undone."
+        isPending={deleteProduct.isPending}
+      />
+      <ConfirmDialog
+        open={!!deleteSupplierId}
+        onClose={() => setDeleteSupplierId(null)}
+        onConfirm={() => {
+          if (deleteSupplierId) {
+            deleteSupplier.mutate(deleteSupplierId, { onSuccess: () => setDeleteSupplierId(null) });
+          }
+        }}
+        title="Delete Supplier?"
+        description="This will permanently remove the supplier from your records."
+        isPending={deleteSupplier.isPending}
+      />
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -222,14 +252,24 @@ export function InventoryModule() {
                             <StatusBadge status={product.status as "inStock" | "lowStock" | "outOfStock"} />
                           </TableCell>
                           <TableCell className="text-right">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-xs h-7"
-                              onClick={() => openAdjust({ id: product.id, name: product.name })}
-                            >
-                              Adjust
-                            </Button>
+                            <div className="flex gap-1 justify-end">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs h-7"
+                                onClick={() => openAdjust({ id: product.id, name: product.name })}
+                              >
+                                Adjust
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-xs text-destructive h-7"
+                                onClick={() => setDeleteProductId(product.id)}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))
@@ -332,9 +372,19 @@ export function InventoryModule() {
                       <div className="h-11 w-11 rounded-xl bg-accent/20 flex items-center justify-center">
                         <Truck className="h-5 w-5 text-accent-foreground" />
                       </div>
-                      <div className="flex items-center gap-1 text-xs font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-md">
-                        <Star className="h-3 w-3 fill-current" />
-                        {supplier.rating}
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 text-xs font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-md">
+                          <Star className="h-3 w-3 fill-current" />
+                          {supplier.rating}
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-xs text-destructive h-7 w-7 p-0"
+                          onClick={() => setDeleteSupplierId(supplier.id)}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
                       </div>
                     </div>
                     <p className="text-sm font-semibold text-foreground">{supplier.name}</p>

@@ -41,9 +41,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTranslation } from "@/lib/use-translation";
-import { useSystemUsers } from "@/lib/api-hooks";
+import { useSystemUsers, useDeleteUser } from "@/lib/api-hooks";
 import { UserForm } from "@/components/erp/forms/entity-forms";
+import { ConfirmDialog } from "@/components/erp/ui/confirm-dialog";
 import { cn } from "@/lib/utils";
+import { Trash2 } from "lucide-react";
 
 const organizationInfo = {
   name: "Addis Trading Enterprise",
@@ -71,6 +73,8 @@ export function AdminModule() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("users");
   const [userModal, setUserModal] = useState(false);
+  const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
+  const deleteUser = useDeleteUser();
   const [copied, setCopied] = useState(false);
 
   const { data: users, isLoading } = useSystemUsers();
@@ -126,6 +130,18 @@ export function AdminModule() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <UserForm open={userModal} onClose={() => setUserModal(false)} />
+      <ConfirmDialog
+        open={!!deleteUserId}
+        onClose={() => setDeleteUserId(null)}
+        onConfirm={() => {
+          if (deleteUserId) {
+            deleteUser.mutate(deleteUserId, { onSuccess: () => setDeleteUserId(null) });
+          }
+        }}
+        title="Delete User?"
+        description="This will permanently delete the user account. They will no longer be able to access the system."
+        isPending={deleteUser.isPending}
+      />
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -189,6 +205,7 @@ export function AdminModule() {
                       <TableHead className="text-xs">2FA</TableHead>
                       <TableHead className="text-xs hidden md:table-cell">{t.admin.lastActive}</TableHead>
                       <TableHead className="text-xs">Status</TableHead>
+                      <TableHead className="text-xs text-right">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -227,6 +244,16 @@ export function AdminModule() {
                           {new Date(user.lastActive).toLocaleDateString()}
                         </TableCell>
                         <TableCell><StatusBadge status={user.status as "online" | "offline" | "away"} /></TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-xs text-destructive h-7"
+                            onClick={() => setDeleteUserId(user.id)}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
