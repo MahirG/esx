@@ -148,6 +148,18 @@ a{color:inherit;text-decoration:none}
 .gradient-text{background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .login-subtitle{font-size:15px;color:var(--md-on-surface-variant);margin-bottom:32px;line-height:1.6}
 
+/* Social sign-in buttons */
+.social-row{display:flex;gap:12px;margin-top:8px}
+.social-btn{
+  flex:1;padding:14px;border-radius:var(--shape-sm);font-weight:600;font-size:14px;
+  display:flex;align-items:center;justify-content:center;gap:10px;transition:all var(--dur-fast) var(--ease-standard);
+  border:1.5px solid var(--md-outline-variant);
+}
+.social-btn:active{transform:scale(.97)}
+.social-btn.google{background:#fff;color:#1a1a1a;border-color:#dadce0}
+.social-btn.apple{background:#000;color:#fff;border-color:#333}
+.social-btn svg{width:20px;height:20px;flex-shrink:0}
+
 /* Form */
 .form-field{margin-bottom:18px;animation:fadeUp .5s var(--ease-decelerate) both}
 .form-field:nth-child(1){animation-delay:.15s}
@@ -871,12 +883,18 @@ a{color:inherit;text-decoration:none}
     </div>
 
     <button class="btn-filled ripple" onclick="login()" id="btnSignIn" style="margin-top:8px">Sign In →</button>
-    <div class="divider"><span id="orText">OR</span></div>
-    <button class="btn-tonal ripple" onclick="biometricLogin()" id="btnBiometric">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 11a2 2 0 100-4 2 2 0 000 4zm0 2c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4z"/></svg>
-      Biometric Login
-    </button>
-    <button class="btn-text" onclick="login()" id="btnDemo">Use Demo Account →</button>
+    <div class="divider"><span id="orText">or continue with</span></div>
+    <div class="social-row">
+      <button class="social-btn google ripple" onclick="socialLogin('Google')">
+        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Google
+      </button>
+      <button class="social-btn apple ripple" onclick="socialLogin('Apple')">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M17.05 12.04c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.89 2.65 3.23 2.6 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.39.81 1.4-.03 2.28-1.27 3.13-2.53.98-1.45 1.39-2.85 1.41-2.92-.03-.01-2.7-1.04-2.73-4.13zM14.63 4.59c.72-.87 1.2-2.08 1.07-3.29-1.03.04-2.28.69-3.02 1.56-.66.77-1.24 2-1.08 3.18 1.15.09 2.31-.59 3.03-1.45z"/></svg>
+        Apple
+      </button>
+    </div>
+    <button class="btn-text" onclick="login()" id="btnDemo" style="margin-top:16px">Use Demo Account →</button>
   </div>
 </div>
 
@@ -919,26 +937,31 @@ a{color:inherit;text-decoration:none}
   <!-- Bottom Nav -->
   <nav class="bottom-nav" role="navigation">
     <button class="nav-item active" onclick="switchTab('dashboard',this)" id="nav-dashboard" aria-label="Dashboard">
-      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div>
+      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></div>
       <span class="nav-label" id="navHome">Home</span>
     </button>
     <button class="nav-item" onclick="switchTab('finance',this)" id="nav-finance" aria-label="Finance">
-      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 3 5-6"/><circle cx="7" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="11" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13" r="1" fill="currentColor" stroke="none"/><circle cx="20" cy="7" r="1" fill="currentColor" stroke="none"/></svg></div>
       <span class="nav-label" id="navFinance">Finance</span>
     </button>
     <button class="nav-item" onclick="switchTab('inventory',this)" id="nav-inventory" aria-label="Inventory">
-      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4h16v3z"/></svg></div>
+      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
       <span class="nav-label" id="navInventory">Stock</span>
     </button>
     <button class="nav-item" onclick="switchTab('sales',this)" id="nav-sales" aria-label="Sales">
-      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
+      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.5"/><circle cx="19" cy="21" r="1.5"/><path d="M2 3h3l3 13h12l2-8H6"/><path d="M9 9h11"/></svg></div>
       <span class="nav-label" id="navSales">Sales</span>
     </button>
     <button class="nav-item" onclick="switchTab('more',this)" id="nav-more" aria-label="More">
-      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
+      <div class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></div>
       <span class="nav-label" id="navMore">More</span>
     </button>
   </nav>
+
+  <!-- Footer -->
+  <div class="app-footer" id="appFooter" style="display:none">
+    <span class="footer-credit">Powered by </span><a href="https://www.HisabTechologies.com" target="_blank" rel="noopener" class="footer-link">HisabTech</a>
+  </div>
 </div>
 
 <!-- Drawer -->
@@ -1164,11 +1187,6 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<!-- Footer -->
-<div class="app-footer" id="appFooter" style="display:none">
-  <span class="footer-credit">Powered by </span><a href="https://www.HisabTechologies.com" target="_blank" rel="noopener" class="footer-link">HisabTech</a>
-</div>
-
 </div>
 
 <script>
@@ -1296,14 +1314,22 @@ function tr(key){return(I18N[LANG]&&I18N[LANG][key])||I18N.en[key]||key}
 function formatETB(a,c){if(c){const ab=Math.abs(a);if(ab>=1e6)return'ETB '+(a/1e6).toFixed(2)+'M';if(ab>=1e3)return'ETB '+(a/1e3).toFixed(1)+'K'}return a.toLocaleString()+' ETB'}
 function getBadge(s){const m={completed:'success',filed:'success',active:'success',inStock:'success',present:'success',won:'success',accepted:'success',pending:'warning',lowStock:'warning',sent:'warning',leave:'warning',negotiation:'warning',proposal:'info',lead:'neutral',overdue:'danger',outOfStock:'danger',expired:'danger',lost:'danger',absent:'danger',vip:'purple',regular:'neutral'};const l={completed:'Completed',filed:'Filed',active:'Active',inStock:'In Stock',present:'Present',won:'Won',accepted:'Accepted',pending:'Pending',lowStock:'Low Stock',sent:'Sent',leave:'On Leave',negotiation:'Negotiation',proposal:'Proposal',lead:'Lead',overdue:'Overdue',outOfStock:'Out of Stock',expired:'Expired',lost:'Lost',absent:'Absent',vip:'VIP',regular:'Regular'};return'<span class="badge '+(m[s]||'neutral')+'">'+(l[s]||s)+'</span>'}
 function initials(n){return n.split(' ').slice(0,2).map(x=>x[0]).join('')}
+let snackTimer = null;
 function showSnack(msg,type){
   const el=document.getElementById('snackbar'),icon=document.getElementById('snackbarIcon'),txt=document.getElementById('snackbarText');
+  if(snackTimer){clearTimeout(snackTimer);snackTimer=null}
   txt.textContent=msg;
-  el.className='snackbar show'+(type?' '+type:'');
   if(type==='success')icon.innerHTML='<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
   else if(type==='error')icon.innerHTML='<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>';
   else icon.innerHTML='';
-  setTimeout(()=>el.classList.remove('show'),2800);
+  el.className='snackbar'+(type?' '+type:'');
+  // Force reflow then show
+  void el.offsetWidth;
+  el.classList.add('show');
+  snackTimer=setTimeout(()=>{
+    el.classList.remove('show');
+    snackTimer=null;
+  },3000);
 }
 function auditLog(action,entity,details){DB.auditLogs.unshift({id:genId(),time:new Date().toLocaleString('en-US',{hour12:false}),user:DB.user.name,action,entity,details:details||'',ip:'196.188.44.22'});saveDB()}
 
@@ -1326,7 +1352,16 @@ function login(){
     setTimeout(()=>startOnboarding(),500);
   }
 }
-function biometricLogin(){showSnack('Scanning fingerprint...','success');setTimeout(login,1200)}
+function socialLogin(provider){
+  showSnack('Connecting to '+provider+'...','success');
+  setTimeout(()=>{
+    DB.user.name = provider === 'Google' ? 'Google User' : 'Apple User';
+    DB.user.email = provider === 'Google' ? 'user@gmail.com' : 'user@icloud.com';
+    DB.user.avatar = provider[0];
+    saveDB();
+    login();
+  },1500);
+}
 function logout(){localStorage.removeItem('hisab-erp-auth');location.reload()}
 
 // ═══════════════════════════════════════════════════════════
