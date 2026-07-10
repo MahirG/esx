@@ -805,6 +805,35 @@ a{color:inherit;text-decoration:none}
   border-radius:var(--shape-sm);font-size:11px;color:var(--md-on-surface-variant);
 }
 .ai-cap strong{display:block;color:var(--md-secondary);font-size:12px;margin-bottom:2px}
+
+/* ═══ ONBOARDING ═══ */
+.onboard-overlay{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
+.onboard-overlay.active{display:flex;animation:fadeIn .3s}
+.onboard-card{background:var(--md-surface-1);border-radius:var(--shape-xl);max-width:400px;width:100%;overflow:hidden;box-shadow:var(--elev-5);animation:scaleIn .3s var(--ease-decelerate)}
+.onboard-header{padding:32px 24px 16px;text-align:center}
+.onboard-icon{width:72px;height:72px;margin:0 auto 20px;border-radius:var(--shape-md);display:flex;align-items:center;justify-content:center;font-size:36px}
+.onboard-icon svg{width:40px;height:40px}
+.onboard-title{font-size:22px;font-weight:700;margin-bottom:8px}
+.onboard-text{font-size:14px;color:var(--md-on-surface-variant);line-height:1.6}
+.onboard-dots{display:flex;justify-content:center;gap:8px;padding:12px 0}
+.onboard-dot{width:8px;height:8px;border-radius:50%;background:var(--md-outline);transition:all .3s}
+.onboard-dot.active{width:24px;background:var(--grad-primary)}
+.onboard-actions{display:flex;gap:8px;padding:0 24px 24px}
+.onboard-back{padding:14px 20px;background:var(--md-surface-3);border-radius:var(--shape-sm);color:var(--md-on-surface-variant);font-weight:600;font-size:14px;transition:all .2s}
+.onboard-back:active{transform:scale(.95)}
+.onboard-next{flex:1;padding:14px;background:var(--grad-primary);color:var(--md-on-primary);border-radius:var(--shape-sm);font-weight:700;font-size:14px;transition:all .2s}
+.onboard-next:active{transform:scale(.97)}
+.onboard-skip{width:100%;padding:12px;background:transparent;color:var(--md-on-surface-variant);font-size:13px;text-align:center}
+
+/* ═══ ETHIOPIAN CALENDAR ═══ */
+.eth-date{font-family:'Noto Sans Ethiopic',var(--font-body);font-size:13px;color:var(--md-secondary);font-weight:600}
+
+/* ═══ FOOTER ═══ */
+.app-footer{padding:8px 20px calc(8px + var(--safe-bottom));text-align:center;background:var(--md-surface-0);border-top:1px solid var(--md-outline-variant)}
+.app-footer a{color:var(--md-secondary);font-size:11px;font-weight:600;text-decoration:none;transition:opacity .2s}
+.app-footer a:active{opacity:.7}
+.app-footer .footer-credit{color:var(--md-on-surface-variant);font-size:11px}
+.app-footer .footer-link{color:var(--md-secondary);font-weight:700}
 </style>
 </head>
 <body>
@@ -815,7 +844,7 @@ a{color:inherit;text-decoration:none}
   <div class="login-bg"></div>
   <div class="login-content">
     <div class="login-brand">
-      <div class="brand-mark">H</div>
+      
       <div class="brand-name">Hisab<span class="accent">ERP</span></div>
     </div>
     <div class="login-hero">
@@ -860,7 +889,7 @@ a{color:inherit;text-decoration:none}
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
     </button>
     <div class="appbar-brand">
-      <div class="brand-mark">H</div>
+      
       <div class="appbar-title">Hisab<span class="accent">ERP</span></div>
     </div>
     <div class="appbar-actions">
@@ -916,7 +945,7 @@ a{color:inherit;text-decoration:none}
 <div class="drawer-scrim" id="drawerScrim" onclick="closeDrawer()"></div>
 <aside class="drawer" id="drawer">
   <div class="drawer-header">
-    <div class="brand-mark">H</div>
+    
     <div>
       <div style="font-size:16px;font-weight:700">Hisab<span class="accent">ERP</span></div>
       <div style="font-size:12px;color:var(--md-on-surface-variant)">Ethiopian Business Intelligence</div>
@@ -982,13 +1011,24 @@ a{color:inherit;text-decoration:none}
     <span style="font-weight:600" id="scanTitle">Scan Barcode</span>
     <div style="width:42px"></div>
   </div>
-  <div class="scan-view">
+  <div class="scan-view" id="scanView">
+    <video id="scanVideo" autoplay playsinline style="width:100%;height:100%;object-fit:cover;display:none"></video>
     <div class="scan-corners"></div>
     <div class="scan-line"></div>
+    <div id="scanPlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--md-on-surface-variant);text-align:center;padding:20px">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:64px;height:64px;opacity:.3;margin-bottom:12px"><path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5z"/></svg>
+      <p style="font-size:14px" id="scanPlaceholderText">Tap "Start Camera" to scan a barcode</p>
+    </div>
   </div>
   <div class="scan-footer">
-    <p id="scanHint" style="margin-bottom:16px;color:var(--md-on-surface-variant)">Point your camera at a barcode</p>
-    <button class="btn-filled ripple" onclick="simulateScan()" style="max-width:200px;margin:0 auto">Simulate Scan</button>
+    <p id="scanHint" style="margin-bottom:16px;color:var(--md-on-surface-variant)">Point your camera at a product barcode or enter SKU manually</p>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="manualSkuInput" type="text" placeholder="Enter SKU manually..." style="flex:1;padding:12px 16px;background:var(--md-surface-2);border:1px solid var(--md-outline-variant);border-radius:var(--shape-sm);color:#fff;font-size:15px">
+      <button class="btn-filled ripple" onclick="manualLookup()" style="max-width:100px;padding:12px">Look Up</button>
+    </div>
+    <button class="btn-filled ripple" id="btnStartCamera" onclick="startCamera()" style="max-width:200px;margin:0 auto">📷 Start Camera</button>
+    <button class="btn-filled ripple" id="btnStopCamera" onclick="stopCamera()" style="max-width:200px;margin:0 auto;display:none">⏹ Stop Camera</button>
+    <button class="btn-tonal ripple" onclick="simulateScan()" style="max-width:200px;margin:8px auto 0;color:#fff;background:rgba(255,255,255,.1)">🎲 Simulate Scan</button>
   </div>
 </div>
 
@@ -1109,6 +1149,24 @@ a{color:inherit;text-decoration:none}
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
     </button>
   </div>
+</div>
+
+<!-- ═══ ONBOARDING ═══ -->
+<div class="onboard-overlay" id="onboardOverlay">
+  <div class="onboard-card">
+    <div class="onboard-header" id="onboardHeader"></div>
+    <div class="onboard-dots" id="onboardDots"></div>
+    <div class="onboard-actions">
+      <button class="onboard-back" id="onboardBack" onclick="onboardPrev()" style="display:none">Back</button>
+      <button class="onboard-next" id="onboardNext" onclick="onboardNext()">Next</button>
+    </div>
+    <button class="onboard-skip" id="onboardSkip" onclick="onboardFinish()">Skip</button>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="app-footer" id="appFooter" style="display:none">
+  <span class="footer-credit">Powered by </span><a href="https://www.HisabTechologies.com" target="_blank" rel="noopener" class="footer-link">HisabTech</a>
 </div>
 
 </div>
@@ -1260,16 +1318,161 @@ function selectRole(btn){document.querySelectorAll('.role-chip').forEach(b=>b.cl
 function login(){
   document.getElementById('loginRoot').classList.add('hidden');
   document.getElementById('mainApp').style.display='flex';
+  document.getElementById('appFooter').style.display='block';
   setTimeout(()=>{document.getElementById('loginRoot').style.display='none'},400);
   renderAll();
+  // Show onboarding for first-time users
+  if(!localStorage.getItem('hisab-onboarded')){
+    setTimeout(()=>startOnboarding(),500);
+  }
 }
 function biometricLogin(){showSnack('Scanning fingerprint...','success');setTimeout(login,1200)}
 function logout(){localStorage.removeItem('hisab-erp-auth');location.reload()}
 
 // ═══════════════════════════════════════════════════════════
+// ONBOARDING — Step-by-step guide for new users
+// ═══════════════════════════════════════════════════════════
+const onboardingSteps = [
+  {
+    icon:'👋',iconBg:'rgba(0,168,225,.12)',iconColor:'#00A8E1',
+    title:'Welcome to HisabERP',
+    text:'Your all-in-one Ethiopian business management suite. Let\'s take a quick tour of the key features.',
+    titleAm:'ለሂሳብ ERP እንኳን ደህና መጡ',
+    textAm:'የእርስዎ የኢትዮጵያ ንግድ ስርዓት። ቁልፍ ባህሪያትን እንወስን።'
+  },
+  {
+    icon:'📊',iconBg:'rgba(76,175,80,.12)',iconColor:'#4CAF50',
+    title:'Dashboard Overview',
+    text:'See your revenue, profit, VAT, and employee stats at a glance. Quick actions let you create transactions, add products, and make sales instantly.',
+    titleAm:'የዳሽቦርድ አጠቃለያ',
+    textAm:'ገቢዎን፣ ትርፎን፣ ቫትን እና የሰራተኛ ስታቲስቲክስ በአንድ እይታ ይመልከቱ።'
+  },
+  {
+    icon:'💰',iconBg:'rgba(0,168,225,.12)',iconColor:'#00A8E1',
+    title:'Finance & Transactions',
+    text:'Track all payments received and sent. View bank balances for Dashen, CBE, Awash Bank, Telebirr, and Amole. VAT and tax compliance built-in.',
+    titleAm:'ፋይናንስ እና ግብይቶች',
+    textAm:'ሁሉንም ክፍያዎች ይከታተሉ። የባንክ ሂሳቦችን ይመልከቱ። ቫት እና ግብር ቅጣት ተካትቷል።'
+  },
+  {
+    icon:'📦',iconBg:'rgba(255,183,77,.12)',iconColor:'#FFB74D',
+    title:'Inventory & Barcode Scanning',
+    text:'Manage products across 4 warehouses. Scan barcodes with your camera, track stock levels, and get alerts when items run low.',
+    titleAm:'እቃ መጋዘን እና ባርኮድ',
+    textAm:'ምርቶችን በ4 መጋዘኖች ያስተዳድሩ። ባርኮድ በካሜራ ይቃኙ። ክምችት ይከታተሉ።'
+  },
+  {
+    icon:'🛒',iconBg:'rgba(187,134,252,.12)',iconColor:'#BB86FC',
+    title:'POS Sales & CRM',
+    text:'Make quick sales with the built-in POS. Add products to cart, calculate VAT automatically, and checkout. Manage customers and quotations.',
+    titleAm:'POS ሽያጭ እና CRM',
+    textAm:'በ POS ፈጣን ሽያጭ ያድርጉ። ቫት በራስ-ሰር ይሰላል። ደንበኞችን ያስተዳድሩ።'
+  },
+  {
+    icon:'🤖',iconBg:'rgba(0,168,225,.12)',iconColor:'#00A8E1',
+    title:'HisabAI Assistant',
+    text:'Tap the robot icon anytime to ask questions about your business. HisabAI can check revenue, stock, employees, taxes, and even create transactions for you — in English or Amharic!',
+    titleAm:'ሂሳብ AI አጋዥ',
+    textAm:'ሮቦቱን ይጫኑ። ገቢ፣ ክምችት፣ ሰራተኞች ይጠይቁ። በአማርኛ ወይም በእንግሊዝኛ!'
+  },
+];
+let onboardStep = 0;
+function startOnboarding(){
+  onboardStep = 0;
+  document.getElementById('onboardOverlay').classList.add('active');
+  renderOnboardingStep();
+}
+function renderOnboardingStep(){
+  const step = onboardingSteps[onboardStep];
+  const isAm = LANG === 'am';
+  const title = isAm ? step.titleAm : step.title;
+  const text = isAm ? step.textAm : step.text;
+  const dots = onboardingSteps.map((_,i)=>`<div class="onboard-dot ${i===onboardStep?'active':''}"></div>`).join('');
+  document.getElementById('onboardHeader').innerHTML = `
+    <div class="onboard-icon" style="background:${step.iconBg};color:${step.iconColor}">${step.icon}</div>
+    <div class="onboard-title">${title}</div>
+    <div class="onboard-text">${text}</div>
+  `;
+  document.getElementById('onboardDots').innerHTML = dots;
+  document.getElementById('onboardBack').style.display = onboardStep > 0 ? 'block' : 'none';
+  document.getElementById('onboardNext').textContent = onboardStep === onboardingSteps.length - 1 ? 'Get Started' : 'Next';
+  document.getElementById('onboardSkip').style.display = onboardStep < onboardingSteps.length - 1 ? 'block' : 'none';
+}
+function onboardNext(){
+  if(onboardStep < onboardingSteps.length - 1){
+    onboardStep++;
+    renderOnboardingStep();
+  } else {
+    onboardFinish();
+  }
+}
+function onboardPrev(){
+  if(onboardStep > 0){
+    onboardStep--;
+    renderOnboardingStep();
+  }
+}
+function onboardFinish(){
+  document.getElementById('onboardOverlay').classList.remove('active');
+  localStorage.setItem('hisab-onboarded','1');
+  showSnack('Welcome to HisabERP! 🎉','success');
+}
+// Allow reopening onboarding from settings
+function reopenOnboarding(){
+  localStorage.removeItem('hisab-onboarded');
+  startOnboarding();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ETHIOPIAN CALENDAR CONVERTER
+// ═══════════════════════════════════════════════════════════
+function toEthiopianDate(date){
+  // Ethiopian calendar: 7-8 years behind Gregorian, 13 months (12×30 + 5/6)
+  const ethMonths = ['መስከረም','ጥቅምት','ኅዳር','ታኅሣሥ','ጥር','የካቲት','መጋቢት','ሚያዝያ','ግንቦት','ሰኔ','ሐምሌ','ነሐሴ','ጳጉሜ'];
+  const d = new Date(date);
+  const gYear = d.getFullYear();
+  const gMonth = d.getMonth() + 1;
+  const gDay = d.getDate();
+  // Ethiopian New Year is Sept 11 (or 12 in leap year before Ethiopian leap year)
+  // Simplified conversion: Ethiopian year = Gregorian year - 7 or -8
+  let ethYear = gYear - 8;
+  if(gMonth < 9 || (gMonth === 9 && gDay < 11)) ethYear = gYear - 8;
+  else ethYear = gYear - 7;
+  // Calculate Ethiopian month and day
+  // Sept 11 = Meskerem 1, so offset from Sept 11
+  const sep11 = new Date(gYear, 8, 11);
+  let diff = Math.floor((d - sep11) / (1000 * 60 * 60 * 24));
+  if(diff < 0){
+    // Before Sept 11, use previous year's Sep 11
+    const prevSep11 = new Date(gYear - 1, 8, 11);
+    diff = Math.floor((d - prevSep11) / (1000 * 60 * 60 * 24));
+    ethYear = (gYear - 1) - 7;
+  }
+  const ethMonth = Math.floor(diff / 30);
+  const ethDay = (diff % 30) + 1;
+  const monthName = ethMonths[ethMonth] || ethMonths[0];
+  return `${ethDay} ${monthName} ${ethYear}`;
+}
+function getDisplayDate(dateStr){
+  if(LANG === 'am'){
+    return toEthiopianDate(dateStr);
+  }
+  return new Date(dateStr).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+function getDisplayDateShort(dateStr){
+  if(LANG === 'am'){
+    const eth = toEthiopianDate(dateStr);
+    // Return just month/day for short display
+    const parts = eth.split(' ');
+    return parts[0] + ' ' + parts[1];
+  }
+  return new Date(dateStr).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+// ═══════════════════════════════════════════════════════════
 // LANGUAGE
 // ═══════════════════════════════════════════════════════════
-function toggleLang(){LANG=LANG==='en'?'am':'en';localStorage.setItem('hisab-lang',LANG);document.getElementById('langBadge').textContent=LANG.toUpperCase();document.documentElement.lang=LANG;updateNavLabels();updateAILang();renderScreen(ACTIVE_TAB)}
+function toggleLang(){LANG=LANG==='en'?'am':'en';localStorage.setItem('hisab-lang',LANG);document.getElementById('langBadge').textContent=LANG.toUpperCase();document.documentElement.lang=LANG;updateNavLabels();updateAILang();renderScreen(ACTIVE_TAB);if(document.getElementById('onboardOverlay').classList.contains('active'))renderOnboardingStep()}
 
 function updateAILang(){
   const isAm = LANG === 'am';
@@ -1326,9 +1529,76 @@ function openModal(html){document.getElementById('sheetContent').innerHTML=html;
 function closeModal(){document.getElementById('bottomSheet').classList.remove('active');setTimeout(()=>document.getElementById('scrim').classList.remove('active'),300)}
 
 // Scanner
-function openScanner(){document.getElementById('scanOverlay').classList.add('active')}
-function closeScanner(){document.getElementById('scanOverlay').classList.remove('active')}
-function simulateScan(){if(DB.products.length===0){showSnack('No products to scan','error');return}const p=DB.products[Math.floor(Math.random()*DB.products.length)];closeScanner();setTimeout(()=>{viewProduct(p.id);showSnack('Scanned: '+p.sku,'success')},300)}
+let scanStream = null;
+let scanInterval = null;
+function openScanner(){document.getElementById('scanOverlay').classList.add('active');document.getElementById('manualSkuInput').value=''}
+function closeScanner(){stopCamera();document.getElementById('scanOverlay').classList.remove('active')}
+function startCamera(){
+  const video=document.getElementById('scanVideo'),placeholder=document.getElementById('scanPlaceholder'),hint=document.getElementById('scanHint');
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+    hint.textContent='Requesting camera access...';
+    navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(stream=>{
+      scanStream=stream;video.srcObject=stream;video.style.display='block';placeholder.style.display='none';
+      document.getElementById('btnStartCamera').style.display='none';
+      document.getElementById('btnStopCamera').style.display='block';
+      hint.textContent='Point your camera at a barcode. Tap "Simulate Scan" to test.';
+      // Poll for barcode detection using BarcodeDetector API if available
+      if('BarcodeDetector' in window){
+        const detector=new BarcodeDetector({formats:['code_39','code_128','ean_13','ean_8','qr_code','upc_a','upc_e']});
+        scanInterval=setInterval(()=>{
+          detector.detect(video).then(barcodes=>{
+            if(barcodes.length>0){
+              const code=barcodes[0].rawValue;
+              stopCamera();
+              lookupScannedCode(code);
+            }
+          }).catch(()=>{});
+        },500);
+      }
+    }).catch(err=>{
+      hint.textContent='Camera not available. Use manual SKU entry or simulate scan.';
+      console.error('Camera error:',err);
+    });
+  } else {
+    hint.textContent='Camera not supported on this device. Use manual SKU entry or simulate scan.';
+  }
+}
+function stopCamera(){
+  if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null}
+  if(scanInterval){clearInterval(scanInterval);scanInterval=null}
+  const video=document.getElementById('scanVideo');
+  if(video){video.style.display='none';video.srcObject=null}
+  const placeholder=document.getElementById('scanPlaceholder');
+  if(placeholder)placeholder.style.display='flex';
+  const btnStart=document.getElementById('btnStartCamera'),btnStop=document.getElementById('btnStopCamera');
+  if(btnStart)btnStart.style.display='block';
+  if(btnStop)btnStop.style.display='none';
+  const hint=document.getElementById('scanHint');
+  if(hint)hint.textContent='Point your camera at a product barcode or enter SKU manually';
+}
+function lookupScannedCode(code){
+  // Try to match against product SKU or barcode
+  const p = DB.products.find(pr=>pr.sku.toLowerCase()===code.toLowerCase()||pr.barcode===code);
+  if(p){
+    closeScanner();
+    setTimeout(()=>{viewProduct(p.id);showSnack('Scanned: '+p.sku,'success')},300);
+  } else {
+    showSnack('No product found for: '+code,'error');
+    document.getElementById('scanHint').textContent='No match for "'+code+'". Try again or enter SKU manually.';
+  }
+}
+function manualLookup(){
+  const input=document.getElementById('manualSkuInput');const code=input.value.trim();
+  if(!code){showSnack('Please enter an SKU','error');return}
+  lookupScannedCode(code);
+}
+function simulateScan(){
+  if(DB.products.length===0){showSnack('No products to scan','error');return}
+  const p=DB.products[Math.floor(Math.random()*DB.products.length)];
+  stopCamera();
+  closeScanner();
+  setTimeout(()=>{viewProduct(p.id);showSnack('Scanned: '+p.sku,'success')},300);
+}
 
 // ═══════════════════════════════════════════════════════════
 // DASHBOARD
@@ -1404,7 +1674,7 @@ function renderDashboard(){
             <div class="timeline-dot ${dotClass}"></div>
             <div class="timeline-content">
               <div class="timeline-title">${log.action}</div>
-              <div class="timeline-time">${log.user} • ${log.time}</div>
+              <div class="timeline-time">${log.user} • ${LANG==="am"?toEthiopianDate(log.time):log.time}</div>
             </div>
           </div>`;
         }).join('')}
@@ -1425,7 +1695,7 @@ function renderDashboard(){
           </div>
           <div class="list-trail">
             <div class="list-amount ${txn.type==='received'?'pos':'neg'}">${txn.type==='received'?'+':'-'}${formatETB(txn.amount,true)}</div>
-            <div class="list-meta">${txn.date}</div>
+            <div class="list-meta">${getDisplayDateShort(txn.date)}</div>
           </div>
         </div>
       `).join('')}
@@ -1459,7 +1729,7 @@ function renderDashboard(){
           </div>
           <div class="list-content">
             <div class="list-title">${tf.type}</div>
-            <div class="list-sub">Due: ${tf.dueDate}</div>
+            <div class="list-sub">Due: ${getDisplayDateShort(tf.dueDate)}</div>
           </div>
           <div class="list-trail">
             <div class="list-amount">${formatETB(tf.amount,true)}</div>
@@ -1516,7 +1786,7 @@ function renderFinanceTab(){
           <div class="list-avatar ${txn.type==='received'?'':'red'}">${txn.type==='received'?'↓':'↑'}</div>
           <div class="list-content">
             <div class="list-title">${txn.party}</div>
-            <div class="list-sub">${txn.txnId} • ${txn.method} • ${txn.date}</div>
+            <div class="list-sub">${txn.txnId} • ${txn.method} • ${getDisplayDateShort(txn.date)}</div>
           </div>
           <div class="list-trail">
             <div class="list-amount ${txn.type==='received'?'pos':'neg'}">${txn.type==='received'?'+':'-'}${formatETB(txn.amount,true)}</div>
@@ -1579,7 +1849,7 @@ function renderFinanceTab(){
             </div>
             <div class="list-content">
               <div class="list-title">${tf.type}</div>
-              <div class="list-sub">${tf.period} • Due ${tf.dueDate}</div>
+              <div class="list-sub">${tf.period} • Due ${getDisplayDateShort(tf.dueDate)}</div>
             </div>
             <div class="list-trail">
               <div class="list-amount">${formatETB(tf.amount,true)}</div>
@@ -1636,7 +1906,7 @@ function viewTxn(id){
         <div class="list-trail"><div class="list-amount ${txn.type==='received'?'pos':'neg'}">${txn.type==='received'?'+':'-'}${formatETB(txn.amount)}</div></div>
       </div>
       <div style="padding:14px 0 0;border-top:1px solid var(--md-outline-variant);font-size:13px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-muted">Date</span><span>${txn.date}</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-muted">Date</span><span>${getDisplayDateShort(txn.date)}</span></div>
         <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-muted">Method</span><span>${txn.method}</span></div>
         <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-muted">Status</span>${getBadge(txn.status)}</div>
         <div style="display:flex;justify-content:space-between"><span class="text-muted">VAT (15%)</span><span>${formatETB(txn.amount*0.15)}</span></div>
@@ -2008,7 +2278,7 @@ function renderMoreTab(){
       </div>
       <div class="m3-card">
         <div class="card-title mb-16">Tax Deadlines</div>
-        ${DB.taxFilings.map(tf=>`<div class="list-item"><div class="list-avatar ${tf.status==='overdue'?'red':tf.status==='filed'?'green':'amber'}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div><div class="list-content"><div class="list-title">${tf.type}</div><div class="list-sub">${tf.period} • Due ${tf.dueDate}</div></div><div class="list-trail"><div class="list-amount">${formatETB(tf.amount,true)}</div>${getBadge(tf.status)}</div></div>`).join('')}
+        ${DB.taxFilings.map(tf=>`<div class="list-item"><div class="list-avatar ${tf.status==='overdue'?'red':tf.status==='filed'?'green':'amber'}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div><div class="list-content"><div class="list-title">${tf.type}</div><div class="list-sub">${tf.period} • Due ${getDisplayDateShort(tf.dueDate)}</div></div><div class="list-trail"><div class="list-amount">${formatETB(tf.amount,true)}</div>${getBadge(tf.status)}</div></div>`).join('')}
       </div>
       <div class="m3-card">
         <div class="card-title mb-16">Ethiopian Tax Rules</div>
@@ -2016,7 +2286,7 @@ function renderMoreTab(){
       </div>
       <div class="m3-card">
         <div class="card-title mb-16">Audit Trail</div>
-        ${DB.auditLogs.slice(0,8).map(log=>`<div class="list-item"><div class="list-avatar round" style="background:var(--md-surface-3);color:var(--md-on-surface-variant);box-shadow:none">${initials(log.user)}</div><div class="list-content"><div class="list-title">${log.action}</div><div class="list-sub">${log.user} • ${log.time}</div></div><div class="list-trail">${getBadge('info')}</div></div>`).join('')}
+        ${DB.auditLogs.slice(0,8).map(log=>`<div class="list-item"><div class="list-avatar round" style="background:var(--md-surface-3);color:var(--md-on-surface-variant);box-shadow:none">${initials(log.user)}</div><div class="list-content"><div class="list-title">${log.action}</div><div class="list-sub">${log.user} • ${LANG==="am"?toEthiopianDate(log.time):log.time}</div></div><div class="list-trail">${getBadge('info')}</div></div>`).join('')}
       </div>
     `;
   }
@@ -2083,6 +2353,7 @@ function renderMoreTab(){
         <div class="list-item"><div class="list-avatar cyan"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div><div class="list-content"><div class="list-title">Biometric Login</div><div class="list-sub">Fingerprint & Face</div></div>${getBadge('success')}</div>
       </div>
       <div class="m3-card">
+        <button class="btn-tonal ripple" style="margin-bottom:8px" onclick="reopenOnboarding()">📖 View Tutorial Again</button>
         <button class="btn-tonal ripple" style="color:var(--md-error);margin-bottom:8px" onclick="resetData()">Reset All Data</button>
         <button class="btn-tonal ripple" style="color:var(--md-error)" onclick="logout()">Logout</button>
       </div>
