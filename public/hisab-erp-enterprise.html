@@ -432,8 +432,9 @@ a{color:inherit;text-decoration:none}
 .scrim{
   position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;opacity:0;pointer-events:none;
   transition:opacity var(--dur-medium) var(--ease-standard);backdrop-filter:blur(4px);
+  display:none;
 }
-.scrim.active{opacity:1;pointer-events:auto}
+.scrim.active{opacity:1;pointer-events:auto;display:block}
 .bottom-sheet{
   position:fixed;bottom:0;left:50%;transform:translate(-50%,100%);width:100%;max-width:480px;
   background:var(--md-surface-2);border-radius:var(--shape-xl) var(--shape-xl) 0 0;
@@ -555,8 +556,8 @@ a{color:inherit;text-decoration:none}
 /* ═══════════════════════════════════════════════════════════
    DRAWER (Navigation)
    ═══════════════════════════════════════════════════════════ */
-.drawer-scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;opacity:0;pointer-events:none;transition:opacity var(--dur-medium)}
-.drawer-scrim.active{opacity:1;pointer-events:auto}
+.drawer-scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;opacity:0;pointer-events:none;transition:opacity var(--dur-medium);display:none}
+.drawer-scrim.active{opacity:1;pointer-events:auto;display:block}
 .drawer{
   position:fixed;top:0;left:0;bottom:0;width:280px;max-width:85vw;background:var(--md-surface-1);
   z-index:151;transform:translateX(-100%);transition:transform var(--dur-medium) var(--ease-emphasized);
