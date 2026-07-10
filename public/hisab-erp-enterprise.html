@@ -121,8 +121,8 @@ a{color:inherit;text-decoration:none}
   background-image:radial-gradient(circle at 80% 20%,rgba(43,213,245,.08) 0%,transparent 40%),
                    radial-gradient(circle at 20% 80%,rgba(187,134,252,.06) 0%,transparent 40%);
 }
-.login-content{position:relative;z-index:1;padding:calc(48px + var(--safe-top)) 28px 32px;min-height:100dvh;display:flex;flex-direction:column}
-.login-brand{display:flex;align-items:center;gap:14px;margin-bottom:40px;animation:fadeDown .6s var(--ease-decelerate)}
+.login-content{position:relative;z-index:1;padding:calc(32px + var(--safe-top)) 28px 24px;min-height:100dvh;display:flex;flex-direction:column;justify-content:center}
+.login-brand{display:flex;align-items:center;gap:14px;margin-bottom:24px;animation:fadeDown .6s var(--ease-decelerate)}
 .brand-mark{
   width:52px;height:52px;border-radius:var(--shape-md);background:var(--grad-primary);
   display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;
@@ -140,16 +140,16 @@ a{color:inherit;text-decoration:none}
   display:inline-flex;align-items:center;gap:8px;padding:6px 14px;
   background:rgba(0,168,225,.1);border:1px solid rgba(0,168,225,.25);
   border-radius:var(--shape-full);font-size:11px;font-weight:700;color:var(--md-secondary);
-  text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;
+  text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;
 }
 .login-badge::before{content:'';width:6px;height:6px;background:var(--md-secondary);border-radius:50%;box-shadow:0 0 8px var(--md-secondary);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.login-title{font-size:34px;font-weight:700;line-height:1.1;letter-spacing:-1px;margin-bottom:12px}
+.login-title{font-size:28px;font-weight:700;line-height:1.15;letter-spacing:-.5px;margin-bottom:8px}
 .gradient-text{background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.login-subtitle{font-size:15px;color:var(--md-on-surface-variant);margin-bottom:32px;line-height:1.6}
+.login-subtitle{font-size:14px;color:var(--md-on-surface-variant);margin-bottom:24px;line-height:1.5}
 
 /* Social sign-in buttons */
-.social-row{display:flex;gap:12px;margin-top:8px}
+.social-row{display:flex;gap:16px;margin-top:8px}
 .social-btn{
   flex:1;padding:14px;border-radius:var(--shape-sm);font-weight:600;font-size:14px;
   display:flex;align-items:center;justify-content:center;gap:10px;transition:all var(--dur-fast) var(--ease-standard);
@@ -161,7 +161,7 @@ a{color:inherit;text-decoration:none}
 .social-btn svg{width:20px;height:20px;flex-shrink:0}
 
 /* Form */
-.form-field{margin-bottom:18px;animation:fadeUp .5s var(--ease-decelerate) both}
+.form-field{margin-bottom:14px;animation:fadeUp .5s var(--ease-decelerate) both}
 .form-field:nth-child(1){animation-delay:.15s}
 .form-field:nth-child(2){animation-delay:.2s}
 .form-field:nth-child(3){animation-delay:.25s}
@@ -181,7 +181,7 @@ a{color:inherit;text-decoration:none}
 }
 .field-select:focus{outline:none;border-color:var(--md-primary);box-shadow:0 0 0 3px rgba(0,168,225,.12)}
 
-.role-group{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px}
+.role-group{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
 .role-chip{
   padding:12px 8px;background:var(--md-surface-2);border:1.5px solid var(--md-outline-variant);
   border-radius:var(--shape-sm);color:var(--md-on-surface-variant);font-size:13px;font-weight:600;
@@ -211,7 +211,7 @@ a{color:inherit;text-decoration:none}
 .btn-text{width:100%;padding:12px;background:transparent;color:var(--md-on-surface-variant);font-size:13px;transition:color var(--dur-fast)}
 .btn-text:active{color:var(--md-secondary)}
 
-.divider{text-align:center;margin:20px 0;position:relative;color:var(--md-on-surface-variant);font-size:12px}
+.divider{text-align:center;margin:16px 0;position:relative;color:var(--md-on-surface-variant);font-size:12px}
 .divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--md-outline-variant)}
 .divider span{background:var(--md-surface-0);padding:0 12px;position:relative}
 
@@ -405,7 +405,7 @@ a{color:inherit;text-decoration:none}
    BOTTOM NAVIGATION (Material 3)
    ═══════════════════════════════════════════════════════════ */
 .bottom-nav{
-  height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);
+  height:var(--nav-h);
   background:rgba(11,20,26,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-top:1px solid var(--md-outline-variant);display:flex;align-items:stretch;
   position:relative;z-index:100;
@@ -841,7 +841,7 @@ a{color:inherit;text-decoration:none}
 .eth-date{font-family:'Noto Sans Ethiopic',var(--font-body);font-size:13px;color:var(--md-secondary);font-weight:600}
 
 /* ═══ FOOTER ═══ */
-.app-footer{padding:8px 20px calc(8px + var(--safe-bottom));text-align:center;background:var(--md-surface-0);border-top:1px solid var(--md-outline-variant)}
+.app-footer{padding:3px 20px calc(4px + var(--safe-bottom));text-align:center;background:rgba(11,20,26,.98);font-size:10px;flex-shrink:0}
 .app-footer a{color:var(--md-secondary);font-size:11px;font-weight:600;text-decoration:none;transition:opacity .2s}
 .app-footer a:active{opacity:.7}
 .app-footer .footer-credit{color:var(--md-on-surface-variant);font-size:11px}
@@ -882,7 +882,7 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
 
-    <button class="btn-filled ripple" onclick="login()" id="btnSignIn" style="margin-top:8px">Sign In →</button>
+    <button class="btn-filled ripple" onclick="login()" id="btnSignIn" style="margin-top:4px">Sign In →</button>
     <div class="divider"><span id="orText">or continue with</span></div>
     <div class="social-row">
       <button class="social-btn google ripple" onclick="socialLogin('Google')">
@@ -894,7 +894,7 @@ a{color:inherit;text-decoration:none}
         Apple
       </button>
     </div>
-    <button class="btn-text" onclick="login()" id="btnDemo" style="margin-top:16px">Use Demo Account →</button>
+    <button class="btn-text" onclick="login()" id="btnDemo" style="margin-top:12px">Use Demo Account →</button>
   </div>
 </div>
 
