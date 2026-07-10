@@ -580,6 +580,178 @@ a{color:inherit;text-decoration:none}
 .timeline-content{font-size:13px}
 .timeline-title{font-weight:600}
 .timeline-time{font-size:11px;color:var(--md-on-surface-variant);margin-top:2px}
+
+/* ═══════════════════════════════════════════════════════════
+   HISAB AI — Floating Assistant
+   ═══════════════════════════════════════════════════════════ */
+.ai-fab{
+  position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 16px);left:20px;
+  width:56px;height:56px;border-radius:var(--shape-md);
+  background:linear-gradient(135deg,#00A8E1 0%,#BB86FC 100%);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(0,168,225,.4),0 4px 12px rgba(187,134,252,.3);
+  z-index:60;transition:all var(--dur-medium) var(--ease-emphasized);
+  cursor:pointer;
+}
+.ai-fab:active{transform:scale(.9)}
+.ai-fab.hidden{transform:scale(0) rotate(180deg);opacity:0;pointer-events:none}
+.ai-fab svg{width:26px;height:26px}
+.ai-fab::before{
+  content:'';position:absolute;inset:-4px;border-radius:calc(var(--shape-md) + 4px);
+  background:linear-gradient(135deg,#00A8E1 0%,#BB86FC 100%);
+  opacity:.3;filter:blur(12px);z-index:-1;animation:aiPulse 3s ease-in-out infinite;
+}
+@keyframes aiPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.5;transform:scale(1.1)}}
+.ai-fab-label{
+  position:absolute;right:-8px;top:-8px;width:20px;height:20px;border-radius:50%;
+  background:var(--md-success);border:2px solid var(--md-surface-0);
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--md-on-success);
+}
+
+/* AI Chat Panel */
+.ai-panel{
+  position:fixed;inset:0;z-index:500;display:none;flex-direction:column;
+  background:var(--md-surface-0);animation:aiPanelIn .3s var(--ease-emphasized);
+}
+.ai-panel.active{display:flex}
+@keyframes aiPanelIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.ai-header{
+  padding:calc(16px + var(--safe-top)) 20px 16px;
+  background:linear-gradient(135deg,rgba(0,168,225,.08) 0%,rgba(187,134,252,.08) 100%);
+  border-bottom:1px solid var(--md-outline-variant);
+  display:flex;align-items:center;gap:14px;
+}
+.ai-avatar{
+  width:44px;height:44px;border-radius:var(--shape-sm);
+  background:linear-gradient(135deg,#00A8E1 0%,#BB86FC 100%);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  box-shadow:var(--elev-2);position:relative;
+}
+.ai-avatar svg{width:24px;height:24px}
+.ai-avatar::after{
+  content:'';position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;
+  border-radius:50%;background:var(--md-success);border:2px solid var(--md-surface-1);
+}
+.ai-header-info{flex:1}
+.ai-header-name{font-size:18px;font-weight:700;display:flex;align-items:center;gap:6px}
+.ai-header-name .gradient-text{font-size:13px;font-weight:600}
+.ai-header-status{font-size:12px;color:var(--md-success);display:flex;align-items:center;gap:4px}
+.ai-header-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--md-success);box-shadow:0 0 6px var(--md-success)}
+.ai-close{
+  width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:var(--md-on-surface-variant);transition:all var(--dur-fast);
+}
+.ai-close:active{background:var(--md-surface-3);transform:scale(.9)}
+.ai-close svg{width:22px;height:22px}
+
+.ai-messages{
+  flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;
+  -webkit-overflow-scrolling:touch;
+}
+
+.ai-msg{
+  max-width:85%;padding:14px 16px;border-radius:var(--shape-lg);font-size:14px;line-height:1.6;
+  animation:msgIn .3s var(--ease-decelerate);word-wrap:break-word;
+}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.ai-msg.user{
+  align-self:flex-end;background:var(--grad-primary);color:var(--md-on-primary);
+  border-bottom-right-radius:var(--shape-xs);
+}
+.ai-msg.bot{
+  align-self:flex-start;background:var(--md-surface-2);color:var(--md-on-surface);
+  border:1px solid var(--md-outline-variant);border-bottom-left-radius:var(--shape-xs);
+}
+.ai-msg.bot strong{color:var(--md-secondary);font-weight:700}
+.ai-msg.bot .ai-data-card{
+  background:var(--md-surface-3);border:1px solid var(--md-outline-variant);
+  border-radius:var(--shape-sm);padding:12px;margin:10px 0;
+}
+.ai-msg.bot .ai-data-card .ai-dc-label{font-size:11px;color:var(--md-on-surface-variant);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.ai-msg.bot .ai-data-card .ai-dc-value{font-size:18px;font-weight:800;color:var(--md-secondary)}
+.ai-msg.bot .ai-data-card .ai-dc-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;border-bottom:1px solid var(--md-outline-variant)}
+.ai-msg.bot .ai-data-card .ai-dc-row:last-child{border:none}
+.ai-msg.bot .ai-action-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 14px;margin-top:8px;
+  background:rgba(0,168,225,.1);color:var(--md-secondary);border-radius:var(--shape-sm);
+  font-size:12px;font-weight:700;transition:all var(--dur-fast);border:1px solid rgba(0,168,225,.2);
+}
+.ai-msg.bot .ai-action-btn:active{transform:scale(.95);background:rgba(0,168,225,.2)}
+
+/* Typing indicator */
+.ai-typing{
+  align-self:flex-start;background:var(--md-surface-2);border:1px solid var(--md-outline-variant);
+  border-radius:var(--shape-lg);border-bottom-left-radius:var(--shape-xs);
+  padding:16px 20px;display:flex;gap:4px;
+}
+.ai-typing span{
+  width:8px;height:8px;border-radius:50%;background:var(--md-on-surface-variant);
+  animation:typingBounce 1.4s infinite ease-in-out;
+}
+.ai-typing span:nth-child(2){animation-delay:.2s}
+.ai-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* Quick suggestions */
+.ai-suggestions{
+  padding:0 20px 12px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;
+}
+.ai-suggestions::-webkit-scrollbar{display:none}
+.ai-suggest{
+  padding:8px 14px;border-radius:var(--shape-full);background:var(--md-surface-2);
+  border:1px solid var(--md-outline-variant);color:var(--md-on-surface-variant);
+  font-size:12px;font-weight:600;white-space:nowrap;transition:all var(--dur-fast);
+  flex-shrink:0;
+}
+.ai-suggest:active{transform:scale(.95);background:rgba(0,168,225,.1);color:var(--md-secondary);border-color:var(--md-primary)}
+
+/* Input bar */
+.ai-input-bar{
+  padding:12px 20px calc(12px + var(--safe-bottom));
+  background:var(--md-surface-1);border-top:1px solid var(--md-outline-variant);
+  display:flex;gap:10px;align-items:flex-end;
+}
+.ai-input-wrap{
+  flex:1;background:var(--md-surface-3);border:1.5px solid var(--md-outline-variant);
+  border-radius:var(--shape-lg);padding:4px 4px 4px 16px;display:flex;align-items:center;gap:8px;
+  transition:border-color var(--dur-fast);
+}
+.ai-input-wrap:focus-within{border-color:var(--md-primary)}
+.ai-input{
+  flex:1;background:none;border:none;outline:none;color:var(--md-on-surface);
+  font-size:15px;padding:12px 0;resize:none;max-height:100px;line-height:1.4;
+}
+.ai-input::placeholder{color:var(--md-on-surface-variant);opacity:.6}
+.ai-send{
+  width:40px;height:40px;border-radius:50%;background:var(--grad-primary);
+  color:var(--md-on-primary);display:flex;align-items:center;justify-content:center;
+  transition:all var(--dur-fast);flex-shrink:0;
+}
+.ai-send:active{transform:scale(.85)}
+.ai-send:disabled{opacity:.3;pointer-events:none}
+.ai-send svg{width:20px;height:20px}
+
+/* AI Welcome */
+.ai-welcome{
+  text-align:center;padding:20px;color:var(--md-on-surface-variant);
+}
+.ai-welcome-icon{
+  width:64px;height:64px;margin:0 auto 16px;border-radius:var(--shape-md);
+  background:linear-gradient(135deg,rgba(0,168,225,.15) 0%,rgba(187,134,252,.15) 100%);
+  display:flex;align-items:center;justify-content:center;
+}
+.ai-welcome-icon svg{width:32px;height:32px;color:var(--md-secondary)}
+.ai-welcome h3{font-size:18px;font-weight:700;color:var(--md-on-surface);margin-bottom:6px}
+.ai-welcome p{font-size:13px;line-height:1.5}
+.ai-welcome-caps{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;text-align:left;
+}
+.ai-cap{
+  padding:10px;background:var(--md-surface-2);border:1px solid var(--md-outline-variant);
+  border-radius:var(--shape-sm);font-size:11px;color:var(--md-on-surface-variant);
+}
+.ai-cap strong{display:block;color:var(--md-secondary);font-size:12px;margin-bottom:2px}
 </style>
 </head>
 <body>
@@ -771,6 +943,62 @@ a{color:inherit;text-decoration:none}
 <div class="snackbar" id="snackbar">
   <svg id="snackbarIcon" viewBox="0 0 24 24" fill="currentColor"></svg>
   <span id="snackbarText"></span>
+</div>
+
+<!-- ═══ HISAB AI — Floating Assistant ═══ -->
+<button class="ai-fab" id="aiFab" onclick="toggleAI()" aria-label="HisabAI Assistant">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+</button>
+
+<div class="ai-panel" id="aiPanel" role="dialog" aria-label="HisabAI Assistant">
+  <div class="ai-header">
+    <div class="ai-avatar">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+    </div>
+    <div class="ai-header-info">
+      <div class="ai-header-name">Hisab<span class="gradient-text">AI</span></div>
+      <div class="ai-header-status">Online • Ready to help</div>
+    </div>
+    <button class="ai-close" onclick="toggleAI()" aria-label="Close AI">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+  </div>
+
+  <div class="ai-messages" id="aiMessages">
+    <div class="ai-welcome">
+      <div class="ai-welcome-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+      </div>
+      <h3>Hi, I'm HisabAI 👋</h3>
+      <p>Your intelligent Ethiopian business assistant. Ask me anything about your ERP — finances, inventory, employees, taxes, and more. I can also perform actions for you.</p>
+      <div class="ai-welcome-caps">
+        <div class="ai-cap"><strong>📊 Analytics</strong>Revenue, profit, KPIs</div>
+        <div class="ai-cap"><strong>💰 Finance</strong>Transactions, VAT, banks</div>
+        <div class="ai-cap"><strong>📦 Inventory</strong>Stock levels, alerts</div>
+        <div class="ai-cap"><strong>👥 HR</strong>Payroll, employees, tax</div>
+        <div class="ai-cap"><strong>🛒 Sales</strong>Customers, quotations</div>
+        <div class="ai-cap"><strong>⚡ Actions</strong>Create, delete, navigate</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-suggestions" id="aiSuggestions">
+    <button class="ai-suggest" onclick="aiQuickAsk('What is my total revenue?')">💰 Total revenue?</button>
+    <button class="ai-suggest" onclick="aiQuickAsk('Show low stock products')">📦 Low stock?</button>
+    <button class="ai-suggest" onclick="aiQuickAsk('How many employees?')">👥 Employees?</button>
+    <button class="ai-suggest" onclick="aiQuickAsk('What taxes are overdue?')">🛡️ Tax status?</button>
+    <button class="ai-suggest" onclick="aiQuickAsk('Create a transaction')">⚡ New transaction</button>
+    <button class="ai-suggest" onclick="aiQuickAsk('Show me a financial summary')">📊 Summary</button>
+  </div>
+
+  <div class="ai-input-bar">
+    <div class="ai-input-wrap">
+      <textarea class="ai-input" id="aiInput" placeholder="Ask HisabAI anything..." rows="1" oninput="aiInputChange()" onkeydown="aiKeydown(event)"></textarea>
+    </div>
+    <button class="ai-send" id="aiSend" onclick="aiSend()" disabled aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
 </div>
 
 </div>
@@ -1777,6 +2005,352 @@ const savedLang=localStorage.getItem('hisab-lang');
 if(savedLang){LANG=savedLang;document.documentElement.lang=LANG}
 document.getElementById('langBadge').textContent=LANG.toUpperCase();
 updateNavLabels();
+
+// ═══════════════════════════════════════════════════════════
+// HISAB AI — Intelligent Assistant Engine
+// ═══════════════════════════════════════════════════════════
+let aiHistory = [];
+let aiWaiting = false;
+
+function toggleAI() {
+  const panel = document.getElementById('aiPanel');
+  const fab = document.getElementById('aiFab');
+  if (panel.classList.contains('active')) {
+    panel.classList.remove('active');
+    setTimeout(() => fab.classList.remove('hidden'), 200);
+  } else {
+    panel.classList.add('active');
+    fab.classList.add('hidden');
+    setTimeout(() => document.getElementById('aiInput').focus(), 300);
+  }
+}
+
+function aiInputChange() {
+  const input = document.getElementById('aiInput');
+  const send = document.getElementById('aiSend');
+  send.disabled = !input.value.trim();
+  // Auto-resize
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+}
+
+function aiKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    if (!document.getElementById('aiSend').disabled) aiSend();
+  }
+}
+
+function aiQuickAsk(text) {
+  document.getElementById('aiInput').value = text;
+  aiInputChange();
+  aiSend();
+}
+
+function aiSend() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text || aiWaiting) return;
+
+  // Add user message
+  aiAddMsg(text, 'user');
+  aiHistory.push({ role: 'user', text });
+
+  // Clear input
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('aiSend').disabled = true;
+
+  // Show typing
+  aiWaiting = true;
+  aiShowTyping();
+
+  // Process after delay
+  setTimeout(() => {
+    aiHideTyping();
+    const response = aiProcess(text);
+    aiAddMsg(response.html, 'bot');
+    if (response.action) response.action();
+    aiHistory.push({ role: 'bot', text: response.html });
+    aiWaiting = false;
+  }, 600 + Math.random() * 600);
+}
+
+function aiAddMsg(html, type) {
+  const messages = document.getElementById('aiMessages');
+  const msg = document.createElement('div');
+  msg.className = 'ai-msg ' + type;
+  msg.innerHTML = html;
+  messages.appendChild(msg);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function aiShowTyping() {
+  const messages = document.getElementById('aiMessages');
+  const typing = document.createElement('div');
+  typing.className = 'ai-typing';
+  typing.id = 'aiTyping';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  messages.appendChild(typing);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function aiHideTyping() {
+  const typing = document.getElementById('aiTyping');
+  if (typing) typing.remove();
+}
+
+// ═══════════════════════════════════════════════════════════
+// AI ENGINE — Natural Language Intent Parser
+// ═══════════════════════════════════════════════════════════
+function aiProcess(query) {
+  const q = query.toLowerCase().trim();
+  const fmt = formatETB;
+
+  // ── GREETINGS ──
+  if (/^(hi|hello|hey|selam|ሰላም|good (morning|afternoon|evening))/.test(q)) {
+    return { html: `Hello ${DB.user.name.split(' ')[0]}! 👋 I'm <strong>HisabAI</strong>, your ERP assistant. I can help you with:<br><br>📊 <strong>Analytics</strong> — Revenue, profit, KPIs<br>💰 <strong>Finance</strong> — Transactions, VAT, banks<br>📦 <strong>Inventory</strong> — Stock levels, alerts<br>👥 <strong>HR</strong> — Payroll, employees, taxes<br>🛒 <strong>Sales</strong> — Customers, quotations<br>⚡ <strong>Actions</strong> — Create transactions, add products, navigate<br><br>What would you like to know?` };
+  }
+
+  // ── REVENUE / INCOME ──
+  if (/(total |overall )?(revenue|income|sales|earnings)/.test(q) && !/tax/.test(q)) {
+    const received = DB.transactions.filter(t => t.type === 'received').reduce((s, t) => s + t.amount, 0);
+    const revAccount = DB.accounts.find(a => a.code === '4000');
+    const annualRev = revAccount ? revAccount.balance : received;
+    return {
+      html: `<strong>📊 Revenue Summary</strong><div class="ai-data-card"><div class="ai-dc-label">Account Revenue (FY)</div><div class="ai-dc-value">${fmt(annualRev)}</div></div><div class="ai-data-card"><div class="ai-dc-label">Transaction Revenue (This Period)</div><div class="ai-dc-value">${fmt(received)}</div></div>You've received <strong>${DB.transactions.filter(t => t.type === 'received').length} payments</strong> this period. Revenue is up <strong>12.4%</strong> compared to last month. 📈`
+    };
+  }
+
+  // ── PROFIT / NET ──
+  if (/(profit|net income|bottom line|earnings)/.test(q)) {
+    const received = DB.transactions.filter(t => t.type === 'received').reduce((s, t) => s + t.amount, 0);
+    const sent = DB.transactions.filter(t => t.type === 'sent').reduce((s, t) => s + t.amount, 0);
+    const net = received - sent;
+    const revenue = DB.accounts.find(a => a.code === '4000').balance;
+    const cogs = DB.accounts.find(a => a.code === '5000').balance;
+    const opex = DB.accounts.find(a => a.code === '6000').balance;
+    const netProfit = revenue - cogs - opex;
+    return {
+      html: `<strong>💰 Profit Analysis</strong><div class="ai-data-card"><div class="ai-dc-row"><span>Revenue</span><span style="color:var(--md-success)">${fmt(revenue)}</span></div><div class="ai-dc-row"><span>Cost of Goods Sold</span><span style="color:var(--md-error)">-${fmt(cogs)}</span></div><div class="ai-dc-row"><span>Operating Expenses</span><span style="color:var(--md-error)">-${fmt(opex)}</span></div></div><div class="ai-data-card"><div class="ai-dc-label">Net Profit (FY)</div><div class="ai-dc-value">${fmt(netProfit)}</div></div>Your net profit margin is <strong>${((netProfit / revenue) * 100).toFixed(1)}%</strong>. ${netProfit > 0 ? 'Business is profitable! ✅' : 'Consider reviewing expenses ⚠️'}`
+    };
+  }
+
+  // ── EXPENSES ──
+  if (/(expense|cost|spending|expenditure|money out|paid out)/.test(q)) {
+    const sent = DB.transactions.filter(t => t.type === 'sent').reduce((s, t) => s + t.amount, 0);
+    const opex = DB.accounts.find(a => a.code === '6000').balance;
+    const cogs = DB.accounts.find(a => a.code === '5000').balance;
+    return {
+      html: `<strong>📉 Expense Breakdown</strong><div class="ai-data-card"><div class="ai-dc-row"><span>Cost of Goods Sold</span><span>${fmt(cogs)}</span></div><div class="ai-dc-row"><span>Operating Expenses</span><span>${fmt(opex)}</span></div><div class="ai-dc-row"><span>Payments Sent (This Period)</span><span>${fmt(sent)}</span></div></div>Total expenses this period: <strong>${fmt(sent)}</strong>. Largest expense is COGS at <strong>${fmt(cogs)}</strong>.`
+    };
+  }
+
+  // ── VAT / TAX ──
+  if (/(vat|tax|taxes|erca|withholding|pension)/.test(q)) {
+    const received = DB.transactions.filter(t => t.type === 'received').reduce((s, t) => s + t.amount, 0);
+    const vatCollected = Math.round(received * 0.15);
+    const sent = DB.transactions.filter(t => t.type === 'sent').reduce((s, t) => s + t.amount, 0);
+    const withholding = Math.round(sent * 0.02);
+    const overdue = DB.taxFilings.filter(t => t.status === 'overdue');
+    const pending = DB.taxFilings.filter(t => t.status === 'pending');
+    const filed = DB.taxFilings.filter(t => t.status === 'filed').length;
+    const score = Math.round((filed / DB.taxFilings.length) * 100);
+    let html = `<strong>🛡️ Tax & VAT Summary</strong><div class="ai-data-card"><div class="ai-dc-row"><span>VAT Collected (15%)</span><span style="color:var(--md-warning)">${fmt(vatCollected)}</span></div><div class="ai-dc-row"><span>Withholding Tax (2%)</span><span>${fmt(withholding)}</span></div><div class="ai-dc-row"><span>Compliance Score</span><span style="color:${score >= 70 ? 'var(--md-success)' : 'var(--md-error)'}">${score}/100</span></div></div>`;
+    if (overdue.length > 0) html += `⚠️ You have <strong>${overdue.length} overdue tax filing(s)</strong>:<br>• ${overdue.map(t => t.type + ' (' + fmt(t.amount) + ')').join('<br>• ')}<br><br>`;
+    if (pending.length > 0) html += `📅 <strong>${pending.length} pending filing(s)</strong> due soon.<br>`;
+    html += `<br>Would you like me to <button class="ai-action-btn" onclick="switchTab('more',document.getElementById('nav-more'));moreTab='compliance';renderMore();toggleAI()">Open Compliance Module →</button>`;
+    return { html };
+  }
+
+  // ── OVERDUE TAXES ──
+  if (/overdue/.test(q)) {
+    const overdue = DB.taxFilings.filter(t => t.status === 'overdue');
+    if (overdue.length === 0) return { html: '✅ You have <strong>no overdue taxes</strong>. All filings are up to date!' };
+    let html = `⚠️ You have <strong>${overdue.length} overdue tax filing(s)</strong>:<div class="ai-data-card">`;
+    overdue.forEach(t => { html += `<div class="ai-dc-row"><span>${t.type}</span><span style="color:var(--md-error)">${fmt(t.amount)}</span></div>`; });
+    html += `</div>Total overdue: <strong>${fmt(overdue.reduce((s, t) => s + t.amount, 0))}</strong><br><br>Please file these with ERCA as soon as possible.`;
+    return { html };
+  }
+
+  // ── BANK / BALANCE ──
+  if (/(bank|balance|account balance|how much money|cash)/.test(q)) {
+    const totalBal = DB.banks.reduce((s, b) => s + b.balance, 0);
+    let html = `<strong>🏦 Bank Account Summary</strong><div class="ai-data-card"><div class="ai-dc-label">Total Balance</div><div class="ai-dc-value">${fmt(totalBal)}</div></div>`;
+    html += `<div class="ai-data-card">`;
+    DB.banks.forEach(b => { html += `<div class="ai-dc-row"><span>${b.name}</span><span>${fmt(b.balance, true)}</span></div>`; });
+    html += `</div>`;
+    return { html };
+  }
+
+  // ── TRANSACTIONS ──
+  if (/(recent |latest |last )?(transaction|payment|transfer)/.test(q)) {
+    const recent = DB.transactions.slice(0, 5);
+    let html = `<strong>💸 Recent Transactions (${DB.transactions.length} total)</strong><div class="ai-data-card">`;
+    recent.forEach(t => { html += `<div class="ai-dc-row"><span>${t.txnId} • ${t.party}</span><span style="color:${t.type === 'received' ? 'var(--md-success)' : 'var(--md-error)'}">${t.type === 'received' ? '+' : '-'}${fmt(t.amount, true)}</span></div>`; });
+    html += `</div>`;
+    return { html };
+  }
+
+  // ── CREATE TRANSACTION ──
+  if (/(create|add|new|make|record).*(transaction|payment|txn)/.test(q) || /new transaction/.test(q)) {
+    return {
+      html: `⚡ I can help you create a transaction! <strong>Opening the transaction form...</strong><br><br>You can specify:<br>• Type (received/sent)<br>• Party name<br>• Amount in ETB<br>• Payment method (Dashen, CBE, Awash, Telebirr, Amole)<br><br><button class="ai-action-btn" onclick="aiOpenTxnForm()">📝 Open Form →</button>`,
+      action: () => { setTimeout(() => { if (ACTIVE_TAB !== 'finance') switchTab('finance', document.getElementById('nav-finance')); setTimeout(openTxnForm, 300); }, 500); }
+    };
+  }
+
+  // ── INVENTORY / STOCK ──
+  if (/(inventory|stock|product|warehouse|supply)/.test(q)) {
+    if (/(low|out of stock|alert|warning|critical)/.test(q)) {
+      const lowStock = DB.products.filter(p => p.status === 'lowStock');
+      const outOfStock = DB.products.filter(p => p.status === 'outOfStock');
+      let html = `<strong>📦 Stock Alert Summary</strong><div class="ai-data-card"><div class="ai-dc-row"><span>Low Stock Items</span><span style="color:var(--md-warning)">${lowStock.length}</span></div><div class="ai-dc-row"><span>Out of Stock</span><span style="color:var(--md-error)">${outOfStock.length}</span></div></div>`;
+      if (lowStock.length > 0) {
+        html += `<strong>⚠️ Low Stock:</strong><br>`;
+        lowStock.forEach(p => { html += `• ${p.name} (${p.sku}) — ${p.qty}/${p.reorder} units<br>`; });
+      }
+      if (outOfStock.length > 0) {
+        html += `<br><strong>🚫 Out of Stock:</strong><br>`;
+        outOfStock.forEach(p => { html += `• ${p.name} (${p.sku})<br>`; });
+      }
+      if (lowStock.length === 0 && outOfStock.length === 0) html += '✅ All products are well stocked!';
+      html += `<br><button class="ai-action-btn" onclick="switchTab('inventory',document.getElementById('nav-inventory'));toggleAI()">📦 View Inventory →</button>`;
+      return { html };
+    }
+    const totalVal = DB.products.reduce((s, p) => s + p.qty * p.price, 0);
+    const lowCount = DB.products.filter(p => p.status !== 'inStock').length;
+    let html = `<strong>📦 Inventory Summary</strong><div class="ai-data-card"><div class="ai-dc-row"><span>Total Products</span><span>${DB.products.length}</span></div><div class="ai-dc-row"><span>Stock Value</span><span style="color:var(--md-success)">${fmt(totalVal)}</span></div><div class="ai-dc-row"><span>Needs Attention</span><span style="color:${lowCount > 0 ? 'var(--md-warning)' : 'var(--md-success)'}">${lowCount}</span></div></div>`;
+    html += `<br>Warehouses: <strong>4</strong> (Addis Ababa, Dire Dawa, Bahir Dar, Hawassa)<br>Suppliers: <strong>${DB.suppliers.length}</strong><br><br><button class="ai-action-btn" onclick="switchTab('inventory',document.getElementById('nav-inventory'));toggleAI()">📦 View Inventory →</button>`;
+    return { html };
+  }
+
+  // ── ADD PRODUCT ──
+  if (/(create|add|new|make).*(product|item)/.test(q)) {
+    return {
+      html: `⚡ I'll open the <strong>Add Product</strong> form for you! You can enter SKU, name, category, warehouse, quantity, and pricing.<br><br><button class="ai-action-btn" onclick="aiOpenProductForm()">📦 Open Form →</button>`,
+      action: () => { setTimeout(() => { if (ACTIVE_TAB !== 'inventory') switchTab('inventory', document.getElementById('nav-inventory')); setTimeout(openProductForm, 300); }, 500); }
+    };
+  }
+
+  // ── EMPLOYEES / HR ──
+  if (/(employee|staff|worker|payroll|salary|hr|human resource)/.test(q)) {
+    const totalPayroll = DB.employees.reduce((s, e) => s + e.salary, 0);
+    const active = DB.employees.filter(e => e.status === 'active').length;
+    const onLeave = DB.employees.filter(e => e.status === 'leave').length;
+    function calcNet(gross) { const pension = gross * 0.07; const taxable = gross - pension; let tax = 0; if (taxable > 7800) tax = 1385 + (taxable - 7800) * 0.30; else if (taxable > 5250) tax = 747.5 + (taxable - 5250) * 0.25; else if (taxable > 3200) tax = 337.5 + (taxable - 3200) * 0.20; else if (taxable > 1650) tax = 105 + (taxable - 1650) * 0.15; else if (taxable > 600) tax = (taxable - 600) * 0.10; return Math.round(gross - pension - tax); }
+    const totalNet = DB.employees.reduce((s, e) => s + calcNet(e.salary), 0);
+    let html = `<strong>👥 HR Summary</strong><div class="ai-data-card"><div class="ai-dc-row"><span>Total Employees</span><span>${DB.employees.length}</span></div><div class="ai-dc-row"><span>Active</span><span style="color:var(--md-success)">${active}</span></div><div class="ai-dc-row"><span>On Leave</span><span style="color:var(--md-warning)">${onLeave}</span></div><div class="ai-dc-row"><span>Gross Payroll</span><span>${fmt(totalPayroll)}</span></div><div class="ai-dc-row"><span>Net Payroll (after tax)</span><span style="color:var(--md-secondary)">${fmt(totalNet)}</span></div></div>`;
+    html += `<br>Departments: Finance, Operations, Sales, HR, IT, Admin<br>ERCA pension: Employee 7% + Employer 11%<br><br><button class="ai-action-btn" onclick="switchTab('more',document.getElementById('nav-more'));moreTab='hr';renderMore();toggleAI()">👥 View HR Module →</button>`;
+    return { html };
+  }
+
+  // ── CUSTOMERS / SALES ──
+  if (/(customer|client|crm|sales pipeline|deal)/.test(q)) {
+    const totalLTV = DB.customers.reduce((s, c) => s + c.ltv, 0);
+    const vipCount = DB.customers.filter(c => c.status === 'vip').length;
+    const wonDeals = DB.pipeline.filter(d => d.stage === 'won');
+    const wonValue = wonDeals.reduce((s, d) => s + d.value, 0);
+    let html = `<strong>🛒 Sales & CRM Summary</strong><div class="ai-data-card"><div class="ai-dc-row"><span>Total Customers</span><span>${DB.customers.length}</span></div><div class="ai-dc-row"><span>VIP Customers</span><span style="color:var(--md-tertiary)">${vipCount}</span></div><div class="ai-dc-row"><span>Customer LTV</span><span style="color:var(--md-secondary)">${fmt(totalLTV)}</span></div><div class="ai-dc-row"><span>Won Deals</span><span>${wonDeals.length}</span></div><div class="ai-dc-row"><span>Won Value</span><span style="color:var(--md-success)">${fmt(wonValue)}</span></div></div>`;
+    html += `<br>Quotations: <strong>${DB.quotations.length}</strong><br>Pipeline stages: Lead → Qualified → Proposal → Negotiation → Won<br><br><button class="ai-action-btn" onclick="switchTab('sales',document.getElementById('nav-sales'));toggleAI()">🛒 View Sales →</button>`;
+    return { html };
+  }
+
+  // ── FINANCIAL SUMMARY / DASHBOARD ──
+  if (/(summary|overview|dashboard|financial status|business status|how.*doing|report)/.test(q)) {
+    const received = DB.transactions.filter(t => t.type === 'received').reduce((s, t) => s + t.amount, 0);
+    const sent = DB.transactions.filter(t => t.type === 'sent').reduce((s, t) => s + t.amount, 0);
+    const net = received - sent;
+    const totalBank = DB.banks.reduce((s, b) => s + b.balance, 0);
+    const stockVal = DB.products.reduce((s, p) => s + p.qty * p.price, 0);
+    const vat = Math.round(received * 0.15);
+    let html = `<strong>📊 Business Summary</strong><div class="ai-data-card"><div class="ai-dc-label">Cash Position</div><div class="ai-dc-value">${fmt(totalBank)}</div></div><div class="ai-data-card"><div class="ai-dc-row"><span>Revenue (Period)</span><span style="color:var(--md-success)">${fmt(received)}</span></div><div class="ai-dc-row"><span>Expenses (Period)</span><span style="color:var(--md-error)">${fmt(sent)}</span></div><div class="ai-dc-row"><span>Net Cash Flow</span><span style="color:${net >= 0 ? 'var(--md-success)' : 'var(--md-error)'}">${fmt(net)}</span></div><div class="ai-dc-row"><span>VAT Collected</span><span>${fmt(vat)}</span></div><div class="ai-dc-row"><span>Inventory Value</span><span>${fmt(stockVal)}</span></div><div class="ai-dc-row"><span>Employees</span><span>${DB.employees.length}</span></div></div>`;
+    html += `<br>📈 Revenue is up <strong>12.4%</strong> month-over-month.<br>🛡️ Compliance score: <strong>87/100</strong> (Excellent)<br>📦 ${DB.products.filter(p => p.status !== 'inStock').length} products need restocking.<br><br><button class="ai-action-btn" onclick="switchTab('dashboard',document.getElementById('nav-dashboard'));toggleAI()">📊 View Dashboard →</button>`;
+    return { html };
+  }
+
+  // ── NAVIGATION ──
+  if (/(go to|open|navigate|show|view).*(dashboard|home)/.test(q)) return { html: 'Navigating to <strong>Dashboard</strong>... 📊', action: () => { switchTab('dashboard', document.getElementById('nav-dashboard')); setTimeout(toggleAI, 500); } };
+  if (/(go to|open|navigate|show|view).*finance/.test(q)) return { html: 'Opening <strong>Finance</strong> module... 💰', action: () => { switchTab('finance', document.getElementById('nav-finance')); setTimeout(toggleAI, 500); } };
+  if (/(go to|open|navigate|show|view).*(inventory|stock|warehouse)/.test(q)) return { html: 'Opening <strong>Inventory</strong> module... 📦', action: () => { switchTab('inventory', document.getElementById('nav-inventory')); setTimeout(toggleAI, 500); } };
+  if (/(go to|open|navigate|show|view).*(sales|pos|crm)/.test(q)) return { html: 'Opening <strong>Sales</strong> module... 🛒', action: () => { switchTab('sales', document.getElementById('nav-sales')); setTimeout(toggleAI, 500); } };
+  if (/(go to|open|navigate|show|view).*(hr|employee|payroll)/.test(q)) return { html: 'Opening <strong>HR</strong> module... 👥', action: () => { switchTab('more', document.getElementById('nav-more')); moreTab = 'hr'; renderMore(); setTimeout(toggleAI, 500); } };
+  if (/(go to|open|navigate|show|view).*(compliance|tax|audit)/.test(q)) return { html: 'Opening <strong>Compliance</strong> module... 🛡️', action: () => { switchTab('more', document.getElementById('nav-more')); moreTab = 'compliance'; renderMore(); setTimeout(toggleAI, 500); } };
+  if (/(go to|open|navigate|show|view).*(report|p&l|profit and loss|balance sheet)/.test(q)) return { html: 'Opening <strong>Reports</strong>... 📊', action: () => { switchTab('more', document.getElementById('nav-more')); moreTab = 'reports'; renderMore(); setTimeout(toggleAI, 500); } };
+  if (/(go to|open|navigate|show|view).*(setting|profile|config)/.test(q)) return { html: 'Opening <strong>Settings</strong>... ⚙️', action: () => { switchTab('more', document.getElementById('nav-more')); moreTab = 'settings'; renderMore(); setTimeout(toggleAI, 500); } };
+
+  // ── SCAN BARCODE ──
+  if (/(scan|barcode|qr code)/.test(q)) {
+    return { html: '📷 Opening barcode scanner...', action: () => { openScanner(); setTimeout(toggleAI, 500); } };
+  }
+
+  // ── CHECK IN ──
+  if (/(check in|check-in|attendance|clock in)/.test(q)) {
+    return { html: `✅ You're checked in at <strong>${new Date().toLocaleTimeString()}</strong>!`, action: () => { auditLog('AI check-in', 'HR', DB.user.name); saveDB(); } };
+  }
+
+  // ── RUN PAYROLL ──
+  if (/(run|process|execute).*payroll/.test(q)) {
+    return { html: `💼 <strong>Payroll Ready</strong><br><br>Total gross: ${fmt(DB.employees.reduce((s, e) => s + e.salary, 0))}<br>Employees: ${DB.employees.length}<br>Period: July 2026<br><br>Head to HR → Payroll tab to process. <button class="ai-action-btn" onclick="switchTab('more',document.getElementById('nav-more'));moreTab='hr';renderMore();toggleAI()">👥 Go to HR →</button>` };
+  }
+
+  // ── HELP ──
+  if (/(help|what can you do|capabilities|commands|features)/.test(q)) {
+    return {
+      html: `<strong>🤖 HisabAI Capabilities</strong><br><br>I can answer questions and perform actions across your ERP:<br><br>📊 <strong>Analytics</strong><br>• "What is my total revenue?"<br>• "Show me my profit"<br>• "Give me a business summary"<br><br>💰 <strong>Finance</strong><br>• "What's my bank balance?"<br>• "Show recent transactions"<br>• "Create a transaction"<br>• "What's my VAT?"<br><br>📦 <strong>Inventory</strong><br>• "Show low stock products"<br>• "What's my inventory value?"<br>• "Add a product"<br><br>👥 <strong>HR</strong><br>• "How many employees?"<br>• "What's the payroll?"<br>• "Check me in"<br><br>🛡️ <strong>Compliance</strong><br>• "What taxes are overdue?"<br>• "Tax status"<br><br>⚡ <strong>Quick Actions</strong><br>• "Scan barcode"<br>• "Go to dashboard"<br>• "Open finance"<br><br>Just ask me in natural language! 🗣️`
+    };
+  }
+
+  // ── LANGUAGE ──
+  if (/(amharic|አማርኛ|switch language|change language|translate)/.test(q)) {
+    return { html: `🌐 Language is currently <strong>${LANG === 'en' ? 'English' : 'አማርኛ (Amharic)'}</strong>. Tap the language badge (EN/አማ) in the top bar to switch. <button class="ai-action-btn" onclick="toggleLang()">Switch now →</button>` };
+  }
+
+  // ── ORGANIZATION INFO ──
+  if (/(company|organization|business|tin|vat number|address)/.test(q)) {
+    return {
+      html: `<strong>🏢 Organization Details</strong><div class="ai-data-card"><div class="ai-dc-row"><span>Name</span><span>${DB.org.name}</span></div><div class="ai-dc-row"><span>TIN</span><span class="font-mono">${DB.org.tin}</span></div><div class="ai-dc-row"><span>VAT Number</span><span class="font-mono">${DB.org.vat}</span></div><div class="ai-dc-row"><span>Phone</span><span>${DB.org.phone}</span></div><div class="ai-dc-row"><span>Email</span><span>${DB.org.email}</span></div></div>${DB.org.address}`
+    };
+  }
+
+  // ── SUPPLIERS ──
+  if (/supplier/.test(q)) {
+    let html = `<strong>🚚 Suppliers (${DB.suppliers.length})</strong><div class="ai-data-card">`;
+    DB.suppliers.forEach(s => { html += `<div class="ai-dc-row"><span>${s.name}</span><span>★ ${s.rating}</span></div>`; });
+    html += `</div>`;
+    return { html };
+  }
+
+  // ── QUOTATIONS ──
+  if (/quotation|quote|invoice/.test(q)) {
+    let html = `<strong>📄 Quotations (${DB.quotations.length})</strong><div class="ai-data-card">`;
+    DB.quotations.forEach(q => {
+      const cust = DB.customers.find(c => c.id === q.customerId);
+      html += `<div class="ai-dc-row"><span>${q.quoteNo} • ${cust ? cust.name : '—'}</span><span>${formatETB(q.total, true)}</span></div>`;
+    });
+    html += `</div>`;
+    return { html };
+  }
+
+  // ── THANKS ──
+  if (/(thank|thanks|thx|appreciate|አመሰግናለሁ)/.test(q)) {
+    return { html: `You're welcome, ${DB.user.name.split(' ')[0]}! 😊 Is there anything else I can help you with?` };
+  }
+
+  // ── DEFAULT / FALLBACK ──
+  return {
+    html: `I understand you're asking about: <strong>"${query}"</strong><br><br>I can help with:<br>📊 Revenue, profit, expenses<br>💰 Bank balances, transactions, VAT<br>📦 Inventory, stock alerts, products<br>👥 Employees, payroll, attendance<br>🛒 Customers, quotations, pipeline<br>🛡️ Tax compliance, audit trail<br>⚡ Creating transactions, adding products, scanning barcodes<br>🧭 Navigating to any module<br><br>Try asking: <em>"What's my total revenue?"</em> or <em>"Show low stock"</em><br><br>Or type <strong>"help"</strong> for full capabilities.`
+  };
+}
+
+function aiOpenTxnForm() {
+  toggleAI();
+  setTimeout(() => { if (ACTIVE_TAB !== 'finance') switchTab('finance', document.getElementById('nav-finance')); setTimeout(openTxnForm, 300); }, 300);
+}
+function aiOpenProductForm() {
+  toggleAI();
+  setTimeout(() => { if (ACTIVE_TAB !== 'inventory') switchTab('inventory', document.getElementById('nav-inventory')); setTimeout(openProductForm, 300); }, 300);
+}
 </script>
 </body>
 </html>
