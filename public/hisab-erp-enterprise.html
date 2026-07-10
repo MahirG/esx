@@ -582,30 +582,83 @@ a{color:inherit;text-decoration:none}
 .timeline-time{font-size:11px;color:var(--md-on-surface-variant);margin-top:2px}
 
 /* ═══════════════════════════════════════════════════════════
-   HISAB AI — Floating Assistant
+   HISAB AI — Floating Robot Assistant
    ═══════════════════════════════════════════════════════════ */
 .ai-fab{
-  position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 16px);left:20px;
-  width:56px;height:56px;border-radius:var(--shape-md);
+  position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 80px);right:20px;
+  width:60px;height:60px;border-radius:50%;
   background:linear-gradient(135deg,#00A8E1 0%,#BB86FC 100%);
   color:#fff;display:flex;align-items:center;justify-content:center;
   box-shadow:0 4px 20px rgba(0,168,225,.4),0 4px 12px rgba(187,134,252,.3);
-  z-index:60;transition:all var(--dur-medium) var(--ease-emphasized);
+  z-index:60;transition:transform var(--dur-medium) var(--ease-emphasized),opacity var(--dur-medium);
   cursor:pointer;
+  animation:aiBreathe 4s ease-in-out infinite;
 }
-.ai-fab:active{transform:scale(.9)}
-.ai-fab.hidden{transform:scale(0) rotate(180deg);opacity:0;pointer-events:none}
-.ai-fab svg{width:26px;height:26px}
+@keyframes aiBreathe{
+  0%,100%{transform:translateY(0) scale(1);box-shadow:0 4px 20px rgba(0,168,225,.4),0 4px 12px rgba(187,134,252,.3)}
+  50%{transform:translateY(-6px) scale(1.03);box-shadow:0 12px 32px rgba(0,168,225,.5),0 8px 20px rgba(187,134,252,.4)}
+}
+.ai-fab:active{animation:none;transform:scale(.88)}
+.ai-fab.hidden{transform:scale(0) rotate(180deg);opacity:0;pointer-events:none;animation:none}
+.ai-fab svg{width:32px;height:32px;transition:transform .3s var(--ease-standard)}
+.ai-fab:active svg{transform:scale(.9)}
+
+/* Glowing aura around the bot */
 .ai-fab::before{
-  content:'';position:absolute;inset:-4px;border-radius:calc(var(--shape-md) + 4px);
+  content:'';position:absolute;inset:-6px;border-radius:50%;
   background:linear-gradient(135deg,#00A8E1 0%,#BB86FC 100%);
-  opacity:.3;filter:blur(12px);z-index:-1;animation:aiPulse 3s ease-in-out infinite;
+  opacity:.25;filter:blur(14px);z-index:-1;
+  animation:aiAura 4s ease-in-out infinite;
 }
-@keyframes aiPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.5;transform:scale(1.1)}}
-.ai-fab-label{
-  position:absolute;right:-8px;top:-8px;width:20px;height:20px;border-radius:50%;
-  background:var(--md-success);border:2px solid var(--md-surface-0);
-  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--md-on-success);
+@keyframes aiAura{
+  0%,100%{opacity:.2;transform:scale(1)}
+  50%{opacity:.4;transform:scale(1.15)}
+}
+
+/* Ripple ring */
+.ai-fab::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  border:2px solid rgba(0,168,225,.4);
+  animation:aiRipple 3s ease-out infinite;
+}
+@keyframes aiRipple{
+  0%{transform:scale(1);opacity:.6}
+  100%{transform:scale(1.6);opacity:0}
+}
+
+/* Bot eyes blink */
+.ai-bot-eye{
+  animation:aiBlink 4s ease-in-out infinite;
+}
+.ai-bot-eye:nth-child(2){animation-delay:.1s}
+@keyframes aiBlink{
+  0%,90%,100%{transform:scaleY(1)}
+  93%,97%{transform:scaleY(.1)}
+}
+
+/* Bot antenna glow */
+.ai-bot-antenna{
+  animation:antennaGlow 2s ease-in-out infinite;
+  transform-origin:center bottom;
+}
+@keyframes antennaGlow{
+  0%,100%{opacity:.6;filter:drop-shadow(0 0 2px #2BD5F5)}
+  50%{opacity:1;filter:drop-shadow(0 0 6px #2BD5F5)}
+}
+
+/* Status dot on bot */
+.ai-fab-status{
+  position:absolute;bottom:2px;right:2px;width:14px;height:14px;border-radius:50%;
+  background:var(--md-success);border:2.5px solid var(--md-surface-0);
+  z-index:2;
+}
+.ai-fab-status::after{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  background:var(--md-success);opacity:.4;animation:statusPulse 2s ease-out infinite;
+}
+@keyframes statusPulse{
+  0%{transform:scale(1);opacity:.4}
+  100%{transform:scale(2);opacity:0}
 }
 
 /* AI Chat Panel */
@@ -945,15 +998,62 @@ a{color:inherit;text-decoration:none}
   <span id="snackbarText"></span>
 </div>
 
-<!-- ═══ HISAB AI — Floating Assistant ═══ -->
+<!-- ═══ HISAB AI — Floating Robot Assistant ═══ -->
 <button class="ai-fab" id="aiFab" onclick="toggleAI()" aria-label="HisabAI Assistant">
-  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Antenna -->
+    <line class="ai-bot-antenna" x1="24" y1="4" x2="24" y2="9" stroke="#2BD5F5" stroke-width="2" stroke-linecap="round"/>
+    <circle class="ai-bot-antenna" cx="24" cy="3.5" r="2.5" fill="#2BD5F5"/>
+    <!-- Robot head -->
+    <rect x="10" y="10" width="28" height="24" rx="7" fill="#FFFFFF" opacity="0.15"/>
+    <rect x="10" y="10" width="28" height="24" rx="7" fill="url(#botGrad)" stroke="#FFFFFF" stroke-width="0.5" opacity="0.95"/>
+    <defs>
+      <linearGradient id="botGrad" x1="10" y1="10" x2="38" y2="34" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#00A8E1"/>
+        <stop offset="1" stop-color="#0080B0"/>
+      </linearGradient>
+    </defs>
+    <!-- Eyes (blinking) -->
+    <circle class="ai-bot-eye" cx="18" cy="20" r="3.5" fill="#0F171E"/>
+    <circle class="ai-bot-eye" cx="18" cy="20" r="1.5" fill="#2BD5F5"/>
+    <circle class="ai-bot-eye" cx="30" cy="20" r="3.5" fill="#0F171E"/>
+    <circle class="ai-bot-eye" cx="30" cy="20" r="1.5" fill="#2BD5F5"/>
+    <!-- Smile/mouth -->
+    <path d="M18 27 Q24 31 30 27" stroke="#0F171E" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <!-- Side ears -->
+    <rect x="7" y="18" width="3" height="8" rx="1.5" fill="#0080B0"/>
+    <rect x="38" y="18" width="3" height="8" rx="1.5" fill="#0080B0"/>
+    <!-- Body bottom -->
+    <rect x="14" y="34" width="20" height="6" rx="3" fill="#0080B0"/>
+    <rect x="18" y="36" width="2" height="3" rx="1" fill="#2BD5F5" opacity="0.6"/>
+    <rect x="23" y="36" width="2" height="3" rx="1" fill="#2BD5F5" opacity="0.6"/>
+    <rect x="28" y="36" width="2" height="3" rx="1" fill="#2BD5F5" opacity="0.6"/>
+  </svg>
+  <div class="ai-fab-status"></div>
 </button>
 
 <div class="ai-panel" id="aiPanel" role="dialog" aria-label="HisabAI Assistant">
   <div class="ai-header">
     <div class="ai-avatar">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line class="ai-bot-antenna" x1="24" y1="4" x2="24" y2="9" stroke="#2BD5F5" stroke-width="2" stroke-linecap="round"/>
+        <circle class="ai-bot-antenna" cx="24" cy="3.5" r="2.5" fill="#2BD5F5"/>
+        <rect x="10" y="10" width="28" height="24" rx="7" fill="url(#botGrad2)" stroke="#FFFFFF" stroke-width="0.5" opacity="0.95"/>
+        <defs>
+          <linearGradient id="botGrad2" x1="10" y1="10" x2="38" y2="34" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00A8E1"/>
+            <stop offset="1" stop-color="#0080B0"/>
+          </linearGradient>
+        </defs>
+        <circle class="ai-bot-eye" cx="18" cy="20" r="3.5" fill="#0F171E"/>
+        <circle class="ai-bot-eye" cx="18" cy="20" r="1.5" fill="#2BD5F5"/>
+        <circle class="ai-bot-eye" cx="30" cy="20" r="3.5" fill="#0F171E"/>
+        <circle class="ai-bot-eye" cx="30" cy="20" r="1.5" fill="#2BD5F5"/>
+        <path d="M18 27 Q24 31 30 27" stroke="#0F171E" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <rect x="7" y="18" width="3" height="8" rx="1.5" fill="#0080B0"/>
+        <rect x="38" y="18" width="3" height="8" rx="1.5" fill="#0080B0"/>
+        <rect x="14" y="34" width="20" height="6" rx="3" fill="#0080B0"/>
+      </svg>
     </div>
     <div class="ai-header-info">
       <div class="ai-header-name">Hisab<span class="gradient-text">AI</span></div>
@@ -965,35 +1065,45 @@ a{color:inherit;text-decoration:none}
   </div>
 
   <div class="ai-messages" id="aiMessages">
-    <div class="ai-welcome">
+    <div class="ai-welcome" id="aiWelcome">
       <div class="ai-welcome-icon">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:36px;height:36px;color:var(--md-secondary)">
+          <line class="ai-bot-antenna" x1="24" y1="4" x2="24" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle class="ai-bot-antenna" cx="24" cy="3.5" r="2.5" fill="currentColor"/>
+          <rect x="10" y="10" width="28" height="24" rx="7" fill="currentColor" opacity="0.2"/>
+          <rect x="10" y="10" width="28" height="24" rx="7" fill="currentColor" opacity="0.15" stroke="currentColor" stroke-width="1"/>
+          <circle class="ai-bot-eye" cx="18" cy="20" r="3" fill="currentColor"/>
+          <circle class="ai-bot-eye" cx="30" cy="20" r="3" fill="currentColor"/>
+          <path d="M18 27 Q24 31 30 27" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <rect x="7" y="18" width="3" height="8" rx="1.5" fill="currentColor" opacity="0.5"/>
+          <rect x="38" y="18" width="3" height="8" rx="1.5" fill="currentColor" opacity="0.5"/>
+        </svg>
       </div>
-      <h3>Hi, I'm HisabAI 👋</h3>
-      <p>Your intelligent Ethiopian business assistant. Ask me anything about your ERP — finances, inventory, employees, taxes, and more. I can also perform actions for you.</p>
-      <div class="ai-welcome-caps">
-        <div class="ai-cap"><strong>📊 Analytics</strong>Revenue, profit, KPIs</div>
-        <div class="ai-cap"><strong>💰 Finance</strong>Transactions, VAT, banks</div>
-        <div class="ai-cap"><strong>📦 Inventory</strong>Stock levels, alerts</div>
-        <div class="ai-cap"><strong>👥 HR</strong>Payroll, employees, tax</div>
-        <div class="ai-cap"><strong>🛒 Sales</strong>Customers, quotations</div>
-        <div class="ai-cap"><strong>⚡ Actions</strong>Create, delete, navigate</div>
+      <h3 id="aiWelcomeTitle">Hi, I'm HisabAI 👋</h3>
+      <p id="aiWelcomeText">Your intelligent Ethiopian business assistant. Ask me anything about your ERP — finances, inventory, employees, taxes, and more. I can also perform actions for you.</p>
+      <div class="ai-welcome-caps" id="aiWelcomeCaps">
+        <div class="ai-cap"><strong>📊 <span data-en="Analytics" data-am="ትንተና">Analytics</span></strong><span data-en="Revenue, profit, KPIs" data-am="ገቢ፣ ትርፍ፣ KPI">Revenue, profit, KPIs</span></div>
+        <div class="ai-cap"><strong>💰 <span data-en="Finance" data-am="ፋይናንስ">Finance</span></strong><span data-en="Transactions, VAT, banks" data-am="ግብይቶች፣ ቫት፣ ባንኮች">Transactions, VAT, banks</span></div>
+        <div class="ai-cap"><strong>📦 <span data-en="Inventory" data-am="እቃ መጋዘን">Inventory</span></strong><span data-en="Stock levels, alerts" data-am="ክምችት መጠን፣ ማስጠንቀቂያ">Stock levels, alerts</span></div>
+        <div class="ai-cap"><strong>👥 <span data-en="HR" data-am="ሰው ሀይል">HR</span></strong><span data-en="Payroll, employees, tax" data-am="ደመወዝ፣ ሰራተኞች፣ ግብር">Payroll, employees, tax</span></div>
+        <div class="ai-cap"><strong>🛒 <span data-en="Sales" data-am="ሽያጭ">Sales</span></strong><span data-en="Customers, quotations" data-am="ደንበኞች፣ ጥቅሶች">Customers, quotations</span></div>
+        <div class="ai-cap"><strong>⚡ <span data-en="Actions" data-am="ተግባሮች">Actions</span></strong><span data-en="Create, delete, navigate" data-am="ፍጠር፣ ሰርዝ፣ ዘጋይ">Create, delete, navigate</span></div>
       </div>
     </div>
   </div>
 
   <div class="ai-suggestions" id="aiSuggestions">
-    <button class="ai-suggest" onclick="aiQuickAsk('What is my total revenue?')">💰 Total revenue?</button>
-    <button class="ai-suggest" onclick="aiQuickAsk('Show low stock products')">📦 Low stock?</button>
-    <button class="ai-suggest" onclick="aiQuickAsk('How many employees?')">👥 Employees?</button>
-    <button class="ai-suggest" onclick="aiQuickAsk('What taxes are overdue?')">🛡️ Tax status?</button>
-    <button class="ai-suggest" onclick="aiQuickAsk('Create a transaction')">⚡ New transaction</button>
-    <button class="ai-suggest" onclick="aiQuickAsk('Show me a financial summary')">📊 Summary</button>
+    <button class="ai-suggest" onclick="aiQuickAsk(this.dataset.q)" data-q="What is my total revenue?" data-q-am="ጠቅላላ ገባዬ ስንት ነው?">💰 <span data-en="Total revenue?" data-am="ጠቅላላ ገቢ?">Total revenue?</span></button>
+    <button class="ai-suggest" onclick="aiQuickAsk(this.dataset.q)" data-q="Show low stock products" data-q-am="ዝቅተኛ ክምችት ያላቸው ምርቶች">📦 <span data-en="Low stock?" data-am="ዝቅተኛ ክምችት?">Low stock?</span></button>
+    <button class="ai-suggest" onclick="aiQuickAsk(this.dataset.q)" data-q="How many employees?" data-q-am="ስንት ሰራተኞች አሉኝ?">👥 <span data-en="Employees?" data-am="ሰራተኞች?">Employees?</span></button>
+    <button class="ai-suggest" onclick="aiQuickAsk(this.dataset.q)" data-q="What taxes are overdue?" data-q-am="የትኞቹ ግብሮች ወርደዋል?">🛡️ <span data-en="Tax status?" data-am="የግብር ሁኔታ?">Tax status?</span></button>
+    <button class="ai-suggest" onclick="aiQuickAsk(this.dataset.q)" data-q="Create a transaction" data-q-am="አዲስ ግብይት ፍጠር">⚡ <span data-en="New transaction" data-am="አዲስ ግብይት">New transaction</span></button>
+    <button class="ai-suggest" onclick="aiQuickAsk(this.dataset.q)" data-q="Show me a financial summary" data-q-am="የፋይናንስ ማጠቃለያ አሳዬ">📊 <span data-en="Summary" data-am="ማጠቃለያ">Summary</span></button>
   </div>
 
   <div class="ai-input-bar">
     <div class="ai-input-wrap">
-      <textarea class="ai-input" id="aiInput" placeholder="Ask HisabAI anything..." rows="1" oninput="aiInputChange()" onkeydown="aiKeydown(event)"></textarea>
+      <textarea class="ai-input" id="aiInput" placeholder="Ask HisabAI anything..." rows="1" oninput="aiInputChange()" onkeydown="aiKeydown(event)" lang="en"></textarea>
     </div>
     <button class="ai-send" id="aiSend" onclick="aiSend()" disabled aria-label="Send">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
@@ -1159,7 +1269,29 @@ function logout(){localStorage.removeItem('hisab-erp-auth');location.reload()}
 // ═══════════════════════════════════════════════════════════
 // LANGUAGE
 // ═══════════════════════════════════════════════════════════
-function toggleLang(){LANG=LANG==='en'?'am':'en';localStorage.setItem('hisab-lang',LANG);document.getElementById('langBadge').textContent=LANG.toUpperCase();document.documentElement.lang=LANG;updateNavLabels();renderScreen(ACTIVE_TAB)}
+function toggleLang(){LANG=LANG==='en'?'am':'en';localStorage.setItem('hisab-lang',LANG);document.getElementById('langBadge').textContent=LANG.toUpperCase();document.documentElement.lang=LANG;updateNavLabels();updateAILang();renderScreen(ACTIVE_TAB)}
+
+function updateAILang(){
+  const isAm = LANG === 'am';
+  // Update welcome text
+  const title = document.getElementById('aiWelcomeTitle');
+  const text = document.getElementById('aiWelcomeText');
+  if(title) title.textContent = isAm ? 'ሰላም፣ እኔ HisabAI ነኝ 👋' : 'Hi, I\'m HisabAI 👋';
+  if(text) text.textContent = isAm ? 'የእርስዎ የኢትዮጵያ ንግድ አጋዥ። በ ERP ዎ ላይ ማንኛውንም ጥያቄ ይጠይቁ። እኔ ተግባራትም ማከናወን እችላለሁ።' : 'Your intelligent Ethiopian business assistant. Ask me anything about your ERP — finances, inventory, employees, taxes, and more. I can also perform actions for you.';
+  // Update data-en/am spans
+  document.querySelectorAll('[data-en][data-am]').forEach(el => {
+    el.textContent = isAm ? el.dataset.am : el.dataset.en;
+  });
+  // Update suggestion chip query data
+  document.querySelectorAll('.ai-suggest[data-q][data-q-am]').forEach(btn => {
+    btn.dataset.q = isAm ? btn.dataset.qAm : btn.dataset.q;
+  });
+  // Update input placeholder
+  const input = document.getElementById('aiInput');
+  if(input) input.placeholder = isAm ? 'ሂሳብ AI ይጠይቁ...' : 'Ask HisabAI anything...';
+  // Update input lang attribute
+  if(input) input.lang = LANG;
+}
 function updateNavLabels(){document.getElementById('navHome').textContent=tr('home');document.getElementById('navFinance').textContent=tr('finance');document.getElementById('navInventory').textContent=tr('inventory');document.getElementById('navSales').textContent=tr('sales');document.getElementById('navMore').textContent=tr('more')}
 
 // ═══════════════════════════════════════════════════════════
@@ -2106,17 +2238,22 @@ function aiHideTyping() {
 function aiProcess(query) {
   const q = query.toLowerCase().trim();
   const fmt = formatETB;
+  const isAm = LANG === 'am';
+  // Amharic keyword helper
+  const am = (...words) => words.some(w => q.includes(w));
 
   // ── GREETINGS ──
-  if (/^(hi|hello|hey|selam|ሰላም|good (morning|afternoon|evening))/.test(q)) {
+  if (/^(hi|hello|hey|selam|good (morning|afternoon|evening))/.test(q) || am('ሰላም','ሃይ','እንዴት','አንደኛ')) {
+    if (isAm) return { html: `ሰላም ${DB.user.name.split(' ')[0]}! 👋 እኔ <strong>HisabAI</strong> ነኝ፣ የእርስዎ ERP አጋዥ። በንግድዎ ላይ ማንኛውንም ጥያቄ መጠየቅ ይችላሉ።<br><br>📊 <strong>ትንተና</strong> — ገቢ፣ ትርፍ፣ KPI<br>💰 <strong>ፋይናንስ</strong> — ግብይቶች፣ ቫት፣ ባንኮች<br>📦 <strong>እቃ መጋዘን</strong> — ክምችት፣ ማስጠንቀቂያ<br>👥 <strong>ሰው ሀይል</strong> — ደመወዝ፣ ሰራተኞች<br>🛒 <strong>ሽያጭ</strong> — ደንበኞች፣ ጥቅሶች<br>⚡ <strong>ተግባሮች</strong> — ፍጠር፣ ሰርዝ፣ ዘጋይ<br><br>ምን ማወቅ ይፈልጋሉ?` };
     return { html: `Hello ${DB.user.name.split(' ')[0]}! 👋 I'm <strong>HisabAI</strong>, your ERP assistant. I can help you with:<br><br>📊 <strong>Analytics</strong> — Revenue, profit, KPIs<br>💰 <strong>Finance</strong> — Transactions, VAT, banks<br>📦 <strong>Inventory</strong> — Stock levels, alerts<br>👥 <strong>HR</strong> — Payroll, employees, taxes<br>🛒 <strong>Sales</strong> — Customers, quotations<br>⚡ <strong>Actions</strong> — Create transactions, add products, navigate<br><br>What would you like to know?` };
   }
 
   // ── REVENUE / INCOME ──
-  if (/(total |overall )?(revenue|income|sales|earnings)/.test(q) && !/tax/.test(q)) {
+  if (/(total |overall )?(revenue|income|sales|earnings)/.test(q) && !/tax/.test(q) || am('ገቢ','ገባዬ','ጠቅላላ ገቢ','ስንት ገቢ')) {
     const received = DB.transactions.filter(t => t.type === 'received').reduce((s, t) => s + t.amount, 0);
     const revAccount = DB.accounts.find(a => a.code === '4000');
     const annualRev = revAccount ? revAccount.balance : received;
+    if (isAm) return { html: `<strong>📊 የገቢ ማጠቃለያ</strong><div class="ai-data-card"><div class="ai-dc-label">የዓመት ገቢ</div><div class="ai-dc-value">${fmt(annualRev)}</div></div><div class="ai-data-card"><div class="ai-dc-label">የዚህ ጊዜ ገቢ</div><div class="ai-dc-value">${fmt(received)}</div></div>በዚህ ጊዜ <strong>${DB.transactions.filter(t => t.type === 'received').length} ክፍያዎች</strong ተቀብለዋል። ገቢ ከዋለ ወር <strong>12.4%</strong> ጨምሯል። 📈` };
     return {
       html: `<strong>📊 Revenue Summary</strong><div class="ai-data-card"><div class="ai-dc-label">Account Revenue (FY)</div><div class="ai-dc-value">${fmt(annualRev)}</div></div><div class="ai-data-card"><div class="ai-dc-label">Transaction Revenue (This Period)</div><div class="ai-dc-value">${fmt(received)}</div></div>You've received <strong>${DB.transactions.filter(t => t.type === 'received').length} payments</strong> this period. Revenue is up <strong>12.4%</strong> compared to last month. 📈`
     };
@@ -2147,7 +2284,7 @@ function aiProcess(query) {
   }
 
   // ── VAT / TAX ──
-  if (/(vat|tax|taxes|erca|withholding|pension)/.test(q)) {
+  if (/(vat|tax|taxes|erca|withholding|pension)/.test(q) || am('ግብር','ቫት','ግብሮች','ወረደ','ጡረታ','ኤርካ')) {
     const received = DB.transactions.filter(t => t.type === 'received').reduce((s, t) => s + t.amount, 0);
     const vatCollected = Math.round(received * 0.15);
     const sent = DB.transactions.filter(t => t.type === 'sent').reduce((s, t) => s + t.amount, 0);
@@ -2164,7 +2301,7 @@ function aiProcess(query) {
   }
 
   // ── OVERDUE TAXES ──
-  if (/overdue/.test(q)) {
+  if (/overdue/.test(q) || am('ወረደ','ወረዱ','ያለፈ')) {
     const overdue = DB.taxFilings.filter(t => t.status === 'overdue');
     if (overdue.length === 0) return { html: '✅ You have <strong>no overdue taxes</strong>. All filings are up to date!' };
     let html = `⚠️ You have <strong>${overdue.length} overdue tax filing(s)</strong>:<div class="ai-data-card">`;
@@ -2201,11 +2338,11 @@ function aiProcess(query) {
   }
 
   // ── INVENTORY / STOCK ──
-  if (/(inventory|stock|product|warehouse|supply)/.test(q)) {
-    if (/(low|out of stock|alert|warning|critical)/.test(q)) {
+  if (/(inventory|stock|product|warehouse|supply)/.test(q) || am('እቃ','ክምችት','ምርት','መጋዘን','ዝቅተኛ ክምችት')) {
+    if (/(low|out of stock|alert|warning|critical)/.test(q) || am('ዝቅተኛ','አልተገኘም','ማስጠንቀቂያ')) {
       const lowStock = DB.products.filter(p => p.status === 'lowStock');
       const outOfStock = DB.products.filter(p => p.status === 'outOfStock');
-      let html = `<strong>📦 Stock Alert Summary</strong><div class="ai-data-card"><div class="ai-dc-row"><span>Low Stock Items</span><span style="color:var(--md-warning)">${lowStock.length}</span></div><div class="ai-dc-row"><span>Out of Stock</span><span style="color:var(--md-error)">${outOfStock.length}</span></div></div>`;
+      let html = `<strong>📦 ${isAm?'የክምችት ማስጠንቀቂያ':'Stock Alert Summary'}</strong><div class="ai-data-card"><div class="ai-dc-row"><span>${isAm?'ዝቅተኛ ክምችት':'Low Stock Items'}</span><span style="color:var(--md-warning)">${lowStock.length}</span></div><div class="ai-dc-row"><span>${isAm?'ክምችት የለም':'Out of Stock'}</span><span style="color:var(--md-error)">${outOfStock.length}</span></div></div>`;
       if (lowStock.length > 0) {
         html += `<strong>⚠️ Low Stock:</strong><br>`;
         lowStock.forEach(p => { html += `• ${p.name} (${p.sku}) — ${p.qty}/${p.reorder} units<br>`; });
@@ -2234,12 +2371,17 @@ function aiProcess(query) {
   }
 
   // ── EMPLOYEES / HR ──
-  if (/(employee|staff|worker|payroll|salary|hr|human resource)/.test(q)) {
+  if (/(employee|staff|worker|payroll|salary|hr|human resource)/.test(q) || am('ሰራተኛ','ሰራተኞች','ስንት ሰራተኞች','ደመወዝ','ሰው ሀይል')) {
     const totalPayroll = DB.employees.reduce((s, e) => s + e.salary, 0);
     const active = DB.employees.filter(e => e.status === 'active').length;
     const onLeave = DB.employees.filter(e => e.status === 'leave').length;
     function calcNet(gross) { const pension = gross * 0.07; const taxable = gross - pension; let tax = 0; if (taxable > 7800) tax = 1385 + (taxable - 7800) * 0.30; else if (taxable > 5250) tax = 747.5 + (taxable - 5250) * 0.25; else if (taxable > 3200) tax = 337.5 + (taxable - 3200) * 0.20; else if (taxable > 1650) tax = 105 + (taxable - 1650) * 0.15; else if (taxable > 600) tax = (taxable - 600) * 0.10; return Math.round(gross - pension - tax); }
     const totalNet = DB.employees.reduce((s, e) => s + calcNet(e.salary), 0);
+    if (isAm) {
+      let html = `<strong>👥 የሰው ሀይል ማጠቃለያ</strong><div class="ai-data-card"><div class="ai-dc-row"><span>ጠቅላላ ሰራተኞች</span><span>${DB.employees.length}</span></div><div class="ai-dc-row"><span>ንቁ</span><span style="color:var(--md-success)">${active}</span></div><div class="ai-dc-row"><span>በፍቃድ ላይ</span><span style="color:var(--md-warning)">${onLeave}</span></div><div class="ai-dc-row"><span>ጠቅላላ ደመወዝ</span><span>${fmt(totalPayroll)}</span></div><div class="ai-dc-row"><span>ተጣጣፊ ደመወዝ</span><span style="color:var(--md-secondary)">${fmt(totalNet)}</span></div></div>`;
+      html += `<br>ጡረታ: ሰራተኛ 7% + ቀራሽ 11%<br><br><button class="ai-action-btn" onclick="switchTab('more',document.getElementById('nav-more'));moreTab='hr';renderMore();toggleAI()">👥 የሰው ሀይል ክፍል →</button>`;
+      return { html };
+    }
     let html = `<strong>👥 HR Summary</strong><div class="ai-data-card"><div class="ai-dc-row"><span>Total Employees</span><span>${DB.employees.length}</span></div><div class="ai-dc-row"><span>Active</span><span style="color:var(--md-success)">${active}</span></div><div class="ai-dc-row"><span>On Leave</span><span style="color:var(--md-warning)">${onLeave}</span></div><div class="ai-dc-row"><span>Gross Payroll</span><span>${fmt(totalPayroll)}</span></div><div class="ai-dc-row"><span>Net Payroll (after tax)</span><span style="color:var(--md-secondary)">${fmt(totalNet)}</span></div></div>`;
     html += `<br>Departments: Finance, Operations, Sales, HR, IT, Admin<br>ERCA pension: Employee 7% + Employer 11%<br><br><button class="ai-action-btn" onclick="switchTab('more',document.getElementById('nav-more'));moreTab='hr';renderMore();toggleAI()">👥 View HR Module →</button>`;
     return { html };
@@ -2257,7 +2399,7 @@ function aiProcess(query) {
   }
 
   // ── FINANCIAL SUMMARY / DASHBOARD ──
-  if (/(summary|overview|dashboard|financial status|business status|how.*doing|report)/.test(q)) {
+  if (/(summary|overview|dashboard|financial status|business status|how.*doing|report)/.test(q) || am('ማጠቃለያ','ሁኔታ','አጠቃለያ','ሪፖርት')) {
     const received = DB.transactions.filter(t => t.type === 'received').reduce((s, t) => s + t.amount, 0);
     const sent = DB.transactions.filter(t => t.type === 'sent').reduce((s, t) => s + t.amount, 0);
     const net = received - sent;
@@ -2295,7 +2437,8 @@ function aiProcess(query) {
   }
 
   // ── HELP ──
-  if (/(help|what can you do|capabilities|commands|features)/.test(q)) {
+  if (/(help|what can you do|capabilities|commands|features)/.test(q) || am('እገዛ','ምን ማድረግ','ጥቅም','ችሎታ')) {
+    if (isAm) return { html: `<strong>🤖 የሂሳብ AI ችሎታዎች</strong><br><br>በ ERP ዎ ላይ ጥያቄዎችን መጠየቅ እና ተግባራትን ማከናወን እችላለሁ።<br><br>📊 <strong>ትንተና</strong><br>• "ጠቅላላ ገባዬ ስንት ነው?"<br>• "ትርፌ ስንት ነው?"<br>• "የንግዴን ሁኔታ አሳዬ"<br><br>💰 <strong>ፋይናንስ</strong><br>• "የባንክ ሂሳቤ ስንት ነው?"<br>• "ግብይቶቼን አሳዬ"<br>• "አዲስ ግብይት ፍጠር"<br>• "ቫቴ ስንት ነው?"<br><br>📦 <strong>እቃ መጋዘን</strong><br>• "ዝቅተኛ ክምችት ያላቸው ምርቶች"<br>• "የእቃ ዋጤ ስንት ነው?"<br><br>👥 <strong>ሰው ሀይል</strong><br>• "ስንት ሰራተኞች አሉኝ?"<br>• "ደመወዝ ስንት ነው?"<br>• "መግባቴን መዝግብ"<br><br>🛡️ <strong>ቅጣት</strong><br>• "የትኞቹ ግብሮች ወርደዋል?"<br><br>⚡ <strong>ፈጣን ተግባሮች</strong><br>• "ባርኮድ አንሳ"<br>• "ወደ ዳሽቦርድ ውስን"<br><br>በተፈጥሮ ቋንቋ ይጠይቁ! 🗣️` };
     return {
       html: `<strong>🤖 HisabAI Capabilities</strong><br><br>I can answer questions and perform actions across your ERP:<br><br>📊 <strong>Analytics</strong><br>• "What is my total revenue?"<br>• "Show me my profit"<br>• "Give me a business summary"<br><br>💰 <strong>Finance</strong><br>• "What's my bank balance?"<br>• "Show recent transactions"<br>• "Create a transaction"<br>• "What's my VAT?"<br><br>📦 <strong>Inventory</strong><br>• "Show low stock products"<br>• "What's my inventory value?"<br>• "Add a product"<br><br>👥 <strong>HR</strong><br>• "How many employees?"<br>• "What's the payroll?"<br>• "Check me in"<br><br>🛡️ <strong>Compliance</strong><br>• "What taxes are overdue?"<br>• "Tax status"<br><br>⚡ <strong>Quick Actions</strong><br>• "Scan barcode"<br>• "Go to dashboard"<br>• "Open finance"<br><br>Just ask me in natural language! 🗣️`
     };
