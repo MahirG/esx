@@ -264,7 +264,7 @@ a{color:inherit;text-decoration:none}
    SCREENS
    ═══════════════════════════════════════════════════════════ */
 .screen-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative}
-.screen{display:none;padding:0 0 calc(var(--nav-h) + var(--safe-bottom) + 16px);animation:screenIn var(--dur-medium) var(--ease-decelerate)}
+.screen{display:none;padding:0 0 calc(var(--nav-h) + 40px + var(--safe-bottom));animation:screenIn var(--dur-medium) var(--ease-decelerate)}
 .screen.active{display:block}
 @keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
