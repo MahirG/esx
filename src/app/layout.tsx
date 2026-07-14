@@ -1,8 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Ethiopic } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
-import { QueryProvider } from "@/components/providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,17 +20,26 @@ const notoSansEthiopic = Noto_Sans_Ethiopic({
 
 export const metadata: Metadata = {
   title: "Hisab ERP — Ethiopian Business Intelligence",
-  description: "Secure, scalable ERP for Ethiopian business owners. Finance, Inventory, HR, Sales & Compliance with ETB support, Amharic + English bilingual interface.",
-  keywords: ["ERP", "Ethiopia", "Amharic", "ETB", "Business", "Finance", "Inventory", "HR", "Sales", "Compliance", "Hisab"],
-  authors: [{ name: "Hisab ERP" }],
+  description: "Secure, scalable ERP for Ethiopian business owners. Finance, Inventory, HR, Sales & Compliance with ETB support, Amharic + English bilingual interface, HisabAI assistant, and ERCA tax compliance.",
+  keywords: ["ERP", "Ethiopia", "Amharic", "ETB", "Business", "Finance", "Inventory", "HR", "Sales", "Compliance", "Hisab", "HisabAI", "HisabTech"],
+  authors: [{ name: "HisabTech" }],
   icons: {
     icon: "/logo.svg",
   },
   openGraph: {
     title: "Hisab ERP — Ethiopian Business Intelligence",
-    description: "Secure, scalable ERP for Ethiopian business owners",
+    description: "Secure, scalable ERP for Ethiopian business owners with AI assistant, bilingual support, and ERCA compliance.",
     type: "website",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#0B141A",
 };
 
 export default function RootLayout({
@@ -43,12 +50,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSansEthiopic.variable} antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSansEthiopic.variable} antialiased`}
+        style={{ margin: 0, padding: 0, overflow: "hidden", background: "#0B141A" }}
       >
-        <QueryProvider>
-          {children}
-        </QueryProvider>
-        <Toaster />
+        {children}
       </body>
     </html>
   );
